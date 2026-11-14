@@ -1,144 +1,345 @@
+import { ActionRow } from '@/components/ActionRow';
+import { AsyncView } from '@/components/AsyncView';
 import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { IconTile } from '@/components/IconTile';
+import { FeatureCard } from '@/components/FeatureCard';
+import { MenuItemRow } from '@/components/MenuItemRow';
+import { PhotoPlaceholder } from '@/components/PhotoPlaceholder';
+import { Pill } from '@/components/Pill';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionHeader } from '@/components/SectionHeader';
+import { SpaceCard } from '@/components/SpaceCard';
+import { PreOrderBar } from '@/components/PreOrderBar';
+import { Toast } from '@/components/Toast';
 import { contact } from '@/data/contact';
 import { venue } from '@/data/venue';
-import { colors, radii, spacing, typography } from '@/theme';
+import { useCart } from '@/context/CartContext';
+import { useAsync } from '@/hooks/useAsync';
+import { useNow } from '@/hooks/useNow';
+import { useToast } from '@/hooks/useToast';
+import { isOpenNow } from '@/lib/hours';
+import { services } from '@/services';
+import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { MenuItem } from '@/types/menu';
+import { Space } from '@/types/space';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, Linking, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+const [OPENS_LABEL, CLOSES_LABEL] = contact.openingHours.split(' to ');
 
 export default function HomeScreen() {
-  const openCall = () => {
-    Linking.openURL(`tel:${contact.phoneE164}`);
+  const now = useNow();
+  const { toast, show } = useToast();
+  const [barHeight, setBarHeight] = useState(0);
+  const cart = useCart();
+  const spaces = useAsync(() => services.venue.getSpaces());
+  const popular = useAsync(() => services.menu.getPopularItems());
+  const open = isOpenNow(now, contact);
+
+  const openLink = (url: string) => {
+    Linking.openURL(url).catch(() => show('We could not open that. Please try again.', 'alert-circle'));
   };
 
-  const openWhatsApp = () => {
-    Linking.openURL(contact.whatsappUrl);
+  const addToPreOrder = (item: MenuItem) => {
+    cart.add(item);
+    show(`${item.name} added to pre-order`);
+  };
+
+  const bookSpace = (space: Space) => {
+    router.push({ pathname: '/book-space', params: { spaceId: space.id } });
   };
 
   return (
-    <ScreenContainer scroll>
-      <View style={styles.header}>
-        <Text style={styles.brand}>{contact.venueName}</Text>
-        <Text style={styles.welcome}>{venue.welcomeLine}</Text>
-        <Text style={styles.hours}>Open daily {contact.openingHours}</Text>
-      </View>
-
-      <View style={styles.grid}>
-        <View style={styles.row}>
-          <IconTile
-            icon="business-outline"
-            label="Book a Space"
-            onPress={() => router.push('/book-space')}
-          />
-          <IconTile
+    <View style={styles.root}>
+      <ScreenContainer
+        contentStyle={{ ...styles.content, paddingBottom: barHeight + spacing.xl }}
+        scroll
+      >
+        <View style={styles.hero}>
+          <PhotoPlaceholder
+            accessibilityLabel="Joteku venue photo placeholder"
             icon="restaurant-outline"
-            label="Reserve a Table"
-            onPress={() => router.push('/reserve-table')}
-          />
+            iconSize={72}
+            style={styles.heroPhoto}
+            tone="green"
+          >
+            <View style={styles.heroOverlay}>
+              <View style={styles.heroBadges}>
+                <Pill icon="ribbon" label={venue.heritageBadge} tone="gold" uppercase />
+                <Pill
+                  dotColor={open ? colors.primary : colors.error}
+                  label={open ? `Open now • Until ${CLOSES_LABEL}` : `Closed • Opens ${OPENS_LABEL}`}
+                  tone="light"
+                />
+              </View>
+              <View>
+                <Text style={styles.heroTitle}>{venue.heroTitle}</Text>
+                <Text style={styles.heroSubtitle}>{venue.heroSubtitle}</Text>
+              </View>
+            </View>
+          </PhotoPlaceholder>
+          <View style={styles.contactStrip}>
+            <View style={styles.locationRow}>
+              <Ionicons color={colors.secondary} name="location" size={22} />
+              <View style={styles.locationText}>
+                <Text numberOfLines={1} style={styles.locationTitle}>
+                  {contact.addressLine1}
+                </Text>
+                <Text numberOfLines={1} style={styles.locationBody}>
+                  {contact.addressLine2}
+                </Text>
+              </View>
+              <Pill label={venue.establishedLabel} tone="secondary" />
+            </View>
+            <View style={styles.contactButtons}>
+              <Button
+                label="Call Venue"
+                leftIcon="call"
+                onPress={() => openLink(`tel:${contact.phoneE164}`)}
+                style={styles.contactButton}
+                variant="neutral"
+              />
+              <Button
+                label="WhatsApp Us"
+                leftIcon="logo-whatsapp"
+                onPress={() => openLink(contact.whatsappUrl)}
+                style={styles.contactButton}
+                variant="tonal"
+              />
+            </View>
+          </View>
         </View>
-        <View style={styles.row}>
-          <IconTile
-            icon="fast-food-outline"
-            label="Menu"
-            onPress={() => router.push('/menu')}
-          />
-          <IconTile
-            icon="calendar-outline"
-            label="My Bookings"
-            onPress={() => router.push('/bookings')}
-          />
-        </View>
-      </View>
 
-      <SectionHeader title={venue.aboutTitle} />
-      <Card style={styles.aboutCard}>
-        <Image
-          accessibilityLabel="Joteku venue at Teshie 1st Junction"
-          source={require('../../assets/about-placeholder.png')}
-          style={styles.aboutImage}
-        />
-        <Text style={styles.aboutBody}>{venue.aboutBody}</Text>
-      </Card>
-
-      <SectionHeader title="Location and Contact" subtitle={contact.addressLine2} />
-      <Card>
-        <Text style={styles.addressTitle}>{contact.addressLine1}</Text>
-        <Text style={styles.addressBody}>{contact.addressLine2}</Text>
-        <Text style={styles.phone}>{contact.phoneDisplay}</Text>
-        <View style={styles.actions}>
-          <Button label="Call" onPress={openCall} style={styles.actionButton} variant="secondary" />
-          <Button label="WhatsApp" onPress={openWhatsApp} style={styles.actionButton} variant="gold" />
+        <View>
+          <SectionHeader title="How Can We Serve You?" />
+          <View style={styles.actions}>
+            <FeatureCard
+              badge="Popular Choice"
+              ctaLabel="Choose Date & Space"
+              description="Book a hut or the whole venue for weddings, engagements, birthdays and meetings."
+              icon="business"
+              onPress={() => router.push('/book-space')}
+              title="Book an Event Space"
+            />
+            <ActionRow
+              icon="restaurant-outline"
+              onPress={() => router.push('/reserve-table')}
+              subtitle="Pick a time and pre-order your meal"
+              title="Reserve a Table"
+            />
+            <ActionRow
+              icon="fast-food-outline"
+              onPress={() => router.push('/menu')}
+              subtitle="Tilapia, banku, light soup, cold beers and sobolo"
+              title="Food & Drinks Menu"
+              tone="secondary"
+            />
+            <ActionRow
+              icon="ticket-outline"
+              onPress={() => router.push('/bookings')}
+              subtitle="See your bookings, receipts and payments"
+              tone="primary"
+              title="My Bookings"
+            />
+            <ActionRow
+              icon="location-outline"
+              onPress={() => router.push('/contact')}
+              subtitle="Directions, opening hours, call or WhatsApp"
+              title="Location & Contact"
+            />
+          </View>
         </View>
-      </Card>
-    </ScreenContainer>
+
+        <View>
+          <SectionHeader
+            actionLabel="View all"
+            onAction={() => router.push('/spaces')}
+            subtitle="Host under the huts or take the whole grounds"
+            title="Bookable Spaces"
+          />
+          <AsyncView
+            empty={{ title: 'No spaces yet', message: 'Spaces to book will show here soon.' }}
+            state={spaces}
+          >
+            {(items) => (
+              <ScrollView
+                contentContainerStyle={styles.carousel}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.carouselBleed}
+              >
+                {items.map((space) => (
+                  <SpaceCard key={space.id} onBook={() => bookSpace(space)} space={space} />
+                ))}
+              </ScrollView>
+            )}
+          </AsyncView>
+        </View>
+
+        <View>
+          <SectionHeader
+            actionLabel="Full Menu"
+            onAction={() => router.push('/menu')}
+            subtitle="Pre-order so it is ready when you arrive"
+            title="Popular Food & Drinks"
+          />
+          <AsyncView
+            empty={{ title: 'Menu coming soon', message: 'Our popular dishes will show here soon.' }}
+            state={popular}
+          >
+            {(items) => (
+              <View style={styles.dishes}>
+                {items.map((item) => (
+                  <MenuItemRow item={item} key={item.id} onAdd={() => addToPreOrder(item)} />
+                ))}
+              </View>
+            )}
+          </AsyncView>
+        </View>
+
+        <View style={styles.heritage}>
+          <View style={styles.heritageHeader}>
+            <View style={styles.heritageIcon}>
+              <Ionicons color={colors.onGoldSoft} name="sparkles" size={20} />
+            </View>
+            <View style={styles.heritageText}>
+              <Text style={styles.heritageTitle}>{venue.heritageTitle}</Text>
+              <Text style={styles.heritageSubtitle}>{venue.heritageSubtitle}</Text>
+            </View>
+          </View>
+          <Text style={styles.heritageBody}>{venue.aboutBody}</Text>
+          <Button
+            label="Read our story"
+            onPress={() => router.push('/about')}
+            rightIcon="arrow-forward"
+            style={styles.heritageButton}
+            variant="neutral"
+          />
+        </View>
+      </ScreenContainer>
+      <PreOrderBar onHeightChange={setBarHeight} />
+      <Toast bottomOffset={barHeight + spacing.md} toast={toast} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: spacing.md,
-    paddingBottom: spacing.lg,
-    gap: spacing.xs,
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  brand: {
-    ...typography.headline,
-    color: colors.primary,
+  content: {
+    paddingTop: spacing.sm,
+    gap: spacing.lg,
   },
-  welcome: {
-    ...typography.body,
-    color: colors.text,
-  },
-  hours: {
-    ...typography.caption,
-    color: colors.textMuted,
-  },
-  grid: {
-    gap: spacing.sm,
-    marginBottom: spacing.lg,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  aboutCard: {
-    padding: 0,
+  hero: {
+    backgroundColor: colors.surface,
+    borderRadius: radii.lg,
     overflow: 'hidden',
-    marginBottom: spacing.lg,
+    ...shadows.card,
   },
-  aboutImage: {
-    width: '100%',
-    height: 160,
-    borderTopLeftRadius: radii.xl,
-    borderTopRightRadius: radii.xl,
+  heroPhoto: {
+    height: 192,
   },
-  aboutBody: {
-    ...typography.bodyMd,
-    color: colors.textSubtle,
+  heroOverlay: {
+    flex: 1,
+    justifyContent: 'space-between',
     padding: spacing.md,
   },
-  addressTitle: {
-    ...typography.titleMd,
-    color: colors.text,
+  heroBadges: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
   },
-  addressBody: {
+  heroTitle: {
+    ...typography.headline,
+    color: colors.onPrimary,
+  },
+  heroSubtitle: {
     ...typography.caption,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
+    color: colors.primarySoftDim,
   },
-  phone: {
-    ...typography.bodyMd,
+  contactStrip: {
+    backgroundColor: colors.surfaceMuted,
+    padding: spacing.md,
+    gap: spacing.sm + 4,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  locationText: {
+    flex: 1,
+  },
+  locationTitle: {
+    ...typography.labelMd,
     color: colors.text,
-    marginTop: spacing.sm,
-    marginBottom: spacing.md,
   },
-  actions: {
+  locationBody: {
+    ...typography.caption,
+    color: colors.textSubtle,
+  },
+  contactButtons: {
     flexDirection: 'row',
     gap: spacing.sm,
   },
-  actionButton: {
+  contactButton: {
     flex: 1,
+    paddingHorizontal: spacing.sm,
+  },
+  actions: {
+    gap: spacing.sm,
+  },
+  carouselBleed: {
+    marginHorizontal: -spacing.screen,
+  },
+  carousel: {
+    paddingHorizontal: spacing.screen,
+    paddingBottom: spacing.sm,
+    gap: spacing.md,
+  },
+  dishes: {
+    gap: spacing.sm,
+  },
+  heritage: {
+    backgroundColor: colors.surfaceContainer,
+    borderRadius: radii.lg,
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  heritageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  heritageIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: radii.full,
+    backgroundColor: colors.goldSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heritageText: {
+    flex: 1,
+  },
+  heritageTitle: {
+    ...typography.titleSm,
+    color: colors.text,
+  },
+  heritageSubtitle: {
+    ...typography.caption,
+    color: colors.textSubtle,
+  },
+  heritageButton: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.md,
+  },
+  heritageBody: {
+    ...typography.caption,
+    color: colors.textSubtle,
   },
 });

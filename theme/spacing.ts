@@ -9,6 +9,10 @@ export const spacing = {
   screen: 16,
 } as const;
 
+export const sizes = {
+  tapTarget: 48,
+} as const;
+
 export const radii = {
   sm: 4,
   md: 8,

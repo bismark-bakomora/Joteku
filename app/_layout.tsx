@@ -1,3 +1,4 @@
+import { CartProvider } from '@/context/CartContext';
 import { colors, fontFamilies } from '@/theme';
 import {
   Epilogue_600SemiBold,
@@ -48,7 +49,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <CartProvider>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -64,7 +65,13 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="book-space" options={{ title: 'Book a Space' }} />
         <Stack.Screen name="reserve-table" options={{ title: 'Reserve a Table' }} />
+        <Stack.Screen name="spaces" options={{ title: 'Venue & Spaces' }} />
+        <Stack.Screen name="about" options={{ title: 'About Joteku' }} />
+        <Stack.Screen name="how-to-book" options={{ title: 'How to Book' }} />
+        <Stack.Screen name="contact" options={{ title: 'Location & Contact' }} />
+        <Stack.Screen name="terms" options={{ title: 'Terms & Policies' }} />
+        <Stack.Screen name="cart" options={{ title: 'Your Pre-order' }} />
       </Stack>
-    </>
+    </CartProvider>
   );
 }

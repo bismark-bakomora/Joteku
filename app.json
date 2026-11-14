@@ -29,7 +29,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#185232"
         }
-      ]
+      ],
+      "expo-status-bar"
     ],
     "experiments": {
       "typedRoutes": true

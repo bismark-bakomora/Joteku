@@ -58,13 +58,19 @@ app/          Screens and navigation (Expo Router)
   (tabs)/     Bottom bar: Home, Menu, Bookings, Profile
 components/   Small reusable UI components
 theme/        Colours, fonts, spacing, radii and shadows (single source of truth)
-data/         Mock data and sample content
+services/     Service interfaces (auth, venue, menu, payments, bookings) and their mock versions
+lib/          Pricing, refund, availability and date rules, plus storage and offline caching
+hooks/        Shared React hooks
+context/      App-wide state (the pre-order cart)
+data/         Sample content: spaces, menu, pricing settings, sample bookings
 types/        Shared TypeScript types
 assets/       Placeholder icons and images
 scripts/      Helper scripts
 ```
 
 All colours, fonts and spacing live in `theme/`. Screens import from `@/theme` and never hardcode colours. The `@/` import alias points to the project root.
+
+Screens get their data through `services/`. Today those are mock versions that store data on the phone, so the app works without a server. Connecting the real backend and payment provider later means changing one file, `services/index.ts`.
 
 ## Design
 

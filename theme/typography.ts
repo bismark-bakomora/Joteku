@@ -16,7 +16,7 @@ export const typography = {
     letterSpacing: -0.28,
   },
   headline: {
-    fontFamily: fontFamilies.headlineBold,
+    fontFamily: fontFamilies.headline,
     fontSize: 24,
     lineHeight: 32,
   },
@@ -25,10 +25,20 @@ export const typography = {
     fontSize: 18,
     lineHeight: 24,
   },
-  titleMd: {
+  titleLg: {
     fontFamily: fontFamilies.bodyBold,
+    fontSize: 18,
+    lineHeight: 26,
+  },
+  titleMd: {
+    fontFamily: fontFamilies.bodySemiBold,
     fontSize: 16,
     lineHeight: 22,
+  },
+  titleSm: {
+    fontFamily: fontFamilies.bodySemiBold,
+    fontSize: 14,
+    lineHeight: 20,
   },
   body: {
     fontFamily: fontFamilies.body,
@@ -50,10 +60,15 @@ export const typography = {
     fontSize: 15,
     lineHeight: 20,
   },
+  labelMd: {
+    fontFamily: fontFamilies.bodySemiBold,
+    fontSize: 13,
+    lineHeight: 16,
+  },
   labelSm: {
     fontFamily: fontFamilies.bodyBold,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 0.44,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.48,
   },
 } satisfies Record<string, TextStyle>;

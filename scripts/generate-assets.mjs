@@ -78,22 +78,8 @@ function splashPaint(x, y, width, height) {
   return [24, 82, 50, 0];
 }
 
-function aboutPaint(x, y, width, height) {
-  if (y < height * 0.62) {
-    const mix = y / (height * 0.62);
-    return [
-      Math.round(24 + (200 - 24) * mix * 0.2),
-      Math.round(82 + (160 - 82) * mix * 0.15),
-      Math.round(50 + (90 - 50) * mix * 0.1),
-      255,
-    ];
-  }
-  return [250, 247, 242, 255];
-}
-
 writeFileSync(join(assetsDir, 'icon.png'), createPng(1024, 1024, iconPaint));
 writeFileSync(join(assetsDir, 'adaptive-icon.png'), createPng(1024, 1024, iconPaint));
 writeFileSync(join(assetsDir, 'splash-icon.png'), createPng(512, 512, splashPaint));
 writeFileSync(join(assetsDir, 'favicon.png'), createPng(48, 48, iconPaint));
-writeFileSync(join(assetsDir, 'about-placeholder.png'), createPng(1200, 720, aboutPaint));
 console.log('Wrote placeholder assets to /assets');

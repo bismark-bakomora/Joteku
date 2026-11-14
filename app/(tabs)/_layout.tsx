@@ -1,3 +1,4 @@
+import { BrandHeader } from '@/components/BrandHeader';
 import { colors, fontFamilies } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
@@ -8,7 +9,7 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.secondary,
+        tabBarInactiveTintColor: colors.textSubtle,
         tabBarLabelStyle: {
           fontFamily: fontFamilies.bodySemiBold,
           fontSize: 12,
@@ -26,6 +27,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
+          headerShown: true,
+          header: () => <BrandHeader />,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons color={color as string} name={focused ? 'home' : 'home-outline'} size={24} />
           ),
@@ -35,6 +38,8 @@ export default function TabLayout() {
         name="menu"
         options={{
           title: 'Menu',
+          headerShown: true,
+          header: () => <BrandHeader />,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               color={color as string}
@@ -51,7 +56,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               color={color as string}
-              name={focused ? 'calendar' : 'calendar-outline'}
+              name={focused ? 'ticket' : 'ticket-outline'}
               size={24}
             />
           ),
