@@ -54,6 +54,9 @@ export function reviveReleasedBooking(db: Database, booking: Booking, now: Date)
 // provider's callback does on the server, so bookings confirm automatically even
 // if the customer closes the app while paying.
 export function applySuccessfulPayment(db: Database, payment: Payment, now: Date): Booking {
+  if (payment.purpose === 'catering_balance') {
+    return applyCateringPayment(db, payment, now);
+  }
   const booking = findBooking(db, payment.bookingId);
   if (booking.status === 'confirmed' || booking.status === 'completed') {
     return booking;
@@ -68,5 +71,27 @@ export function applySuccessfulPayment(db: Database, payment: Payment, now: Date
   booking.amountPaid = payment.amount;
   booking.paymentId = payment.id;
   booking.holdExpiresAt = undefined;
+  return booking;
+}
+
+// Pay Balance: settles a catering quote on a booking that is already confirmed.
+function applyCateringPayment(db: Database, payment: Payment, now: Date): Booking {
+  const booking = findBooking(db, payment.bookingId);
+  if (booking.kind !== 'space' || !booking.catering) {
+    throw new AppError('invalid_state', 'This booking has no catering quote.');
+  }
+  if (booking.catering.status === 'paid') {
+    return booking;
+  }
+  if (
+    booking.status !== 'confirmed' ||
+    booking.catering.status !== 'quoted' ||
+    payment.amount !== booking.catering.quoteAmount
+  ) {
+    throw new AppError('invalid_payment', 'The amount paid does not match the catering quote.');
+  }
+  booking.catering.status = 'paid';
+  booking.catering.paymentId = payment.id;
+  booking.catering.paidAt = now.toISOString();
   return booking;
 }

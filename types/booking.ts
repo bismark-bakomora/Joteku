@@ -27,6 +27,9 @@ export type CateringRequest = {
   details: string;
   status: 'requested' | 'quoted' | 'paid';
   quoteAmount?: number;
+  quotedAt?: string;
+  paymentId?: string;
+  paidAt?: string;
 };
 
 type BookingBase = {
@@ -57,6 +60,9 @@ export type SpaceBooking = BookingBase & {
   decorationAmount: number;
   catering?: CateringRequest;
   dateChangeUsed: boolean;
+  previousDate?: string;
+  previousStartTime?: string;
+  dateChangedAt?: string;
 };
 
 export type TableReservation = BookingBase & {

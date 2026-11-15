@@ -1,8 +1,9 @@
 import { contact } from '@/data/contact';
 import { eventTypes } from '@/data/eventTypes';
 import { mobileMoneyNetworks } from '@/data/networks';
+import { spaces } from '@/data/spaces';
 import { colors } from '@/theme/colors';
-import { DecorationPackage, SpaceBooking, TableReservation } from '@/types/booking';
+import { Booking, DecorationPackage, SpaceBooking, TableReservation } from '@/types/booking';
 import { Payment } from '@/types/payment';
 import { Space } from '@/types/space';
 import { bookingEnd } from './availability';
@@ -64,6 +65,12 @@ function paymentRows(payment: Payment | null): ReceiptRow[] {
   ];
 }
 
+function refundRows(booking: Booking): ReceiptRow[] {
+  return booking.refundedAmount > 0
+    ? [{ label: 'Refunded', value: formatGhs(booking.refundedAmount) }]
+    : [];
+}
+
 export function spaceBookingReceipt(
   booking: SpaceBooking,
   space: Space,
@@ -81,10 +88,22 @@ export function spaceBookingReceipt(
   if (decoration) {
     charges.push({ label: `${decoration.name} decoration`, value: formatGhs(booking.decorationAmount) });
   }
+  const catering = booking.catering;
+  const cateringPaid = catering?.status === 'paid' && catering.quoteAmount ? catering.quoteAmount : 0;
+  if (cateringPaid > 0) {
+    charges.push({ label: 'Custom catering (Pay Balance)', value: formatGhs(cateringPaid) });
+  }
 
   const notes: string[] = [];
-  if (booking.catering) {
+  if (catering?.status === 'requested') {
     notes.push('Custom catering requested. Joteku will send you a quote to pay in the app.');
+  } else if (catering?.status === 'quoted' && catering.quoteAmount) {
+    notes.push(
+      `A catering quote of ${formatGhs(catering.quoteAmount)} is waiting. Pay it with Pay Balance in My Bookings.`,
+    );
+  }
+  if (booking.previousDate) {
+    notes.push(`Date changed from ${formatDateLong(booking.previousDate)}.`);
   }
 
   return {
@@ -98,8 +117,8 @@ export function spaceBookingReceipt(
     ],
     charges,
     totalLabel: 'Total paid',
-    total: formatGhs(booking.amountPaid > 0 ? booking.amountPaid : booking.amountDue),
-    payment: paymentRows(payment),
+    total: formatGhs((booking.amountPaid > 0 ? booking.amountPaid : booking.amountDue) + cateringPaid),
+    payment: [...paymentRows(payment), ...refundRows(booking)],
     notes,
   };
 }
@@ -139,7 +158,7 @@ export function tableReservationReceipt(
     charges,
     totalLabel: 'Deposit paid',
     total: formatGhs(reservation.amountPaid > 0 ? reservation.amountPaid : reservation.amountDue),
-    payment: paymentRows(payment),
+    payment: [...paymentRows(payment), ...refundRows(reservation)],
     notes,
   };
 }
@@ -238,4 +257,12 @@ export function googleCalendarUrl(entry: CalendarEntry): string {
   return `https://calendar.google.com/calendar/render?${params
     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join('&')}`;
+}
+
+export function bookingTitle(booking: Booking): string {
+  if (booking.kind === 'table') {
+    return `Table for ${booking.partySize}`;
+  }
+  const space = spaces.find((candidate) => candidate.id === booking.spaceId);
+  return `${eventTypeLabel(booking.eventType)} at ${space?.name ?? contact.venueName}`;
 }

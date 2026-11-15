@@ -1,3 +1,4 @@
+import { useNotifications } from '@/context/NotificationsContext';
 import { useSession } from '@/context/SessionContext';
 import { contact } from '@/data/contact';
 import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
@@ -10,6 +11,7 @@ import { Pill } from './Pill';
 export function BrandHeader() {
   const insets = useSafeAreaInsets();
   const { session } = useSession();
+  const { unreadCount } = useNotifications();
   const hours = contact.openingHours.replace(' to ', '–');
 
   return (
@@ -22,6 +24,23 @@ export function BrandHeader() {
           <Text style={styles.title}>{contact.venueName}</Text>
           <Pill dotColor={colors.primary} label={`${contact.addressLine1} • ${hours}`} />
         </View>
+        {session ? (
+          <Pressable
+            accessibilityLabel={
+              unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'
+            }
+            accessibilityRole="button"
+            onPress={() => router.push('/notifications')}
+            style={styles.iconButton}
+          >
+            <Ionicons color={colors.primary} name="notifications-outline" size={24} />
+            {unreadCount > 0 ? (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+              </View>
+            ) : null}
+          </Pressable>
+        ) : null}
         <Pressable
           accessibilityLabel="Profile"
           accessibilityRole="button"
@@ -73,6 +92,30 @@ const styles = StyleSheet.create({
   title: {
     ...typography.title,
     color: colors.primary,
+  },
+  iconButton: {
+    width: sizes.tapTarget,
+    height: sizes.tapTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: 6,
+    right: 4,
+    minWidth: 18,
+    height: 18,
+    borderRadius: radii.full,
+    backgroundColor: colors.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    ...typography.labelSm,
+    fontSize: 11,
+    lineHeight: 14,
+    color: colors.onSecondary,
   },
   profile: {
     width: sizes.tapTarget,

@@ -1,10 +1,7 @@
 import { AsyncView } from '@/components/AsyncView';
+import { ReceiptCard } from '@/components/ReceiptCard';
 import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { DetailRow } from '@/components/DetailRow';
-import { PriceRow } from '@/components/PriceRow';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { StatusBadge } from '@/components/StatusBadge';
 import { TextLink } from '@/components/TextLink';
 import { Toast } from '@/components/Toast';
 import { useAsync } from '@/hooks/useAsync';
@@ -12,7 +9,6 @@ import { useToast } from '@/hooks/useToast';
 import {
   CalendarEntry,
   googleCalendarUrl,
-  Receipt,
   receiptHtml,
   receiptText,
   spaceBookingReceipt,
@@ -21,7 +17,6 @@ import {
   tableReservationReceipt,
 } from '@/lib/receipt';
 import { services } from '@/services';
-import { BookingStatus } from '@/types/booking';
 import { colors, radii, spacing, typography } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import * as Calendar from 'expo-calendar/legacy';
@@ -185,36 +180,6 @@ export default function ReceiptScreen() {
   );
 }
 
-function ReceiptCard({ receipt, status }: { receipt: Receipt; status: BookingStatus }) {
-  return (
-    <Card style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{receipt.title}</Text>
-        <StatusBadge status={status} />
-      </View>
-      {receipt.details.map((row) => (
-        <DetailRow key={row.label} label={row.label} value={row.value} />
-      ))}
-      <View style={styles.divider} />
-      {receipt.charges.map((row) => (
-        <PriceRow amount={row.value} key={row.label} label={row.label} />
-      ))}
-      <View style={styles.total}>
-        <Text style={styles.totalLabel}>{receipt.totalLabel}</Text>
-        <Text style={styles.totalAmount}>{receipt.total}</Text>
-      </View>
-      {receipt.payment.map((row) => (
-        <DetailRow key={row.label} label={row.label} value={row.value} />
-      ))}
-      {receipt.notes.map((note) => (
-        <Text key={note} style={styles.note}>
-          {note}
-        </Text>
-      ))}
-    </Card>
-  );
-}
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -257,48 +222,6 @@ const styles = StyleSheet.create({
   bannerNote: {
     ...typography.caption,
     color: colors.onPrimaryMuted,
-  },
-  card: {
-    gap: spacing.xs,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: spacing.sm,
-    marginBottom: spacing.xs,
-  },
-  cardTitle: {
-    ...typography.titleMd,
-    color: colors.primary,
-    flex: 1,
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: colors.border,
-    marginVertical: spacing.xs,
-  },
-  total: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.surfaceMuted,
-    borderRadius: radii.md,
-    padding: spacing.sm + 4,
-    marginVertical: spacing.sm,
-  },
-  totalLabel: {
-    ...typography.titleSm,
-    color: colors.text,
-  },
-  totalAmount: {
-    ...typography.headline,
-    color: colors.primary,
-  },
-  note: {
-    ...typography.caption,
-    color: colors.textSubtle,
-    marginTop: spacing.xs,
   },
   actions: {
     gap: spacing.sm,

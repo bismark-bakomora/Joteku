@@ -1,19 +1,15 @@
 import { AsyncView } from '@/components/AsyncView';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { ChoiceCard } from '@/components/ChoiceCard';
 import { DetailRow } from '@/components/DetailRow';
-import { InfoBanner } from '@/components/InfoBanner';
-import { Input } from '@/components/Input';
+import { MobileMoneyForm } from '@/components/MobileMoneyForm';
+import { PaymentProblem } from '@/components/PaymentProblem';
+import { PaymentWaiting } from '@/components/PaymentWaiting';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { SectionHeader } from '@/components/SectionHeader';
-import { StepList } from '@/components/StepList';
 import { useCart } from '@/context/CartContext';
-import { useSession } from '@/context/SessionContext';
-import { contact } from '@/data/contact';
-import { mobileMoneyNetworks } from '@/data/networks';
 import { useAsync } from '@/hooks/useAsync';
 import { useNow } from '@/hooks/useNow';
+import { usePaymentResult } from '@/hooks/usePaymentResult';
 import { errorMessage } from '@/lib/errors';
 import {
   formatCountdown,
@@ -22,7 +18,7 @@ import {
   formatTime12,
   formatTimeRange,
 } from '@/lib/format';
-import { formatPhoneLocal, normalizeGhanaPhone, suggestNetwork } from '@/lib/phone';
+import { formatPhoneLocal } from '@/lib/phone';
 import { eventTypeLabel } from '@/lib/receipt';
 import { services } from '@/services';
 import { colors, radii, spacing, typography } from '@/theme';
@@ -31,30 +27,22 @@ import { MobileMoneyNetwork } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
-
-const POLL_MS = 2000;
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 
 type Phase =
   | { kind: 'form' }
-  | { kind: 'waiting'; paymentId: string }
+  | { kind: 'waiting'; paymentId: string; phone: string }
   | { kind: 'failed'; message: string }
   | { kind: 'expired' };
 
 export default function PayScreen() {
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
-  const { session } = useSession();
   const { clear: clearCart } = useCart();
   const bookingState = useAsync(() => services.bookings.getBooking(bookingId), [bookingId]);
   const spacesState = useAsync(() => services.venue.getSpaces());
   const now = useNow(1000);
 
   const [phase, setPhase] = useState<Phase>({ kind: 'form' });
-  const [phone, setPhone] = useState(session ? formatPhoneLocal(session.phone) : '');
-  const [network, setNetwork] = useState<MobileMoneyNetwork | null>(
-    session ? suggestNetwork(session.phone) : null,
-  );
-  const [networkChosen, setNetworkChosen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const phaseRef = useRef(phase);
@@ -107,78 +95,29 @@ export default function PayScreen() {
     [bookingId],
   );
 
-  // Checks the payment every few seconds until it succeeds, fails or the hold runs out.
-  useEffect(() => {
-    if (phase.kind !== 'waiting') {
+  usePaymentResult(phase.kind === 'waiting' ? phase.paymentId : null, async (payment) => {
+    if (payment.status === 'failed') {
+      await services.bookings.releaseHold(bookingId);
+      setPhase({ kind: 'failed', message: 'The payment was declined or cancelled on your phone.' });
       return;
     }
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-    const poll = async () => {
-      try {
-        const payment = await services.payments.getPayment(phase.paymentId);
-        if (cancelled) {
-          return;
-        }
-        if (payment.status === 'success') {
-          const updated = await services.bookings.getBooking(bookingId);
-          if (cancelled) {
-            return;
-          }
-          if (updated.status === 'confirmed') {
-            // The pre-order now belongs to the paid reservation.
-            if (updated.kind === 'table' && updated.preOrder.length > 0) {
-              clearCart();
-            }
-            goToReceipt();
-          } else {
-            setPhase({
-              kind: 'failed',
-              message: `Your time was taken while the payment was processing, so ${formatGhs(payment.amount)} is being refunded to ${formatPhoneLocal(payment.phone)}.`,
-            });
-          }
-          return;
-        }
-        if (payment.status === 'failed') {
-          await services.bookings.releaseHold(bookingId);
-          if (!cancelled) {
-            setPhase({ kind: 'failed', message: 'The payment was declined or cancelled on your phone.' });
-          }
-          return;
-        }
-      } catch {
-        // A dropped connection is retried on the next check.
+    const updated = await services.bookings.getBooking(bookingId);
+    if (updated.status === 'confirmed') {
+      // The pre-order now belongs to the paid reservation.
+      if (updated.kind === 'table' && updated.preOrder.length > 0) {
+        clearCart();
       }
-      if (!cancelled) {
-        timer = setTimeout(poll, POLL_MS);
-      }
-    };
-    timer = setTimeout(poll, POLL_MS);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [phase, bookingId, goToReceipt, clearCart]);
-
-  const changePhone = (text: string) => {
-    setPhone(text);
-    const normalized = normalizeGhanaPhone(text);
-    if (normalized && !networkChosen) {
-      setNetwork(suggestNetwork(normalized));
+      goToReceipt();
+    } else {
+      setPhase({
+        kind: 'failed',
+        message: `Your time was taken while the payment was processing, so ${formatGhs(payment.amount)} is being refunded to ${formatPhoneLocal(payment.phone)}.`,
+      });
     }
-  };
+  });
 
-  const pay = async (current: Booking) => {
+  const pay = async (current: Booking, phone: string, network: MobileMoneyNetwork) => {
     setError(null);
-    const normalized = normalizeGhanaPhone(phone);
-    if (!normalized) {
-      setError('Enter the mobile money number, like 024 123 4567.');
-      return;
-    }
-    if (!network) {
-      setError('Choose your mobile money network.');
-      return;
-    }
     setBusy(true);
     try {
       const payment = await services.payments.startPayment({
@@ -186,11 +125,12 @@ export default function PayScreen() {
         bookingReference: current.reference,
         purpose: current.kind === 'space' ? 'space_booking' : 'table_deposit',
         amount: current.amountDue,
-        phone: normalized,
+        phone,
         network,
-        description: current.kind === 'space' ? `${eventTypeLabel(current.eventType)} booking` : 'Table reservation deposit',
+        description:
+          current.kind === 'space' ? `${eventTypeLabel(current.eventType)} booking` : 'Table reservation deposit',
       });
-      setPhase({ kind: 'waiting', paymentId: payment.id });
+      setPhase({ kind: 'waiting', paymentId: payment.id, phone });
     } catch (caught) {
       setError(errorMessage(caught, 'We could not start the payment. Please try again.'));
     } finally {
@@ -278,100 +218,37 @@ export default function PayScreen() {
                 </Card>
 
                 {phase.kind === 'form' ? (
-                  <>
-                    <View>
-                      <SectionHeader title="Your mobile money network" />
-                      <View style={styles.list}>
-                        {mobileMoneyNetworks.map((option) => (
-                          <ChoiceCard
-                            key={option.id}
-                            leading={
-                              <View style={styles.networkBadge}>
-                                <Text style={styles.networkLetter}>{option.name.charAt(0)}</Text>
-                              </View>
-                            }
-                            onPress={() => {
-                              setNetwork(option.id);
-                              setNetworkChosen(true);
-                            }}
-                            selected={network === option.id}
-                            title={`${option.name} Mobile Money`}
-                          />
-                        ))}
-                      </View>
-                    </View>
-                    <Input
-                      autoComplete="tel"
-                      keyboardType="phone-pad"
-                      label="Mobile money number"
-                      onChangeText={changePhone}
-                      placeholder="024 123 4567"
-                      textContentType="telephoneNumber"
-                      value={phone}
-                    />
-                    {services.payments.testHint ? (
-                      <InfoBanner body={services.payments.testHint} icon="construct-outline" title="Test mode" />
-                    ) : null}
-                    {error ? <Text style={styles.error}>{error}</Text> : null}
-                    <Button
-                      label={`Pay ${formatGhs(current.amountDue)}`}
-                      leftIcon="lock-closed-outline"
-                      loading={busy}
-                      onPress={() => pay(current)}
-                      variant="gold"
-                    />
-                  </>
+                  <MobileMoneyForm
+                    amount={current.amountDue}
+                    busy={busy}
+                    error={error}
+                    onPay={(phone, network) => pay(current, phone, network)}
+                  />
                 ) : null}
 
                 {phase.kind === 'waiting' ? (
-                  <Card style={styles.waiting}>
-                    <View style={styles.waitingHeader}>
-                      <ActivityIndicator color={colors.primary} size="large" />
-                      <Text style={styles.waitingTitle}>Approve the payment on your phone</Text>
-                    </View>
-                    <StepList
-                      steps={[
-                        { title: 'Check your phone', body: `A payment prompt has been sent to ${phone}.` },
-                        {
-                          title: 'Enter your mobile money PIN',
-                          body: `Approve ${formatGhs(current.amountDue)} to ${contact.venueName}.`,
-                        },
-                        {
-                          title: 'Wait here',
-                          body: 'Your booking is confirmed as soon as the payment goes through.',
-                        },
-                      ]}
-                    />
-                    <Text style={styles.waitingNote}>
-                      Still waiting? Make sure your phone has signal. The time stays held until the timer runs out.
-                    </Text>
-                  </Card>
+                  <PaymentWaiting
+                    amount={current.amountDue}
+                    note="Still waiting? Make sure your phone has signal. The time stays held until the timer runs out."
+                    outcome="Your booking is confirmed as soon as the payment goes through."
+                    phone={phase.phone}
+                  />
                 ) : null}
 
                 {phase.kind === 'failed' || phase.kind === 'expired' ? (
-                  <Card style={styles.problem}>
-                    <Ionicons
-                      color={colors.error}
-                      name={phase.kind === 'failed' ? 'close-circle' : 'time-outline'}
-                      size={48}
-                    />
-                    <Text style={styles.problemTitle}>
-                      {phase.kind === 'failed' ? 'Payment not completed' : 'Your time hold ran out'}
-                    </Text>
-                    <Text style={styles.problemBody}>
-                      {phase.kind === 'failed'
+                  <PaymentProblem
+                    error={error}
+                    icon={phase.kind === 'failed' ? 'close-circle' : 'time-outline'}
+                    message={
+                      phase.kind === 'failed'
                         ? phase.message
-                        : 'The payment was not finished in time, so the time was released. You can try again if it is still free.'}
-                    </Text>
-                    {error ? <Text style={styles.error}>{error}</Text> : null}
-                    <Button label="Try again" loading={busy} onPress={tryAgain} style={styles.problemButton} />
-                    <Button
-                      label="Choose another time"
-                      onPress={() => router.back()}
-                      style={styles.problemButton}
-                      variant="secondary"
-                    />
-                  </Card>
+                        : 'The payment was not finished in time, so the time was released. You can try again if it is still free.'
+                    }
+                    title={phase.kind === 'failed' ? 'Payment not completed' : 'Your time hold ran out'}
+                  >
+                    <Button label="Try again" loading={busy} onPress={tryAgain} />
+                    <Button label="Choose another time" onPress={() => router.back()} variant="secondary" />
+                  </PaymentProblem>
                 ) : null}
               </View>
             );
@@ -451,60 +328,5 @@ const styles = StyleSheet.create({
   totalAmount: {
     ...typography.headline,
     color: colors.primary,
-  },
-  list: {
-    gap: spacing.sm,
-  },
-  networkBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: radii.md,
-    backgroundColor: colors.surfaceHigh,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  networkLetter: {
-    ...typography.title,
-    color: colors.primary,
-  },
-  error: {
-    ...typography.bodyMd,
-    color: colors.error,
-  },
-  waiting: {
-    gap: spacing.md,
-  },
-  waitingHeader: {
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  waitingTitle: {
-    ...typography.title,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  waitingNote: {
-    ...typography.caption,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-  problem: {
-    alignItems: 'center',
-    gap: spacing.sm,
-    padding: spacing.lg,
-  },
-  problemTitle: {
-    ...typography.title,
-    color: colors.text,
-    textAlign: 'center',
-  },
-  problemButton: {
-    alignSelf: 'stretch',
-  },
-  problemBody: {
-    ...typography.bodyMd,
-    color: colors.textSubtle,
-    textAlign: 'center',
-    marginBottom: spacing.sm,
   },
 });

@@ -11,6 +11,19 @@ export function spaceRefundRate(daysBeforeEvent: number, settings: PricingSettin
   return tier ? tier.refundRate : 0;
 }
 
+function spaceCancellationRate(
+  booking: SpaceBooking,
+  now: Date,
+  cancelledBy: CancelledBy,
+  settings: PricingSettings,
+): number {
+  if (cancelledBy === 'joteku') {
+    return 1;
+  }
+  const eventStart = toDateTime(booking.date, booking.startTime);
+  return spaceRefundRate(wholeDaysBetween(now, eventStart), settings);
+}
+
 export function spaceRefundAmount(
   booking: SpaceBooking,
   now: Date,
@@ -20,12 +33,22 @@ export function spaceRefundAmount(
   if (booking.status !== 'confirmed' || booking.amountPaid <= 0) {
     return 0;
   }
-  if (cancelledBy === 'joteku') {
-    return booking.amountPaid;
+  return roundMoney(booking.amountPaid * spaceCancellationRate(booking, now, cancelledBy, settings));
+}
+
+// The brief sets no separate rule for catering paid with Pay Balance, so it is
+// refunded at the same rate as the booking itself.
+export function cateringRefundAmount(
+  booking: SpaceBooking,
+  now: Date,
+  cancelledBy: CancelledBy,
+  settings: PricingSettings,
+): number {
+  const catering = booking.catering;
+  if (booking.status !== 'confirmed' || catering?.status !== 'paid' || !catering.quoteAmount) {
+    return 0;
   }
-  const eventStart = toDateTime(booking.date, booking.startTime);
-  const rate = spaceRefundRate(wholeDaysBetween(now, eventStart), settings);
-  return roundMoney(booking.amountPaid * rate);
+  return roundMoney(catering.quoteAmount * spaceCancellationRate(booking, now, cancelledBy, settings));
 }
 
 export function tableRefundAmount(

@@ -101,6 +101,18 @@ export default function ProfileScreen() {
               tone="primary"
             />
             <ActionRow
+              icon="receipt-outline"
+              onPress={() => router.push('/transactions')}
+              subtitle="Payments and refunds"
+              title="Transactions"
+            />
+            <ActionRow
+              icon="notifications-outline"
+              onPress={() => router.push('/notifications')}
+              subtitle="Booking updates and reminders"
+              title="Notifications"
+            />
+            <ActionRow
               icon="bag-handle-outline"
               onPress={() => router.push('/cart')}
               subtitle={

@@ -79,6 +79,8 @@ export default function TabLayout() {
         name="bookings"
         options={{
           title: 'Bookings',
+          headerShown: true,
+          header: () => <BrandHeader />,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               color={color as string}

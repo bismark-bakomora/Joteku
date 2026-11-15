@@ -4,7 +4,14 @@ import { pricingSettings } from '@/data/pricing';
 import { spaces } from '@/data/spaces';
 import { contact } from '@/data/contact';
 import { bookingStart, findBusySlots, hasConflict } from '@/lib/availability';
-import { addMinutes, isValidDateKey, isValidTime, toDateTime } from '@/lib/dates';
+import {
+  addMinutes,
+  isValidDateKey,
+  isValidTime,
+  minutesToTime,
+  timeToMinutes,
+  toDateTime,
+} from '@/lib/dates';
 import { delay } from '@/lib/async';
 import { AppError } from '@/lib/errors';
 import { isWithinOpeningHours } from '@/lib/hours';
@@ -13,15 +20,22 @@ import { normalizeGhanaPhone } from '@/lib/phone';
 import {
   estimateSpaceBooking,
   preOrderTotal,
+  roundMoney,
   tablePayment,
   validateSpaceTimes,
 } from '@/lib/pricing';
-import { CancelledBy, spaceRefundAmount, tableRefundAmount } from '@/lib/refunds';
+import {
+  CancelledBy,
+  cateringRefundAmount,
+  spaceRefundAmount,
+  tableRefundAmount,
+} from '@/lib/refunds';
 import { Booking, BusySlot, SpaceBooking, TableReservation } from '@/types/booking';
 import { PreOrderLine } from '@/types/menu';
 import { SpaceId } from '@/types/space';
 import {
   BookingService,
+  CancellationQuote,
   CancellationResult,
   SpaceBookingDraft,
   TableReservationDraft,
@@ -51,9 +65,34 @@ function takenReferences(db: Database): Set<string> {
   return new Set(db.bookings.map((booking) => booking.reference));
 }
 
+function isCancellable(booking: Booking): boolean {
+  return booking.status === 'pending_payment' || booking.status === 'confirmed';
+}
+
+function refundBreakdown(
+  booking: Booking,
+  now: Date,
+  cancelledBy: CancelledBy,
+): { venue: number; catering: number } {
+  if (booking.kind === 'table') {
+    return { venue: tableRefundAmount(booking, now, cancelledBy, pricingSettings), catering: 0 };
+  }
+  return {
+    venue: spaceRefundAmount(booking, now, cancelledBy, pricingSettings),
+    catering: cateringRefundAmount(booking, now, cancelledBy, pricingSettings),
+  };
+}
+
 export class MockBookingService implements BookingService {
-  getBusySlots(spaceId: SpaceId, fromDate: string, toDate: string): Promise<BusySlot[]> {
-    return readDatabase((db, now) => findBusySlots(db.bookings, spaceId, fromDate, toDate, now));
+  getBusySlots(
+    spaceId: SpaceId,
+    fromDate: string,
+    toDate: string,
+    ignoreBookingId?: string,
+  ): Promise<BusySlot[]> {
+    return readDatabase((db, now) =>
+      findBusySlots(db.bookings, spaceId, fromDate, toDate, now, ignoreBookingId),
+    );
   }
 
   async createSpaceBooking(draft: SpaceBookingDraft): Promise<Booking> {
@@ -202,6 +241,17 @@ export class MockBookingService implements BookingService {
     });
   }
 
+  getCancellationQuote(bookingId: string): Promise<CancellationQuote> {
+    return readDatabase((db, now) => {
+      const booking = findBooking(db, bookingId);
+      const refund = refundBreakdown(booking, now, 'customer');
+      return {
+        cancellable: isCancellable(booking),
+        refundAmount: roundMoney(refund.venue + refund.catering),
+      };
+    });
+  }
+
   async cancelBooking(
     bookingId: string,
     cancelledBy: CancelledBy = 'customer',
@@ -209,35 +259,86 @@ export class MockBookingService implements BookingService {
     await delay(MOCK_LATENCY_MS);
     return writeDatabase((db, now) => {
       const booking = findBooking(db, bookingId);
-      if (booking.status !== 'pending_payment' && booking.status !== 'confirmed') {
+      if (!isCancellable(booking)) {
         throw new AppError('invalid_state', 'This booking cannot be cancelled.');
       }
-      const refundAmount =
-        booking.kind === 'space'
-          ? spaceRefundAmount(booking, now, cancelledBy, pricingSettings)
-          : tableRefundAmount(booking, now, cancelledBy, pricingSettings);
-
-      const payment = db.payments.find((candidate) => candidate.id === booking.paymentId);
-      if (refundAmount > 0 && payment) {
-        recordRefund(
-          db,
-          {
-            bookingId: booking.id,
-            bookingReference: booking.reference,
-            amount: refundAmount,
-            phone: payment.phone,
-            network: payment.network,
-            description: `Refund for ${booking.reference}`,
-          },
-          now,
-        );
+      const refund = refundBreakdown(booking, now, cancelledBy);
+      const cateringPaymentId = booking.kind === 'space' ? booking.catering?.paymentId : undefined;
+      const refunds = [
+        { amount: refund.venue, paymentId: booking.paymentId, description: `Refund for ${booking.reference}` },
+        {
+          amount: refund.catering,
+          paymentId: cateringPaymentId,
+          description: `Catering refund for ${booking.reference}`,
+        },
+      ];
+      for (const { amount, paymentId, description } of refunds) {
+        const payment = db.payments.find((candidate) => candidate.id === paymentId);
+        if (amount > 0 && payment) {
+          recordRefund(
+            db,
+            {
+              bookingId: booking.id,
+              bookingReference: booking.reference,
+              amount,
+              phone: payment.phone,
+              network: payment.network,
+              description,
+            },
+            now,
+          );
+        }
       }
 
+      const refundAmount = roundMoney(refund.venue + refund.catering);
       booking.status = 'cancelled';
       booking.cancelledAt = now.toISOString();
       booking.refundedAmount = refundAmount;
       booking.holdExpiresAt = undefined;
       return { booking, refundAmount };
+    });
+  }
+
+  // The policy allows one date change per event booking, into a free slot of the
+  // same space and the same length. It does not change the price.
+  async changeSpaceDate(bookingId: string, date: string, startTime: string): Promise<Booking> {
+    await delay(MOCK_LATENCY_MS);
+    return writeDatabase((db, now) => {
+      const booking = findBooking(db, bookingId);
+      if (booking.kind !== 'space' || booking.status !== 'confirmed') {
+        throw new AppError('invalid_state', 'Only a confirmed event booking can change its date.');
+      }
+      if (booking.dateChangeUsed) {
+        throw new AppError('invalid_state', 'This booking has already used its one date change.');
+      }
+      requireFutureSlot(date, startTime, now);
+      const space = spaces.find((candidate) => candidate.id === booking.spaceId);
+      if (!space) {
+        throw new AppError('not_found', 'We could not find the space for this booking.');
+      }
+      const length = timeToMinutes(booking.endTime) - timeToMinutes(booking.startTime);
+      const endTime = minutesToTime(timeToMinutes(startTime) + length);
+      const timeError = validateSpaceTimes(space, startTime, endTime);
+      if (timeError) {
+        throw new AppError('invalid_booking', timeError);
+      }
+      if (date === booking.date && startTime === booking.startTime) {
+        throw new AppError('invalid_booking', 'Choose a different date or time.');
+      }
+      if (hasConflict(db.bookings, space.id, date, startTime, endTime, now, booking.id)) {
+        throw new AppError(
+          'slot_unavailable',
+          'Sorry, that time is no longer available. Please choose another time.',
+        );
+      }
+      booking.previousDate = booking.date;
+      booking.previousStartTime = booking.startTime;
+      booking.date = date;
+      booking.startTime = startTime;
+      booking.endTime = endTime;
+      booking.dateChangeUsed = true;
+      booking.dateChangedAt = now.toISOString();
+      return booking;
     });
   }
 

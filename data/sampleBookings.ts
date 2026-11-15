@@ -45,6 +45,7 @@ type SpaceSample = {
   bookedDaysAgo: number;
   network: MobileMoneyNetwork;
   catering?: CateringRequest;
+  cateringQuotedDaysAgo?: number;
   cancelledDaysAgo?: number;
 };
 
@@ -79,6 +80,7 @@ const SPACE_SAMPLES: SpaceSample[] = [
       status: 'quoted',
       quoteAmount: 6500,
     },
+    cateringQuotedDaysAgo: 2,
   },
   {
     reference: 'JTK-M7K2P4',
@@ -251,7 +253,15 @@ export function buildSampleState(now: Date): SampleState {
       decorationId: sample.decorationId,
       venueHireAmount: estimate.venueHire,
       decorationAmount: estimate.decoration,
-      catering: sample.catering,
+      catering: sample.catering
+        ? {
+            ...sample.catering,
+            quotedAt:
+              sample.cateringQuotedDaysAgo !== undefined
+                ? stampAt(-sample.cateringQuotedDaysAgo, '11:00')
+                : undefined,
+          }
+        : undefined,
       dateChangeUsed: false,
     };
 

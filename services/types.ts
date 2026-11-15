@@ -8,6 +8,7 @@ import {
 } from '@/types/booking';
 import { OtpPurpose, Session } from '@/types/auth';
 import { Menu, MenuItem } from '@/types/menu';
+import { AppNotification } from '@/types/notification';
 import { Payment, PaymentRequest, RefundRequest, Transaction } from '@/types/payment';
 import { PricingSettings } from '@/types/pricing';
 import { Space, SpaceId } from '@/types/space';
@@ -83,14 +84,31 @@ export type CancellationResult = {
   refundAmount: number;
 };
 
+export type CancellationQuote = {
+  cancellable: boolean;
+  refundAmount: number;
+};
+
 export interface BookingService {
-  getBusySlots(spaceId: SpaceId, fromDate: string, toDate: string): Promise<BusySlot[]>;
+  getBusySlots(
+    spaceId: SpaceId,
+    fromDate: string,
+    toDate: string,
+    ignoreBookingId?: string,
+  ): Promise<BusySlot[]>;
   createSpaceBooking(draft: SpaceBookingDraft): Promise<Booking>;
   createTableReservation(draft: TableReservationDraft): Promise<Booking>;
   markPaid(bookingId: string, paymentId: string): Promise<Booking>;
   releaseHold(bookingId: string): Promise<void>;
   restartHold(bookingId: string): Promise<Booking>;
+  getCancellationQuote(bookingId: string): Promise<CancellationQuote>;
   cancelBooking(bookingId: string, cancelledBy?: CancelledBy): Promise<CancellationResult>;
+  changeSpaceDate(bookingId: string, date: string, startTime: string): Promise<Booking>;
   getBooking(bookingId: string): Promise<Booking>;
   listForPhone(customerPhone: string): Promise<Booking[]>;
+}
+
+export interface NotificationService {
+  list(customerPhone: string): Promise<AppNotification[]>;
+  markRead(customerPhone: string, ids: string[]): Promise<void>;
 }

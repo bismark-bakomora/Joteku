@@ -29,7 +29,7 @@ function settleSuccessfulPayment(db: Database, payment: Payment, now: Date): voi
     applySuccessfulPayment(db, payment, now);
   } catch {
     const booking = db.bookings.find((candidate) => candidate.id === payment.bookingId);
-    if (booking) {
+    if (booking && payment.purpose !== 'catering_balance') {
       booking.refundedAmount = payment.amount;
     }
     recordRefund(

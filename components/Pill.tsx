@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
+    maxWidth: '100%',
     gap: spacing.xs + 2,
     borderRadius: radii.full,
     paddingHorizontal: spacing.sm + 2,
@@ -53,6 +54,7 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.labelSm,
+    flexShrink: 1,
   },
   uppercase: {
     textTransform: 'uppercase',

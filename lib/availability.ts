@@ -50,10 +50,12 @@ export function findBusySlots(
   fromDate: string,
   toDate: string,
   now: Date,
+  ignoreBookingId?: string,
 ): BusySlot[] {
   return bookings
     .filter(
       (booking): booking is SpaceBooking =>
+        booking.id !== ignoreBookingId &&
         occupiesSpace(booking, now) &&
         spacesConflict(booking.spaceId, spaceId) &&
         booking.date >= fromDate &&
