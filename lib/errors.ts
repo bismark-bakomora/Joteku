@@ -5,7 +5,10 @@ export type AppErrorCode =
   | 'invalid_payment'
   | 'slot_unavailable'
   | 'not_found'
-  | 'invalid_state';
+  | 'invalid_state'
+  | 'invalid_details'
+  | 'account_exists'
+  | 'account_missing';
 
 export class AppError extends Error {
   readonly code: AppErrorCode;
@@ -19,4 +22,12 @@ export class AppError extends Error {
 
 export function isAppError(error: unknown): error is AppError {
   return error instanceof Error && error.name === 'AppError';
+}
+
+export function errorMessage(error: unknown, fallback: string): string {
+  return isAppError(error) ? error.message : fallback;
+}
+
+export function errorCode(error: unknown): AppErrorCode | null {
+  return isAppError(error) ? error.code : null;
 }

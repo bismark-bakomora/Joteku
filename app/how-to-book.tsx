@@ -92,7 +92,7 @@ export default function HowToBookScreen() {
       </AsyncView>
 
       <View style={styles.actions}>
-        <Button label="Book a Space" onPress={() => router.push('/book-space')} rightIcon="arrow-forward" />
+        <Button label="Book a Space" onPress={() => router.push('/book-space/details')} rightIcon="arrow-forward" />
         <Button
           label="Cancellation and refund terms"
           onPress={() => router.push('/terms')}

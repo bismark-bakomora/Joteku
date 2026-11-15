@@ -56,7 +56,7 @@ export default function SpacesScreen() {
               {shown.map((space) => (
                 <SpaceListCard
                   key={space.id}
-                  onBook={() => router.push({ pathname: '/book-space', params: { spaceId: space.id } })}
+                  onBook={() => router.push({ pathname: '/book-space/details', params: { spaceId: space.id } })}
                   space={space}
                 />
               ))}

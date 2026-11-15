@@ -1,5 +1,7 @@
+import { stackScreenOptions } from '@/components/stackScreenOptions';
 import { CartProvider } from '@/context/CartContext';
-import { colors, fontFamilies } from '@/theme';
+import { SessionProvider } from '@/context/SessionContext';
+import { fontFamilies } from '@/theme';
 import {
   Epilogue_600SemiBold,
   Epilogue_700Bold,
@@ -49,21 +51,11 @@ export default function RootLayout() {
   }
 
   return (
-    <CartProvider>
+    <SessionProvider>
+      <CartProvider>
       <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerTintColor: colors.primary,
-          headerTitleStyle: {
-            fontFamily: fontFamilies.headline,
-            color: colors.text,
-          },
-          headerStyle: { backgroundColor: colors.background },
-          contentStyle: { backgroundColor: colors.background },
-        }}
-      >
+      <Stack screenOptions={stackScreenOptions}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="book-space" options={{ title: 'Book a Space' }} />
         <Stack.Screen name="reserve-table" options={{ title: 'Reserve a Table' }} />
         <Stack.Screen name="spaces" options={{ title: 'Venue & Spaces' }} />
         <Stack.Screen name="about" options={{ title: 'About Joteku' }} />
@@ -71,7 +63,16 @@ export default function RootLayout() {
         <Stack.Screen name="contact" options={{ title: 'Location & Contact' }} />
         <Stack.Screen name="terms" options={{ title: 'Terms & Policies' }} />
         <Stack.Screen name="cart" options={{ title: 'Your Pre-order' }} />
+        <Stack.Screen
+          name="welcome"
+          options={{ headerShown: false, presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
+        <Stack.Screen name="sign-in" options={{ title: 'Log in' }} />
+        <Stack.Screen name="book-space" options={{ headerShown: false }} />
+        <Stack.Screen name="pay/[bookingId]" options={{ title: 'Payment' }} />
+        <Stack.Screen name="receipt/[bookingId]" options={{ title: 'Receipt' }} />
       </Stack>
-    </CartProvider>
+      </CartProvider>
+    </SessionProvider>
   );
 }

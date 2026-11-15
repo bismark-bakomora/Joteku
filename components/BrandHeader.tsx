@@ -1,3 +1,4 @@
+import { useSession } from '@/context/SessionContext';
 import { contact } from '@/data/contact';
 import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +9,7 @@ import { Pill } from './Pill';
 
 export function BrandHeader() {
   const insets = useSafeAreaInsets();
+  const { session } = useSession();
   const hours = contact.openingHours.replace(' to ', '–');
 
   return (
@@ -26,7 +28,11 @@ export function BrandHeader() {
           onPress={() => router.push('/profile')}
           style={styles.profile}
         >
-          <Ionicons color={colors.primary} name="person-outline" size={24} />
+          <Ionicons
+            color={colors.primary}
+            name={session ? 'person-circle' : 'person-outline'}
+            size={session ? 30 : 24}
+          />
         </Pressable>
       </View>
     </View>

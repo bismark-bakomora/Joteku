@@ -22,3 +22,12 @@ export function suggestNetwork(normalizedPhone: string): MobileMoneyNetwork | nu
   const networks = Object.keys(NETWORK_PREFIXES) as MobileMoneyNetwork[];
   return networks.find((network) => NETWORK_PREFIXES[network].includes(prefix)) ?? null;
 }
+
+// Shows a normalised number the way people write it in Ghana: 024 123 4567.
+export function formatPhoneLocal(normalizedPhone: string): string {
+  const national = normalizedPhone.replace(/^\+233/, '');
+  if (!/^\d{9}$/.test(national)) {
+    return normalizedPhone;
+  }
+  return `0${national.slice(0, 2)} ${national.slice(2, 5)} ${national.slice(5)}`;
+}

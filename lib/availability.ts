@@ -1,6 +1,6 @@
 import { Booking, BusySlot, SpaceBooking } from '@/types/booking';
-import { SpaceId } from '@/types/space';
-import { addMinutes, timeToMinutes, toDateTime } from './dates';
+import { Space, SpaceId } from '@/types/space';
+import { addMinutes, minutesToTime, timeToMinutes, toDateTime } from './dates';
 
 // A table visit is assumed to last three hours when deciding it has finished.
 const TABLE_VISIT_MINUTES = 180;
@@ -83,4 +83,95 @@ export function hasConflict(
       booking.date === date &&
       intervalsOverlap(startTime, endTime, booking.startTime, booking.endTime),
   );
+}
+
+export type TimeOption = {
+  time: string;
+  available: boolean;
+};
+
+type OpeningHours = {
+  opensAt: string;
+  closesAt: string;
+};
+
+// Bookings start and end on the hour, matching the hourly price.
+const SLOT_STEP_MINUTES = 60;
+
+function busyOnDate(busy: BusySlot[], date: string): BusySlot[] {
+  return busy.filter((slot) => slot.date === date);
+}
+
+// Every hour a booking could start on this date. A start is available when the
+// space's minimum booking from that hour is free and has not already begun.
+export function startTimeOptions(
+  space: Space,
+  date: string,
+  busy: BusySlot[],
+  now: Date,
+  hours: OpeningHours,
+): TimeOption[] {
+  const opens = timeToMinutes(hours.opensAt);
+  const closes = timeToMinutes(hours.closesAt);
+  const minimum = space.minHours * 60;
+  const taken = busyOnDate(busy, date);
+  const options: TimeOption[] = [];
+  for (let minute = opens; minute + minimum <= closes; minute += SLOT_STEP_MINUTES) {
+    const start = minutesToTime(minute);
+    const end = minutesToTime(minute + minimum);
+    const free = !taken.some((slot) => intervalsOverlap(start, end, slot.startTime, slot.endTime));
+    options.push({ time: start, available: free && toDateTime(date, start) > now });
+  }
+  return options;
+}
+
+// Every hour the booking could end, from the minimum length up to closing. Once
+// the booking would run into a taken slot, every later end is unavailable too.
+export function endTimeOptions(
+  space: Space,
+  date: string,
+  startTime: string,
+  busy: BusySlot[],
+  hours: OpeningHours,
+): TimeOption[] {
+  const closes = timeToMinutes(hours.closesAt);
+  const taken = busyOnDate(busy, date);
+  const options: TimeOption[] = [];
+  let blocked = false;
+  for (
+    let minute = timeToMinutes(startTime) + space.minHours * 60;
+    minute <= closes;
+    minute += SLOT_STEP_MINUTES
+  ) {
+    const end = minutesToTime(minute);
+    if (!blocked && taken.some((slot) => intervalsOverlap(startTime, end, slot.startTime, slot.endTime))) {
+      blocked = true;
+    }
+    options.push({ time: end, available: !blocked });
+  }
+  return options;
+}
+
+export function isDateFullyBooked(
+  space: Space,
+  date: string,
+  busy: BusySlot[],
+  now: Date,
+  hours: OpeningHours,
+): boolean {
+  return !startTimeOptions(space, date, busy, now, hours).some((option) => option.available);
+}
+
+// Table reservation times run on the hour from opening until an hour before
+// closing, so the last table still has time to eat.
+const LAST_TABLE_BEFORE_CLOSE_MINUTES = 60;
+
+export function tableTimeOptions(date: string, now: Date, hours: OpeningHours): TimeOption[] {
+  const options: TimeOption[] = [];
+  const last = timeToMinutes(hours.closesAt) - LAST_TABLE_BEFORE_CLOSE_MINUTES;
+  for (let minute = timeToMinutes(hours.opensAt); minute <= last; minute += SLOT_STEP_MINUTES) {
+    const time = minutesToTime(minute);
+    options.push({ time, available: toDateTime(date, time) > now });
+  }
+  return options;
 }

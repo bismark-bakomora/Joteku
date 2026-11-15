@@ -1,9 +1,35 @@
 import { BrandHeader } from '@/components/BrandHeader';
+import { useSession } from '@/context/SessionContext';
+import { hasSeenWelcome } from '@/lib/welcome';
 import { colors, fontFamilies } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
+import { useEffect, useRef } from 'react';
+
+// Shows the welcome screen once, on first launch, to people who are not signed in.
+function useWelcomeOnFirstLaunch() {
+  const { session, ready } = useSession();
+  const checked = useRef(false);
+
+  useEffect(() => {
+    if (!ready || checked.current) {
+      return;
+    }
+    checked.current = true;
+    if (session) {
+      return;
+    }
+    hasSeenWelcome().then((seen) => {
+      if (!seen) {
+        router.push('/welcome');
+      }
+    });
+  }, [ready, session]);
+}
 
 export default function TabLayout() {
+  useWelcomeOnFirstLaunch();
+
   return (
     <Tabs
       screenOptions={{
@@ -66,6 +92,8 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: 'Profile',
+          headerShown: true,
+          header: () => <BrandHeader />,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               color={color as string}

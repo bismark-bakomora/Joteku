@@ -3,7 +3,7 @@ import { menu } from '@/data/menu';
 import { pricingSettings } from '@/data/pricing';
 import { spaces } from '@/data/spaces';
 import { contact } from '@/data/contact';
-import { findBusySlots, hasConflict, bookingStart } from '@/lib/availability';
+import { bookingStart, findBusySlots, hasConflict } from '@/lib/availability';
 import { addMinutes, isValidDateKey, isValidTime, toDateTime } from '@/lib/dates';
 import { delay } from '@/lib/async';
 import { AppError } from '@/lib/errors';
@@ -27,6 +27,7 @@ import {
   TableReservationDraft,
 } from '../types';
 import { Database, readDatabase, recordRefund, writeDatabase } from './database';
+import { applySuccessfulPayment, findBooking, reviveReleasedBooking, startHold } from './holds';
 import { MOCK_LATENCY_MS } from './latency';
 
 function requirePhone(input: string): string {
@@ -46,52 +47,8 @@ function requireFutureSlot(date: string, time: string, now: Date): void {
   }
 }
 
-function findBooking(db: Database, bookingId: string): Booking {
-  const booking = db.bookings.find((candidate) => candidate.id === bookingId);
-  if (!booking) {
-    throw new AppError('not_found', 'We could not find that booking.');
-  }
-  return booking;
-}
-
 function takenReferences(db: Database): Set<string> {
   return new Set(db.bookings.map((booking) => booking.reference));
-}
-
-function startHold(booking: Booking, now: Date): void {
-  booking.status = 'pending_payment';
-  booking.holdExpiresAt = addMinutes(now, pricingSettings.holdMinutes).toISOString();
-  booking.cancelledAt = undefined;
-}
-
-function slotIsFree(db: Database, booking: Booking, now: Date): boolean {
-  return (
-    booking.kind !== 'space' ||
-    !hasConflict(
-      db.bookings,
-      booking.spaceId,
-      booking.date,
-      booking.startTime,
-      booking.endTime,
-      now,
-      booking.id,
-    )
-  );
-}
-
-// A booking that was released before any payment can be revived if its slot is still free.
-function reviveReleasedBooking(db: Database, booking: Booking, now: Date): void {
-  const neverPaid = booking.amountPaid === 0 && booking.refundedAmount === 0;
-  if (booking.status !== 'cancelled' || !neverPaid) {
-    throw new AppError('invalid_state', 'This booking can no longer be paid for.');
-  }
-  if (!slotIsFree(db, booking, now)) {
-    throw new AppError(
-      'slot_unavailable',
-      'That time was taken while your payment was processing. Your payment will be refunded.',
-    );
-  }
-  startHold(booking, now);
 }
 
 export class MockBookingService implements BookingService {
@@ -213,27 +170,13 @@ export class MockBookingService implements BookingService {
 
   markPaid(bookingId: string, paymentId: string): Promise<Booking> {
     return writeDatabase((db, now) => {
-      const booking = findBooking(db, bookingId);
       const payment = db.payments.find(
         (candidate) => candidate.id === paymentId && candidate.bookingId === bookingId,
       );
       if (!payment || payment.status !== 'success') {
         throw new AppError('invalid_state', 'This payment has not been completed.');
       }
-      if (booking.status === 'confirmed' || booking.status === 'completed') {
-        return booking;
-      }
-      if (payment.amount !== booking.amountDue) {
-        throw new AppError('invalid_payment', 'The amount paid does not match this booking.');
-      }
-      if (booking.status === 'cancelled') {
-        reviveReleasedBooking(db, booking, now);
-      }
-      booking.status = 'confirmed';
-      booking.amountPaid = payment.amount;
-      booking.paymentId = payment.id;
-      booking.holdExpiresAt = undefined;
-      return booking;
+      return applySuccessfulPayment(db, payment, now);
     });
   }
 

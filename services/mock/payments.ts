@@ -4,7 +4,8 @@ import { createId } from '@/lib/ids';
 import { normalizeGhanaPhone } from '@/lib/phone';
 import { Payment, PaymentRequest, PaymentStatus, RefundRequest, Transaction } from '@/types/payment';
 import { PaymentService } from '../types';
-import { readDatabase, recordRefund, writeDatabase } from './database';
+import { Database, readDatabase, recordRefund, writeDatabase } from './database';
+import { applySuccessfulPayment } from './holds';
 import { MOCK_LATENCY_MS } from './latency';
 
 const PROCESSING_MS = 3000;
@@ -21,7 +22,35 @@ function outcomeFor(phone: string): PaymentStatus {
   return 'success';
 }
 
+// Confirms the booking straight away. If its time was taken while the payment was
+// pending, the money goes straight back to the same number.
+function settleSuccessfulPayment(db: Database, payment: Payment, now: Date): void {
+  try {
+    applySuccessfulPayment(db, payment, now);
+  } catch {
+    const booking = db.bookings.find((candidate) => candidate.id === payment.bookingId);
+    if (booking) {
+      booking.refundedAmount = payment.amount;
+    }
+    recordRefund(
+      db,
+      {
+        bookingId: payment.bookingId,
+        bookingReference: payment.bookingReference,
+        amount: payment.amount,
+        phone: payment.phone,
+        network: payment.network,
+        description: `Refund for ${payment.bookingReference}: the time was no longer available`,
+      },
+      now,
+    );
+  }
+}
+
 export class MockPaymentService implements PaymentService {
+  readonly testHint =
+    'Numbers ending in 9999 fail and numbers ending in 8888 stay pending. Any other number is approved after a few seconds.';
+
   async startPayment(request: PaymentRequest): Promise<Payment> {
     await delay(MOCK_LATENCY_MS);
     const phone = normalizeGhanaPhone(request.phone);
@@ -68,6 +97,9 @@ export class MockPaymentService implements PaymentService {
             description: payment.description,
             date: now.toISOString(),
           });
+          if (outcome === 'success') {
+            settleSuccessfulPayment(db, payment, now);
+          }
         }
       }
       return payment;

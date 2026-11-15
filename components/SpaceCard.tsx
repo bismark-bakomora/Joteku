@@ -4,7 +4,7 @@ import { Space } from '@/types/space';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from './Button';
 import { Pill } from './Pill';
-import { spaceImages } from './spaceImages';
+import { fillImageStyle, spaceImages } from './spaceImages';
 
 type SpaceCardProps = {
   space: Space;
@@ -21,7 +21,7 @@ export function SpaceCard({ space, onBook }: SpaceCardProps) {
           accessibilityLabel={`${space.name} at Joteku`}
           resizeMode="cover"
           source={spaceImages[space.id]}
-          style={StyleSheet.absoluteFill}
+          style={fillImageStyle}
         />
         <View style={styles.badge}>
           <Pill icon="people-outline" label={space.capacityLabel} tone="light" />
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     height: 144,
+    overflow: 'hidden',
     backgroundColor: colors.surfaceHigh,
   },
   badge: {

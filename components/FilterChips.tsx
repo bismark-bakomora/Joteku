@@ -8,7 +8,7 @@ type ChipOption<K extends string> = {
 
 type FilterChipsProps<K extends string> = {
   options: ChipOption<K>[];
-  selected: K;
+  selected: K | null;
   onSelect: (key: K) => void;
 };
 

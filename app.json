@@ -30,7 +30,14 @@
           "backgroundColor": "#185232"
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-sharing",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Joteku adds your booking to your calendar so you do not forget it."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

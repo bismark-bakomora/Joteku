@@ -9,7 +9,8 @@ export type AsyncState<T> = {
 
 type Snapshot<T> = Omit<AsyncState<T>, 'reload'>;
 
-export function useAsync<T>(load: () => Promise<T>): AsyncState<T> {
+// Loads on mount, and again whenever a value in `deps` changes.
+export function useAsync<T>(load: () => Promise<T>, deps: readonly unknown[] = []): AsyncState<T> {
   const loadRef = useRef(load);
   loadRef.current = load;
   const requestId = useRef(0);
@@ -46,7 +47,8 @@ export function useAsync<T>(load: () => Promise<T>): AsyncState<T> {
     return () => {
       requestId.current += 1;
     };
-  }, [run]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [run, ...deps]);
 
   return { ...snapshot, reload: run };
 }

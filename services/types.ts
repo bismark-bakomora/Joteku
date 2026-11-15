@@ -6,22 +6,34 @@ import {
   DecorationPackage,
   EventType,
 } from '@/types/booking';
-import { Session } from '@/types/auth';
+import { OtpPurpose, Session } from '@/types/auth';
 import { Menu, MenuItem } from '@/types/menu';
 import { Payment, PaymentRequest, RefundRequest, Transaction } from '@/types/payment';
 import { PricingSettings } from '@/types/pricing';
 import { Space, SpaceId } from '@/types/space';
 
-export type SignInOptions = {
-  guest?: boolean;
-  name?: string;
+export type SignUpDetails = {
+  name: string;
+  email?: string;
+};
+
+export type ProfileChanges = {
+  name: string;
   email?: string;
 };
 
 export interface AuthService {
-  requestOtp(phone: string): Promise<void>;
-  verifyOtp(phone: string, code: string, options?: SignInOptions): Promise<Session>;
+  // Set only by the mock, so test builds can show the code that is not sent by text.
+  readonly testCode: string | null;
+  requestOtp(phone: string, purpose: OtpPurpose, details?: SignUpDetails): Promise<void>;
+  verifyOtp(
+    phone: string,
+    code: string,
+    purpose: OtpPurpose,
+    details?: SignUpDetails,
+  ): Promise<Session>;
   getSession(): Promise<Session | null>;
+  updateProfile(changes: ProfileChanges): Promise<Session>;
   signOut(): Promise<void>;
 }
 
@@ -37,6 +49,8 @@ export interface MenuService {
 }
 
 export interface PaymentService {
+  // Set only by the mock: explains which numbers fail or stay pending, for testers.
+  readonly testHint: string | null;
   startPayment(request: PaymentRequest): Promise<Payment>;
   getPayment(paymentId: string): Promise<Payment>;
   refund(request: RefundRequest): Promise<Transaction>;

@@ -47,7 +47,7 @@ export default function HomeScreen() {
   };
 
   const bookSpace = (space: Space) => {
-    router.push({ pathname: '/book-space', params: { spaceId: space.id } });
+    router.push({ pathname: '/book-space/details', params: { spaceId: space.id } });
   };
 
   return (
@@ -119,7 +119,7 @@ export default function HomeScreen() {
               ctaLabel="Choose Date & Space"
               description="Book a hut or the whole venue for weddings, engagements, birthdays and meetings."
               icon="business"
-              onPress={() => router.push('/book-space')}
+              onPress={() => router.push('/book-space/details')}
               title="Book an Event Space"
             />
             <ActionRow
