@@ -17,9 +17,18 @@ export function BrandHeader() {
   return (
     <View style={[styles.wrap, { paddingTop: insets.top }]}>
       <View style={styles.row}>
-        <View style={styles.mark}>
-          <Text style={styles.markLetter}>J</Text>
-        </View>
+        <Pressable
+          accessibilityLabel="Profile"
+          accessibilityRole="button"
+          onPress={() => router.push('/profile')}
+          style={styles.iconButton}
+        >
+          <Ionicons
+            color={colors.primary}
+            name={session ? 'person-circle' : 'person-outline'}
+            size={session ? 30 : 24}
+          />
+        </Pressable>
         <View style={styles.center}>
           <Text style={styles.title}>{contact.venueName}</Text>
           <Pill dotColor={colors.primary} label={`${contact.addressLine1} • ${hours}`} />
@@ -40,19 +49,10 @@ export function BrandHeader() {
               </View>
             ) : null}
           </Pressable>
-        ) : null}
-        <Pressable
-          accessibilityLabel="Profile"
-          accessibilityRole="button"
-          onPress={() => router.push('/profile')}
-          style={styles.profile}
-        >
-          <Ionicons
-            color={colors.primary}
-            name={session ? 'person-circle' : 'person-outline'}
-            size={session ? 30 : 24}
-          />
-        </Pressable>
+        ) : (
+          // Keeps the title centred when there is no bell to show.
+          <View style={styles.iconButton} />
+        )}
       </View>
     </View>
   );
@@ -68,20 +68,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
-  },
-  mark: {
-    width: sizes.tapTarget,
-    height: sizes.tapTarget,
-    borderRadius: radii.full,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  markLetter: {
-    ...typography.title,
-    color: colors.onPrimary,
+    paddingHorizontal: spacing.sm,
+    gap: spacing.xs,
   },
   center: {
     flex: 1,
@@ -116,11 +104,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 14,
     color: colors.onSecondary,
-  },
-  profile: {
-    width: sizes.tapTarget,
-    height: sizes.tapTarget,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

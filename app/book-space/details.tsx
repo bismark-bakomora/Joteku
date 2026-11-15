@@ -23,10 +23,12 @@ import { endTimeOptions, isDateFullyBooked, startTimeOptions } from '@/lib/avail
 import { addMonths, MonthRef, monthOf, monthRange } from '@/lib/calendar';
 import { toDateKey } from '@/lib/dates';
 import { formatDateLong, formatGhs, formatHours } from '@/lib/format';
+import { joinWithAnd } from '@/lib/policies';
 import { estimateSpaceBooking } from '@/lib/pricing';
 import { services } from '@/services';
 import { colors, radii, spacing, typography } from '@/theme';
 import { Space, SpaceId } from '@/types/space';
+import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
@@ -39,6 +41,7 @@ export default function BookingDetailsScreen() {
   const now = useNow();
   const today = toDateKey(now);
   const [month, setMonth] = useState<MonthRef>(() => monthOf(draft.date ?? toDateKey(new Date())));
+  const [attempted, setAttempted] = useState(false);
   const minMonth = monthOf(today);
   const maxMonth = addMonths(minMonth, 12);
   const range = monthRange(month);
@@ -117,13 +120,36 @@ export default function BookingDetailsScreen() {
       : [];
 
   const tooManyGuests = space !== null && space.maxGuests !== null && draft.guestCount > space.maxGuests;
-  const canContinue =
-    draft.eventType !== null &&
-    space !== null &&
-    draft.date !== null &&
-    draft.startTime !== null &&
-    draft.endTime !== null &&
-    !tooManyGuests;
+  const missing: string[] = [];
+  if (!draft.eventType) {
+    missing.push('the type of event (at the top)');
+  }
+  if (!space) {
+    missing.push('a space');
+  }
+  if (!draft.date) {
+    missing.push('a date');
+  }
+  if (!draft.startTime) {
+    missing.push('a start time');
+  } else if (!draft.endTime) {
+    missing.push('an end time');
+  }
+  const canContinue = missing.length === 0 && !tooManyGuests;
+  const estimate =
+    space && draft.startTime && draft.endTime
+      ? estimateSpaceBooking(space, draft.startTime, draft.endTime, null)
+      : null;
+
+  // The button stays tappable so people are told what is missing, rather than
+  // facing a grey button with no reason.
+  const continueToExtras = () => {
+    if (canContinue) {
+      router.push('/book-space/extras');
+    } else {
+      setAttempted(true);
+    }
+  };
 
   return (
     <ScreenContainer contentStyle={styles.content} scroll>
@@ -138,6 +164,9 @@ export default function BookingDetailsScreen() {
           options={eventTypes.map((type) => ({ key: type.id, label: type.label }))}
           selected={draft.eventType}
         />
+        {attempted && !draft.eventType ? (
+          <Text style={styles.error}>Choose the type of event to continue.</Text>
+        ) : null}
       </View>
 
       <View>
@@ -266,23 +295,27 @@ export default function BookingDetailsScreen() {
         value={draft.notes}
       />
 
-      {space && draft.startTime && draft.endTime ? (
-        <View style={styles.liveEstimate}>
-          <Text style={styles.liveEstimateText}>
-            Venue hire: {formatGhs(estimateSpaceBooking(space, draft.startTime, draft.endTime, null).venueHire)}
+      {estimate ? (
+        <View style={styles.estimate}>
+          <Text style={styles.estimateLabel}>
+            Venue hire, {formatHours(estimate.chargeableHours)}
+          </Text>
+          <Text style={styles.estimateAmount}>{formatGhs(estimate.venueHire)}</Text>
+        </View>
+      ) : null}
+
+      {attempted && !canContinue ? (
+        <View accessibilityLiveRegion="polite" style={styles.missing}>
+          <Ionicons color={colors.error} name="alert-circle" size={22} />
+          <Text style={styles.missingText}>
+            {missing.length > 0
+              ? `To continue, choose ${joinWithAnd(missing)}.`
+              : 'Choose a bigger space or fewer guests to continue.'}
           </Text>
         </View>
       ) : null}
 
-      <Button
-        disabled={!canContinue}
-        label="Continue to extras"
-        onPress={() => router.push('/book-space/extras')}
-        rightIcon="arrow-forward"
-      />
-      {!canContinue ? (
-        <Text style={styles.hint}>Choose the event type, space, date, start and end time to continue.</Text>
-      ) : null}
+      <Button label="Continue to extras" onPress={continueToExtras} rightIcon="arrow-forward" />
     </ScreenContainer>
   );
 }
@@ -344,6 +377,19 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.textMuted,
   },
+  missing: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.sm,
+    backgroundColor: colors.cancelledBackground,
+    borderRadius: radii.md,
+    padding: spacing.sm + 4,
+  },
+  missingText: {
+    ...typography.bodyMd,
+    color: colors.text,
+    flex: 1,
+  },
   times: {
     gap: spacing.sm,
   },
@@ -351,14 +397,20 @@ const styles = StyleSheet.create({
     minHeight: 96,
     paddingTop: spacing.sm + 4,
   },
-  liveEstimate: {
-    backgroundColor: colors.primarySoft,
-    borderRadius: radii.md,
-    padding: spacing.sm + 4,
+  estimate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    paddingTop: spacing.sm + 4,
   },
-  liveEstimateText: {
-    ...typography.titleSm,
-    color: colors.onPrimarySoft,
-    textAlign: 'center',
+  estimateLabel: {
+    ...typography.bodyMd,
+    color: colors.textSubtle,
+  },
+  estimateAmount: {
+    ...typography.title,
+    color: colors.primary,
   },
 });
