@@ -26,7 +26,7 @@ export function BrandHeader() {
           <Ionicons
             color={colors.primary}
             name={session ? 'person-circle' : 'person-outline'}
-            size={session ? 30 : 24}
+            size={session ? 36 : 30}
           />
         </Pressable>
         <View style={styles.center}>

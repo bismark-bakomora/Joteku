@@ -35,11 +35,14 @@ Planned for later: a Supabase backend and a separate Next.js admin web page.
 You need [Node.js](https://nodejs.org) and the [Expo Go](https://expo.dev/go) app on your phone (or an Android emulator or iOS simulator).
 
 ```bash
+cd frontend
 npm install
 npm start
 ```
 
 Scan the QR code with Expo Go to open the app on your phone.
+
+Run these from the `frontend` folder.
 
 | Command | What it does |
 | --- | --- |
@@ -52,6 +55,13 @@ Scan the QR code with Expo Go to open the app on your phone.
 | `node scripts/generate-assets.mjs` | Regenerate the placeholder icon and splash images |
 
 ## Project structure
+
+```
+frontend/         The mobile app (Expo)
+PROJECT_BRIEF.md  Scope, screens and business rules
+```
+
+Inside `frontend/`:
 
 ```
 app/          Screens and navigation (Expo Router)
@@ -68,9 +78,9 @@ assets/       Placeholder icons and images
 scripts/      Helper scripts
 ```
 
-All colours, fonts and spacing live in `theme/`. Screens import from `@/theme` and never hardcode colours. The `@/` import alias points to the project root.
+All colours, fonts and spacing live in `theme/`. Screens import from `@/theme` and never hardcode colours. The `@/` import alias points to the `frontend` folder.
 
-Screens get their data through `services/`. Today those are mock versions that store data on the phone, so the app works without a server. Connecting the real backend and payment provider later means changing one file, `services/index.ts`.
+Screens get their data through `services/`. Today those are mock versions that store data on the phone, so the app works without a server. Connecting the real backend and payment provider later means changing one file, `frontend/services/index.ts`.
 
 ## Design
 
