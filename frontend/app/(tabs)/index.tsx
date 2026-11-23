@@ -14,10 +14,8 @@ import { contact } from '@/data/contact';
 import { venue } from '@/data/venue';
 import { useCart } from '@/context/CartContext';
 import { useAsync } from '@/hooks/useAsync';
-import { useNow } from '@/hooks/useNow';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
-import { isOpenNow } from '@/lib/hours';
 import { services } from '@/services';
 import { colors, radii, shadows, spacing, typography } from '@/theme';
 import { MenuItem } from '@/types/menu';
@@ -27,17 +25,13 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const [OPENS_LABEL, CLOSES_LABEL] = contact.openingHours.split(' to ');
-
 export default function HomeScreen() {
-  const now = useNow();
   const { toast, show } = useToast();
   const [barHeight, setBarHeight] = useState(0);
   const clearance = useTabBarClearance();
   const cart = useCart();
   const spaces = useAsync(() => services.venue.getSpaces());
   const popular = useAsync(() => services.menu.getPopularItems());
-  const open = isOpenNow(now, contact);
 
   const openLink = (url: string) => {
     Linking.openURL(url).catch(() => show('We could not open that. Please try again.', 'alert-circle'));
@@ -67,14 +61,6 @@ export default function HomeScreen() {
             tone="green"
           >
             <View style={styles.heroOverlay}>
-              <View style={styles.heroBadges}>
-                <Pill icon="ribbon" label={venue.heritageBadge} tone="gold" uppercase />
-                <Pill
-                  dotColor={open ? colors.primary : colors.error}
-                  label={open ? `Open now • Until ${CLOSES_LABEL}` : `Closed • Opens ${OPENS_LABEL}`}
-                  tone="light"
-                />
-              </View>
               <View>
                 <Text style={styles.heroTitle}>{venue.heroTitle}</Text>
                 <Text style={styles.heroSubtitle}>{venue.heroSubtitle}</Text>
@@ -246,14 +232,8 @@ const styles = StyleSheet.create({
   },
   heroOverlay: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     padding: spacing.md,
-  },
-  heroBadges: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: spacing.sm,
   },
   heroTitle: {
     ...typography.headline,

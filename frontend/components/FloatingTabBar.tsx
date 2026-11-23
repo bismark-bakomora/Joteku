@@ -70,9 +70,9 @@ export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: B
                 onPress={press}
                 style={styles.tab}
               >
-                <Ionicons color={color} name={focused ? icon.filled : icon.outline} size={24} />
+                <Ionicons color={color} name={focused ? icon.filled : icon.outline} size={22} />
                 <Text
-                  maxFontSizeMultiplier={1.2}
+                  maxFontSizeMultiplier={1.1}
                   numberOfLines={1}
                   style={[styles.label, { color }, focused ? styles.labelActive : undefined]}
                 >
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     left: 0,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.xl,
     pointerEvents: 'box-none',
   },
   fade: {
@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: fontFamilies.bodySemiBold,
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 11,
+    lineHeight: 14,
   },
   labelActive: {
     fontFamily: fontFamilies.bodyBold,

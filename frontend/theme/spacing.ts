@@ -14,8 +14,8 @@ export const sizes = {
   // Content stops growing past this width so tablets get a centred column, not a stretched phone layout.
   contentMaxWidth: 640,
   // The floating tab bar, and the widest it grows on large screens.
-  tabBar: 64,
-  tabBarMaxWidth: 320,
+  tabBar: 58,
+  tabBarMaxWidth: 296,
 } as const;
 
 export const radii = {

@@ -105,19 +105,23 @@ export default function MenuScreen() {
                 ) : null}
               </View>
 
-              <View style={styles.controls}>
-                <SegmentedControl onSelect={changeKind} segments={KIND_SEGMENTS} selected={kind} />
-                <SearchField
-                  accessibilityLabel="Search the menu"
-                  onChangeText={setQuery}
-                  placeholder="Search jollof, banku, club beer..."
-                  value={query}
-                />
-                {searching ? (
-                  <Text style={styles.results}>Results for “{query.trim()}”</Text>
-                ) : (
-                  <FilterChips onSelect={setCategoryId} options={chips} selected={categoryId} />
-                )}
+              {/* Sticky headers lose their own style on phones (React Native moves
+                  it to a wrapper), so the spaced-out controls sit one level in. */}
+              <View style={styles.sticky}>
+                <View style={styles.controls}>
+                  <SegmentedControl onSelect={changeKind} segments={KIND_SEGMENTS} selected={kind} />
+                  <SearchField
+                    accessibilityLabel="Search the menu"
+                    onChangeText={setQuery}
+                    placeholder="Search jollof, banku, club beer..."
+                    value={query}
+                  />
+                  {searching ? (
+                    <Text style={styles.results}>Results for “{query.trim()}”</Text>
+                  ) : (
+                    <FilterChips onSelect={setCategoryId} options={chips} selected={categoryId} />
+                  )}
+                </View>
               </View>
 
               <View style={styles.sections}>
@@ -184,9 +188,9 @@ const styles = StyleSheet.create({
   noticeSlot: {
     ...column,
     paddingHorizontal: spacing.screen,
-    paddingTop: spacing.sm,
   },
   notice: {
+    marginTop: spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
@@ -221,12 +225,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  sticky: {
+    backgroundColor: colors.background,
+  },
   controls: {
     ...column,
-    backgroundColor: colors.background,
     paddingHorizontal: spacing.screen,
-    paddingVertical: spacing.sm,
-    gap: spacing.sm,
+    paddingTop: spacing.sm + 4,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm + 4,
   },
   results: {
     ...typography.labelMd,

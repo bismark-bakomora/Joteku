@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    paddingLeft: spacing.md,
+    borderRadius: radii.full,
+    paddingLeft: spacing.md + 4,
     ...shadows.card,
   },
   input: {
@@ -60,5 +60,7 @@ const styles = StyleSheet.create({
     height: sizes.tapTarget,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: radii.full,
+    marginRight: spacing.xs,
   },
 });
