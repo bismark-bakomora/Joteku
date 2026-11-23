@@ -11,6 +11,11 @@ export const spacing = {
 
 export const sizes = {
   tapTarget: 48,
+  // Visible height of chips and segmented options. Their touch area is
+  // stretched back to tapTarget with pillHitSlop.
+  pill: 36,
+  // The search field, and the segmented control that sits above it on Menu.
+  field: 52,
   // Content stops growing past this width so tablets get a centred column, not a stretched phone layout.
   contentMaxWidth: 640,
   // The floating tab bar, and the widest it grows on large screens.
@@ -49,6 +54,14 @@ export const shadows = {
     shadowRadius: 16,
     elevation: 10,
   },
+} as const;
+
+// Tops up a `sizes.pill` control to the 48px tap target.
+export const pillHitSlop = {
+  top: (48 - 36) / 2,
+  bottom: (48 - 36) / 2,
+  left: 0,
+  right: 0,
 } as const;
 
 export const hitSlop = {

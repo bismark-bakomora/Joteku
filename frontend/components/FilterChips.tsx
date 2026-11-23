@@ -1,4 +1,4 @@
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { colors, pillHitSlop, radii, shadows, sizes, spacing, typography } from '@/theme';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
 type ChipOption<K extends string> = {
@@ -26,6 +26,7 @@ export function FilterChips<K extends string>({ options, selected, onSelect }: F
           <Pressable
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
+            hitSlop={pillHitSlop}
             key={option.key}
             onPress={() => onSelect(option.key)}
             style={[styles.chip, active ? styles.chipActive : undefined]}
@@ -47,11 +48,11 @@ const styles = StyleSheet.create({
   },
   row: {
     paddingHorizontal: spacing.screen,
-    paddingVertical: spacing.xs,
+    paddingVertical: pillHitSlop.top,
     gap: spacing.sm,
   },
   chip: {
-    minHeight: sizes.tapTarget,
+    minHeight: sizes.pill,
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
     borderRadius: radii.full,

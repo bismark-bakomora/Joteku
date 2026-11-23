@@ -40,7 +40,7 @@ export function SearchField({ value, onChangeText, placeholder, accessibilityLab
 
 const styles = StyleSheet.create({
   field: {
-    minHeight: sizes.tapTarget + 4,
+    minHeight: sizes.field,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,

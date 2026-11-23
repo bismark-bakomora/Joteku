@@ -1,4 +1,4 @@
-import { colors, fontFamilies, radii, sizes, spacing, typography } from '@/theme';
+import { colors, fontFamilies, pillHitSlop, radii, sizes, spacing, typography } from '@/theme';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SlidingPill } from './SlidingPill';
 
@@ -32,6 +32,7 @@ export function SegmentedControl<K extends string>({
             <Pressable
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
+              hitSlop={pillHitSlop}
               key={segment.key}
               onPress={() => onSelect(segment.key)}
               style={styles.segment}
@@ -58,14 +59,15 @@ const styles = StyleSheet.create({
   },
   segment: {
     flex: 1,
-    minHeight: sizes.tapTarget,
+    // With the track's padding, the control is as tall as the search field.
+    minHeight: sizes.field - spacing.xs * 2,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.sm,
     borderRadius: radii.full,
   },
   label: {
-    ...typography.titleMd,
+    ...typography.label,
     color: colors.textSubtle,
   },
   labelActive: {
