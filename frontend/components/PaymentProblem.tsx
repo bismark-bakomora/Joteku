@@ -1,3 +1,4 @@
+import { useAnnounce } from '@/hooks/useAnnounce';
 import { colors, spacing, typography } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
@@ -13,6 +14,8 @@ type PaymentProblemProps = {
 };
 
 export function PaymentProblem({ icon, title, message, error, children }: PaymentProblemProps) {
+  useAnnounce(`${title}. ${message}`);
+
   return (
     <Card style={styles.card}>
       <Ionicons color={colors.error} name={icon} size={48} />

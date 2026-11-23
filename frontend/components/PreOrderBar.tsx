@@ -3,7 +3,7 @@ import { useAsync } from '@/hooks/useAsync';
 import { formatGhs } from '@/lib/format';
 import { tablePayment } from '@/lib/pricing';
 import { services } from '@/services';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -62,8 +62,11 @@ const styles = StyleSheet.create({
     left: spacing.md,
     right: spacing.md,
     bottom: spacing.sm,
+    alignItems: 'center',
   },
   bar: {
+    width: '100%',
+    maxWidth: sizes.contentMaxWidth,
     backgroundColor: colors.inverseSurface,
     borderRadius: radii.xl,
     padding: spacing.md,

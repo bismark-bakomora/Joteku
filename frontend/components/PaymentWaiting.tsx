@@ -1,6 +1,7 @@
 import { contact } from '@/data/contact';
 import { formatGhs } from '@/lib/format';
 import { formatPhoneLocal } from '@/lib/phone';
+import { useAnnounce } from '@/hooks/useAnnounce';
 import { colors, spacing, typography } from '@/theme';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Card } from './Card';
@@ -14,6 +15,8 @@ type PaymentWaitingProps = {
 };
 
 export function PaymentWaiting({ phone, amount, outcome, note }: PaymentWaitingProps) {
+  useAnnounce(`Approve the payment on your phone. A prompt has been sent to ${formatPhoneLocal(phone)}.`);
+
   return (
     <Card style={styles.card}>
       <View style={styles.header}>

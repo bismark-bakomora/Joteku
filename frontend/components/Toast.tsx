@@ -1,3 +1,4 @@
+import { useAnnounce } from '@/hooks/useAnnounce';
 import { ToastMessage } from '@/hooks/useToast';
 import { colors, radii, shadows, spacing, typography } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,13 +10,15 @@ type ToastProps = {
 };
 
 export function Toast({ toast, bottomOffset = spacing.md }: ToastProps) {
+  useAnnounce(toast?.text);
+
   if (!toast) {
     return null;
   }
 
   return (
     <View pointerEvents="none" style={[styles.wrap, { bottom: bottomOffset }]}>
-      <View accessibilityLiveRegion="polite" style={styles.toast}>
+      <View style={styles.toast}>
         <Ionicons color={colors.primarySoft} name={toast.icon} size={20} />
         <Text style={styles.text}>{toast.text}</Text>
       </View>

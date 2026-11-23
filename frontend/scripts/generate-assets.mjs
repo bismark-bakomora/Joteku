@@ -56,30 +56,89 @@ function createPng(width, height, paint) {
   ]);
 }
 
-function inCircle(x, y, cx, cy, radius) {
-  const dx = x - cx;
-  const dy = y - cy;
-  return dx * dx + dy * dy <= radius * radius;
+const GREEN = [24, 82, 50];
+const GOLD = [204, 167, 48];
+const THATCH = [79, 61, 0];
+const THATCH_ENDS = [
+  [58, 60],
+  [102, 60],
+  [36, 62],
+  [124, 62],
+  [80, 58],
+];
+const SAMPLES = 4;
+
+function mix(from, to, amount) {
+  return from.map((channel, index) => channel + (to[index] - channel) * amount);
 }
 
-function iconPaint(x, y, width, height) {
-  const cx = width / 2;
-  const cy = height / 2;
-  if (inCircle(x, y, cx, cy, width * 0.18)) {
-    return [255, 255, 255, 255];
+function distanceToSegment(px, py, ax, ay, bx, by) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+// The Joteku roof mark, in the same 160x80 design space as components/RoofMark.tsx.
+// Returns the colour at a point, or null outside the mark.
+function roofColour(u, v) {
+  if ((u - 80) ** 2 + (v - 7) ** 2 <= 25) {
+    return GOLD;
   }
-  return [24, 82, 50, 255];
-}
-
-function splashPaint(x, y, width, height) {
-  if (inCircle(x, y, width / 2, height / 2, width * 0.16)) {
-    return [250, 247, 242, 255];
+  const t = (u - 6) / 148;
+  if (t < 0 || t > 1) {
+    return null;
   }
-  return [24, 82, 50, 0];
+  const eaves = 64 - 20 * t * (1 - t);
+  const slope = 8 + Math.abs(80 - u) * (56 / 74);
+  if (v < slope || v > eaves) {
+    return null;
+  }
+  if (eaves - v < 1.25) {
+    return mix(GOLD, THATCH, 0.5);
+  }
+  if (THATCH_ENDS.some(([ex, ey]) => distanceToSegment(u, v, 80, 8, ex, ey) < 1)) {
+    return mix(GOLD, THATCH, 0.4);
+  }
+  return GOLD;
 }
 
-writeFileSync(join(assetsDir, 'icon.png'), createPng(1024, 1024, iconPaint));
-writeFileSync(join(assetsDir, 'adaptive-icon.png'), createPng(1024, 1024, iconPaint));
-writeFileSync(join(assetsDir, 'splash-icon.png'), createPng(512, 512, splashPaint));
-writeFileSync(join(assetsDir, 'favicon.png'), createPng(48, 48, iconPaint));
-console.log('Wrote placeholder assets to /assets');
+// Paints the mark centred in the image, `markShare` of its width, over
+// `background` (or transparent when null). Each pixel is sampled several times
+// so the edges are smooth.
+function markPainter(markShare, background) {
+  return (x, y, width, height) => {
+    const markWidth = width * markShare;
+    const markHeight = markWidth / 2;
+    const left = (width - markWidth) / 2;
+    const top = (height - markHeight) / 2;
+    let covered = 0;
+    let sum = [0, 0, 0];
+    for (let i = 0; i < SAMPLES; i += 1) {
+      for (let j = 0; j < SAMPLES; j += 1) {
+        const sx = x + (i + 0.5) / SAMPLES;
+        const sy = y + (j + 0.5) / SAMPLES;
+        const colour = roofColour(((sx - left) / markWidth) * 160, ((sy - top) / markHeight) * 80);
+        if (colour) {
+          covered += 1;
+          sum = sum.map((channel, index) => channel + colour[index]);
+        }
+      }
+    }
+    const coverage = covered / (SAMPLES * SAMPLES);
+    const markColour = covered > 0 ? sum.map((channel) => channel / covered) : GOLD;
+    if (background) {
+      return [...mix(background, markColour, coverage).map(Math.round), 255];
+    }
+    return [...markColour.map(Math.round), Math.round(coverage * 255)];
+  };
+}
+
+writeFileSync(join(assetsDir, 'icon.png'), createPng(1024, 1024, markPainter(0.62, GREEN)));
+// Android draws the adaptive icon over app.json's green, inside a safe circle.
+writeFileSync(join(assetsDir, 'adaptive-icon.png'), createPng(1024, 1024, markPainter(0.5, null)));
+// app.json shows this at imageWidth on the green launch background; the
+// animated splash (components/AnimatedSplash.tsx) starts from the same spot.
+writeFileSync(join(assetsDir, 'splash-icon.png'), createPng(512, 512, markPainter(1, null)));
+writeFileSync(join(assetsDir, 'favicon.png'), createPng(48, 48, markPainter(0.8, GREEN)));
+console.log('Wrote the Joteku roof mark assets to /assets');

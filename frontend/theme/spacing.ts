@@ -11,6 +11,10 @@ export const spacing = {
 
 export const sizes = {
   tapTarget: 48,
+  // Content stops growing past this width so tablets get a centred column, not a stretched phone layout.
+  contentMaxWidth: 640,
+  // Tab bar height above the bottom safe area.
+  tabBar: 62,
 } as const;
 
 export const radii = {

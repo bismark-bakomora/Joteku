@@ -1,10 +1,11 @@
 import { BrandHeader } from '@/components/BrandHeader';
 import { useSession } from '@/context/SessionContext';
 import { hasSeenWelcome } from '@/lib/welcome';
-import { colors, fontFamilies } from '@/theme';
+import { colors, fontFamilies, sizes, spacing } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router, Tabs } from 'expo-router';
 import { useEffect, useRef } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Shows the welcome screen once, on first launch, to people who are not signed in.
 function useWelcomeOnFirstLaunch() {
@@ -29,6 +30,9 @@ function useWelcomeOnFirstLaunch() {
 
 export default function TabLayout() {
   useWelcomeOnFirstLaunch();
+  const insets = useSafeAreaInsets();
+  // Phones without a home indicator keep the original 10px breathing room.
+  const bottomPadding = Math.max(insets.bottom, 10);
 
   return (
     <Tabs
@@ -40,12 +44,13 @@ export default function TabLayout() {
           fontFamily: fontFamilies.bodySemiBold,
           fontSize: 12,
         },
+        // Grows by the home-indicator inset so labels never sit on it.
         tabBarStyle: {
           backgroundColor: colors.tabBar,
           borderTopColor: colors.border,
-          height: 72,
-          paddingTop: 8,
-          paddingBottom: 10,
+          height: sizes.tabBar + bottomPadding,
+          paddingTop: spacing.sm,
+          paddingBottom: bottomPadding,
         },
       }}
     >

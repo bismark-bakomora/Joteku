@@ -1,4 +1,4 @@
-import { colors, spacing } from '@/theme';
+import { colors, sizes, spacing } from '@/theme';
 import { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,7 +20,8 @@ export function ScreenContainer({
     return (
       <SafeAreaView style={[styles.safe, style]} edges={['top', 'left', 'right']}>
         <ScrollView
-          contentContainerStyle={[styles.scrollContent, contentStyle]}
+          automaticallyAdjustKeyboardInsets
+          contentContainerStyle={[styles.column, styles.scrollContent, contentStyle]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -32,7 +33,7 @@ export function ScreenContainer({
 
   return (
     <SafeAreaView style={[styles.safe, style]} edges={['top', 'left', 'right']}>
-      <View style={[styles.fill, contentStyle]}>{children}</View>
+      <View style={[styles.column, styles.fill, contentStyle]}>{children}</View>
     </SafeAreaView>
   );
 }
@@ -41,6 +42,11 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  column: {
+    width: '100%',
+    maxWidth: sizes.contentMaxWidth,
+    alignSelf: 'center',
   },
   fill: {
     flex: 1,

@@ -12,7 +12,7 @@ import { colors, spacing, typography } from '@/theme';
 import { OtpPurpose } from '@/types/auth';
 import { Href, router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 const RESEND_SECONDS = 30;
 
@@ -130,10 +130,7 @@ export default function SignInScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.root}
-    >
+    <View style={styles.root}>
       <Stack.Screen options={{ title: TITLES[purpose] }} />
       <ScreenContainer contentStyle={styles.content} scroll>
         {step === 'details' ? (
@@ -251,7 +248,7 @@ export default function SignInScreen() {
           </>
         )}
       </ScreenContainer>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

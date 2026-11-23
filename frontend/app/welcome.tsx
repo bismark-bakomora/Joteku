@@ -4,7 +4,7 @@ import { TextLink } from '@/components/TextLink';
 import { venuePhotos } from '@/components/venuePhotos';
 import { venue } from '@/data/venue';
 import { markWelcomeSeen } from '@/lib/welcome';
-import { colors, radii, spacing, typography } from '@/theme';
+import { colors, radii, sizes, spacing, typography } from '@/theme';
 import { OtpPurpose } from '@/types/auth';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
@@ -79,6 +79,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceHigh,
   },
   body: {
+    width: '100%',
+    maxWidth: sizes.contentMaxWidth,
+    alignSelf: 'center',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
     gap: spacing.sm + 4,

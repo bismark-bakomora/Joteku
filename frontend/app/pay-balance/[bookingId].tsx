@@ -19,7 +19,7 @@ import { MobileMoneyNetwork } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 type Phase =
   | { kind: 'form' }
@@ -54,10 +54,7 @@ export default function PayBalanceScreen() {
   });
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={styles.root}
-    >
+    <View style={styles.root}>
       <ScreenContainer contentStyle={styles.content} scroll>
         <AsyncView
           empty={{ title: 'Booking not found', message: 'Find your booking in My Bookings.' }}
@@ -150,7 +147,7 @@ export default function PayBalanceScreen() {
           }}
         </AsyncView>
       </ScreenContainer>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

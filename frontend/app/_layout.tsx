@@ -1,3 +1,4 @@
+import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { stackScreenOptions } from '@/components/stackScreenOptions';
 import { CartProvider } from '@/context/CartContext';
 import { NotificationsProvider } from '@/context/NotificationsContext';
@@ -16,7 +17,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -41,11 +42,8 @@ export default function RootLayout() {
     }
   }, [error]);
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+  // The animated splash takes over from the launch image once it is on screen.
+  const [showSplash, setShowSplash] = useState(true);
 
   if (!loaded) {
     return null;
@@ -79,6 +77,12 @@ export default function RootLayout() {
             <Stack.Screen name="transactions" options={{ title: 'Transactions' }} />
             <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
           </Stack>
+          {showSplash ? (
+            <AnimatedSplash
+              onFinish={() => setShowSplash(false)}
+              onReady={() => SplashScreen.hideAsync()}
+            />
+          ) : null}
         </CartProvider>
       </NotificationsProvider>
     </SessionProvider>

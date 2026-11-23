@@ -74,6 +74,7 @@ export default function MenuScreen() {
 
           return (
             <ScrollView
+              automaticallyAdjustKeyboardInsets
               contentContainerStyle={{ paddingBottom: barHeight + spacing.xl }}
               keyboardShouldPersistTaps="handled"
               stickyHeaderIndices={[1]}
@@ -166,12 +167,20 @@ export default function MenuScreen() {
   );
 }
 
+// Keeps the menu in a centred column on tablets.
+const column = {
+  width: '100%',
+  maxWidth: sizes.contentMaxWidth,
+  alignSelf: 'center',
+} as const;
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,
   },
   noticeSlot: {
+    ...column,
     paddingHorizontal: spacing.screen,
     paddingTop: spacing.sm,
   },
@@ -211,6 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   controls: {
+    ...column,
     backgroundColor: colors.background,
     paddingHorizontal: spacing.screen,
     paddingVertical: spacing.sm,
@@ -222,6 +232,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   sections: {
+    ...column,
     paddingHorizontal: spacing.screen,
     paddingTop: spacing.sm,
     gap: spacing.lg,

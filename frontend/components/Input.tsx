@@ -1,3 +1,4 @@
+import { useAnnounce } from '@/hooks/useAnnounce';
 import { colors, radii, spacing, typography } from '@/theme';
 import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 
@@ -8,11 +9,17 @@ type InputProps = TextInputProps & {
 
 export function Input({ label, error, ...props }: InputProps) {
   const hasError = Boolean(error);
+  useAnnounce(error);
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.label}>{label}</Text>
+      {/* The field carries its own label for screen readers, so the visible one is skipped. */}
+      <Text importantForAccessibility="no" accessibilityElementsHidden style={styles.label}>
+        {label}
+      </Text>
       <TextInput
+        accessibilityHint={error}
+        accessibilityLabel={label}
         placeholderTextColor={colors.textMuted}
         {...props}
         style={[

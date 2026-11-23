@@ -1,6 +1,7 @@
 import { services } from '@/services';
 import { Payment } from '@/types/payment';
 import { useEffect, useRef } from 'react';
+import { AccessibilityInfo } from 'react-native';
 
 const POLL_MS = 2000;
 
@@ -24,6 +25,9 @@ export function usePaymentResult(
         const payment = await services.payments.getPayment(paymentId);
         if (cancelled) {
           return;
+        }
+        if (payment.status === 'success') {
+          AccessibilityInfo.announceForAccessibility('Payment received');
         }
         if (payment.status !== 'pending') {
           await onResultRef.current(payment);
