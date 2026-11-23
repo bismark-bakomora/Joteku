@@ -9,6 +9,7 @@ import { SegmentedControl } from '@/components/SegmentedControl';
 import { Toast } from '@/components/Toast';
 import { useCart } from '@/context/CartContext';
 import { useAsync } from '@/hooks/useAsync';
+import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { filterMenu } from '@/lib/menu';
 import { services } from '@/services';
@@ -18,9 +19,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-const KIND_SEGMENTS: { key: MenuKind; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { key: 'food', label: 'Food', icon: 'restaurant-outline' },
-  { key: 'drink', label: 'Drinks', icon: 'beer-outline' },
+const KIND_SEGMENTS: { key: MenuKind; label: string }[] = [
+  { key: 'food', label: 'Food' },
+  { key: 'drink', label: 'Drinks' },
 ];
 
 export default function MenuScreen() {
@@ -32,6 +33,7 @@ export default function MenuScreen() {
   const [query, setQuery] = useState('');
   const [showSavedNotice, setShowSavedNotice] = useState(true);
   const [barHeight, setBarHeight] = useState(0);
+  const clearance = useTabBarClearance();
 
   const quantities = useMemo(
     () => new Map(cart.lines.map((line) => [line.itemId, line.quantity])),
@@ -75,7 +77,7 @@ export default function MenuScreen() {
           return (
             <ScrollView
               automaticallyAdjustKeyboardInsets
-              contentContainerStyle={{ paddingBottom: barHeight + spacing.xl }}
+              contentContainerStyle={{ paddingBottom: clearance + barHeight + spacing.xl }}
               keyboardShouldPersistTaps="handled"
               stickyHeaderIndices={[1]}
             >
@@ -162,7 +164,7 @@ export default function MenuScreen() {
         }}
       </AsyncView>
       <PreOrderBar onHeightChange={setBarHeight} />
-      <Toast bottomOffset={barHeight + spacing.md} toast={toast} />
+      <Toast bottomOffset={clearance + barHeight + spacing.md} toast={toast} />
     </View>
   );
 }

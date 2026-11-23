@@ -39,7 +39,8 @@ export const colors = {
   cancelledBackground: '#FFDAD6',
   disabled: '#E8E2D8',
   disabledText: '#7D756C',
-  tabBar: '#FFF8F3',
+  tabBar: '#FFFFFF',
+  tabBarActive: '#E1EDE4',
 } as const;
 
 export type ColorName = keyof typeof colors;

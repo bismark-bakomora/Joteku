@@ -13,8 +13,9 @@ export const sizes = {
   tapTarget: 48,
   // Content stops growing past this width so tablets get a centred column, not a stretched phone layout.
   contentMaxWidth: 640,
-  // Tab bar height above the bottom safe area.
-  tabBar: 62,
+  // The floating tab bar, and the widest it grows on large screens.
+  tabBar: 64,
+  tabBarMaxWidth: 320,
 } as const;
 
 export const radii = {
@@ -40,6 +41,13 @@ export const shadows = {
     shadowOpacity: 0.12,
     shadowRadius: 24,
     elevation: 6,
+  },
+  floating: {
+    shadowColor: '#24211D',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 16,
+    elevation: 10,
   },
 } as const;
 

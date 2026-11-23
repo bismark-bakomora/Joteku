@@ -1,5 +1,6 @@
 import { useCart } from '@/context/CartContext';
 import { useAsync } from '@/hooks/useAsync';
+import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { formatGhs } from '@/lib/format';
 import { tablePayment } from '@/lib/pricing';
 import { services } from '@/services';
@@ -13,10 +14,11 @@ type PreOrderBarProps = {
   onHeightChange: (height: number) => void;
 };
 
-// Floats over the bottom of a screen while the pre-order has items. It reports
-// its height so the screen can leave room for it.
+// Floats above the tab bar while the pre-order has items. It reports its height
+// so the screen can leave room for it as well as for the tab bar.
 export function PreOrderBar({ onHeightChange }: PreOrderBarProps) {
   const { itemCount, total } = useCart();
+  const clearance = useTabBarClearance();
   const settings = useAsync(() => services.venue.getSettings());
   const deposit = settings.data ? tablePayment(total, settings.data).deposit : null;
 
@@ -34,7 +36,7 @@ export function PreOrderBar({ onHeightChange }: PreOrderBarProps) {
     <View
       onLayout={(event) => onHeightChange(event.nativeEvent.layout.height + spacing.sm)}
       pointerEvents="box-none"
-      style={styles.wrap}
+      style={[styles.wrap, { bottom: clearance + spacing.sm }]}
     >
       <View style={styles.bar}>
         <Text style={styles.summary}>
@@ -61,7 +63,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.md,
     right: spacing.md,
-    bottom: spacing.sm,
     alignItems: 'center',
   },
   bar: {

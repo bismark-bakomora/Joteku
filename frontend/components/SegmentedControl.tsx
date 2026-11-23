@@ -1,11 +1,10 @@
-import { colors, radii, sizes, spacing, typography } from '@/theme';
-import { Ionicons } from '@expo/vector-icons';
+import { colors, fontFamilies, radii, sizes, spacing, typography } from '@/theme';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SlidingPill } from './SlidingPill';
 
 type Segment<K extends string> = {
   key: K;
   label: string;
-  icon: keyof typeof Ionicons.glyphMap;
 };
 
 type SegmentedControlProps<K extends string> = {
@@ -20,48 +19,57 @@ export function SegmentedControl<K extends string>({
   onSelect,
 }: SegmentedControlProps<K>) {
   return (
-    <View accessibilityRole="tablist" style={styles.track}>
-      {segments.map((segment) => {
-        const active = segment.key === selected;
-        const color = active ? colors.onPrimary : colors.textSubtle;
-        return (
-          <Pressable
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active }}
-            key={segment.key}
-            onPress={() => onSelect(segment.key)}
-            style={[styles.segment, active ? styles.segmentActive : undefined]}
-          >
-            <Ionicons color={color} name={segment.icon} size={20} />
-            <Text style={[styles.label, { color }]}>{segment.label}</Text>
-          </Pressable>
-        );
-      })}
+    <View style={styles.track}>
+      <View accessibilityRole="tablist" style={styles.row}>
+        <SlidingPill
+          color={colors.primary}
+          count={segments.length}
+          index={segments.findIndex((segment) => segment.key === selected)}
+        />
+        {segments.map((segment) => {
+          const active = segment.key === selected;
+          return (
+            <Pressable
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              key={segment.key}
+              onPress={() => onSelect(segment.key)}
+              style={styles.segment}
+            >
+              <Text numberOfLines={1} style={[styles.label, active ? styles.labelActive : undefined]}>
+                {segment.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   track: {
-    flexDirection: 'row',
-    backgroundColor: colors.surfaceHigh,
-    borderRadius: radii.lg,
+    backgroundColor: colors.surfaceHighest,
+    borderRadius: radii.full,
     padding: spacing.xs,
-    gap: spacing.xs,
+  },
+  row: {
+    flexDirection: 'row',
   },
   segment: {
     flex: 1,
     minHeight: sizes.tapTarget,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.sm,
-    borderRadius: radii.md,
-  },
-  segmentActive: {
-    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radii.full,
   },
   label: {
-    ...typography.label,
+    ...typography.titleMd,
+    color: colors.textSubtle,
+  },
+  labelActive: {
+    fontFamily: fontFamilies.bodyBold,
+    color: colors.onPrimary,
   },
 });

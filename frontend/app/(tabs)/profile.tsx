@@ -9,6 +9,7 @@ import { SectionHeader } from '@/components/SectionHeader';
 import { Toast } from '@/components/Toast';
 import { useCart } from '@/context/CartContext';
 import { useSession } from '@/context/SessionContext';
+import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { errorMessage } from '@/lib/errors';
 import { formatPhoneLocal } from '@/lib/phone';
@@ -31,6 +32,7 @@ export default function ProfileScreen() {
   const { session, ready, updateProfile, signOut } = useSession();
   const { itemCount } = useCart();
   const { toast, show } = useToast();
+  const clearance = useTabBarClearance();
   const [editing, setEditing] = useState(false);
   const [confirmingSignOut, setConfirmingSignOut] = useState(false);
 
@@ -48,7 +50,10 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.root}>
-      <ScreenContainer contentStyle={styles.content} scroll>
+      <ScreenContainer
+        contentStyle={{ ...styles.content, paddingBottom: clearance + spacing.xl }}
+        scroll
+      >
         {session ? (
           <ProfileCard onEdit={() => setEditing(true)} session={session} />
         ) : (
@@ -187,7 +192,7 @@ export default function ProfileScreen() {
           )
         ) : null}
       </ScreenContainer>
-      <Toast toast={toast} />
+      <Toast bottomOffset={clearance + spacing.md} toast={toast} />
     </View>
   );
 }

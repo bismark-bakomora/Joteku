@@ -15,6 +15,7 @@ import { venue } from '@/data/venue';
 import { useCart } from '@/context/CartContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useNow } from '@/hooks/useNow';
+import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { isOpenNow } from '@/lib/hours';
 import { services } from '@/services';
@@ -32,6 +33,7 @@ export default function HomeScreen() {
   const now = useNow();
   const { toast, show } = useToast();
   const [barHeight, setBarHeight] = useState(0);
+  const clearance = useTabBarClearance();
   const cart = useCart();
   const spaces = useAsync(() => services.venue.getSpaces());
   const popular = useAsync(() => services.menu.getPopularItems());
@@ -53,7 +55,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <ScreenContainer
-        contentStyle={{ ...styles.content, paddingBottom: barHeight + spacing.xl }}
+        contentStyle={{ ...styles.content, paddingBottom: clearance + barHeight + spacing.xl }}
         scroll
       >
         <View style={styles.hero}>
@@ -219,7 +221,7 @@ export default function HomeScreen() {
         </View>
       </ScreenContainer>
       <PreOrderBar onHeightChange={setBarHeight} />
-      <Toast bottomOffset={barHeight + spacing.md} toast={toast} />
+      <Toast bottomOffset={clearance + barHeight + spacing.md} toast={toast} />
     </View>
   );
 }

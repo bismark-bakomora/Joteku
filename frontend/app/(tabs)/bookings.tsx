@@ -8,6 +8,7 @@ import { SegmentedControl } from '@/components/SegmentedControl';
 import { SignInGate } from '@/components/SignInGate';
 import { useSession } from '@/context/SessionContext';
 import { useAsync } from '@/hooks/useAsync';
+import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { bookingStart } from '@/lib/availability';
 import { formatPhoneLocal } from '@/lib/phone';
 import { services } from '@/services';
@@ -33,6 +34,8 @@ export default function BookingsScreen() {
   );
   const spaces = useAsync(() => services.venue.getSpaces());
   const { reload } = bookings;
+  const clearance = useTabBarClearance();
+  const contentStyle = { ...styles.content, paddingBottom: clearance + spacing.xl };
 
   // Bookings change on other screens (paying, cancelling), so reload on return.
   useFocusEffect(
@@ -51,7 +54,7 @@ export default function BookingsScreen() {
 
   if (!session) {
     return (
-      <ScreenContainer contentStyle={styles.content} scroll>
+      <ScreenContainer contentStyle={contentStyle} scroll>
         <SignInGate
           message="Your bookings and reservations are linked to your phone number. Log in or continue as a guest with the same number to see them."
           redirect="/bookings"
@@ -62,7 +65,7 @@ export default function BookingsScreen() {
   }
 
   return (
-    <ScreenContainer contentStyle={styles.content} scroll>
+    <ScreenContainer contentStyle={contentStyle} scroll>
       <AsyncView
         empty={{ title: 'No bookings yet', message: 'Your bookings will show here.' }}
         isEmpty={() => false}
@@ -84,8 +87,8 @@ export default function BookingsScreen() {
               <SegmentedControl
                 onSelect={setTab}
                 segments={[
-                  { key: 'upcoming', label: `Upcoming (${upcoming.length})`, icon: 'calendar-outline' },
-                  { key: 'past', label: `Past (${past.length})`, icon: 'time-outline' },
+                  { key: 'upcoming', label: `Upcoming (${upcoming.length})` },
+                  { key: 'past', label: `Past (${past.length})` },
                 ]}
                 selected={tab}
               />
