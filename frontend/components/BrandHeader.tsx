@@ -1,7 +1,7 @@
 import { useNotifications } from '@/context/NotificationsContext';
 import { useSession } from '@/context/SessionContext';
 import { contact } from '@/data/contact';
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { colors, fontFamilies, radii, shadows, sizes, spacing, typography } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -77,8 +77,12 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
     paddingVertical: spacing.sm,
   },
+  // The same wordmark as the launch animation (AnimatedSplash), at header size.
   title: {
-    ...typography.title,
+    fontFamily: fontFamilies.headlineBold,
+    fontSize: 26,
+    lineHeight: 30,
+    letterSpacing: -0.8,
     color: colors.primary,
   },
   iconButton: {

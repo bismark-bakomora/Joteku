@@ -56,7 +56,8 @@ export default function HomeScreen() {
           <PhotoPlaceholder
             accessibilityLabel="Joteku venue photo placeholder"
             icon="restaurant-outline"
-            iconSize={72}
+            iconSize={64}
+            iconStyle={styles.heroIcon}
             style={styles.heroPhoto}
             tone="green"
           >
@@ -229,6 +230,10 @@ const styles = StyleSheet.create({
   },
   heroPhoto: {
     height: 192,
+  },
+  // Lifts the icon clear of the welcome text at the bottom of the photo.
+  heroIcon: {
+    marginBottom: 80,
   },
   heroOverlay: {
     flex: 1,

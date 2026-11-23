@@ -1,7 +1,7 @@
 import { colors } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 
 type PhotoTone = 'green' | 'brown' | 'cream';
 
@@ -9,6 +9,8 @@ type PhotoPlaceholderProps = {
   icon: keyof typeof Ionicons.glyphMap;
   tone?: PhotoTone;
   iconSize?: number;
+  // Moves the icon, for example out of the way of text laid over it.
+  iconStyle?: StyleProp<TextStyle>;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
   children?: ReactNode;
@@ -25,6 +27,7 @@ export function PhotoPlaceholder({
   icon,
   tone = 'cream',
   iconSize = 40,
+  iconStyle,
   style,
   accessibilityLabel,
   children,
@@ -37,7 +40,7 @@ export function PhotoPlaceholder({
       accessibilityRole={accessibilityLabel ? 'image' : undefined}
       style={[styles.wrap, { backgroundColor: palette.background }, style]}
     >
-      <Ionicons color={palette.icon} name={icon} size={iconSize} />
+      <Ionicons color={palette.icon} name={icon} size={iconSize} style={iconStyle} />
       {children ? <View style={StyleSheet.absoluteFill}>{children}</View> : null}
     </View>
   );
