@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   totalAmount: {
-    ...typography.title,
+    ...typography.amount,
     color: colors.text,
   },
   list: {

@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   quoteAmount: {
-    ...typography.headline,
+    ...typography.amount,
     color: colors.primary,
   },
   actions: {

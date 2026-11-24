@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   phone: {
-    ...typography.headline,
+    ...typography.amount,
     color: colors.primary,
   },
   buttons: {

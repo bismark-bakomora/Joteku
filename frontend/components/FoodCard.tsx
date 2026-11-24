@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   priceText: {
-    ...typography.title,
+    ...typography.titleSm,
     color: colors.goldSoft,
   },
   text: {

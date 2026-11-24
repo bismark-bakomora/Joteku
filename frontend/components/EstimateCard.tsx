@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   totalAmount: {
-    ...typography.headline,
+    ...typography.amount,
     color: colors.primary,
   },
 });

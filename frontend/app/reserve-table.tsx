@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   depositAmount: {
-    ...typography.headline,
+    ...typography.amount,
     color: colors.primary,
   },
   error: {

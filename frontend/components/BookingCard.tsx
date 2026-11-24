@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   quoteAmount: {
-    ...typography.headline,
+    ...typography.amount,
     color: colors.primary,
   },
 });

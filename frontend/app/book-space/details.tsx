@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     color: colors.textSubtle,
   },
   estimateAmount: {
-    ...typography.title,
+    ...typography.titleLg,
     color: colors.primary,
   },
 });

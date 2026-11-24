@@ -55,6 +55,12 @@ export const typography = {
     fontSize: 13,
     lineHeight: 18,
   },
+  // Large money totals and phone numbers, in the same face as menu and space prices.
+  amount: {
+    fontFamily: fontFamilies.bodyBold,
+    fontSize: 20,
+    lineHeight: 28,
+  },
   label: {
     fontFamily: fontFamilies.bodySemiBold,
     fontSize: 15,
