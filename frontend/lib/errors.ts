@@ -1,6 +1,7 @@
 export type AppErrorCode =
   | 'invalid_phone'
   | 'invalid_otp'
+  | 'otp_send_failed'
   | 'invalid_booking'
   | 'invalid_payment'
   | 'slot_unavailable'

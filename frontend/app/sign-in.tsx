@@ -206,9 +206,9 @@ export default function SignInScreen() {
               Enter the 6-digit code we sent to{' '}
               <Text style={styles.phone}>{normalizedPhone ? formatPhoneLocal(normalizedPhone) : phone}</Text>.
             </Text>
-            {services.auth.testCode ? (
+            {services.auth.testHint ? (
               <InfoBanner
-                body={`No text message is sent yet. Use the code ${services.auth.testCode}.`}
+                body={services.auth.testHint}
                 icon="construct-outline"
                 title="Test mode"
               />

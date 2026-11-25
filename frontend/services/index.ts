@@ -1,9 +1,9 @@
-import { MockAuthService } from './mock/auth';
 import { MockBookingService } from './mock/bookings';
 import { MockMenuService } from './mock/menu';
 import { MockNotificationService } from './mock/notifications';
 import { MockPaymentService } from './mock/payments';
 import { MockVenueService } from './mock/venue';
+import { SupabaseAuthService } from './supabase/auth';
 import {
   AuthService,
   BookingService,
@@ -22,10 +22,11 @@ type Services = {
   notifications: NotificationService;
 };
 
-// The only place that picks an implementation. Swap the mocks for the real
-// backend and payment aggregator here.
+// The only place that picks an implementation. Sign-in runs on Supabase; the
+// rest still uses the mocks until they move to Supabase, and payments stay
+// mocked until a real mobile money aggregator is connected.
 export const services: Services = {
-  auth: new MockAuthService(),
+  auth: new SupabaseAuthService(),
   venue: new MockVenueService(),
   menu: new MockMenuService(),
   payments: new MockPaymentService(),

@@ -24,8 +24,8 @@ export type ProfileChanges = {
 };
 
 export interface AuthService {
-  // Set only by the mock, so test builds can show the code that is not sent by text.
-  readonly testCode: string | null;
+  // Set only in test builds: tells testers how to sign in while no text message is sent.
+  readonly testHint: string | null;
   requestOtp(phone: string, purpose: OtpPurpose, details?: SignUpDetails): Promise<void>;
   verifyOtp(
     phone: string,

@@ -29,6 +29,19 @@ Every hut a booking (or admin block) takes up is stored as a "claim" with its ti
 - Signed-in customers can also read their own bookings, payments and profile, change their name and email, and mark notifications as read.
 - Nobody writes bookings or payments directly. The functions above do it, after checking who is calling.
 
+## Sign-in
+
+Customers sign in with their phone number and a one-time code (Supabase Auth). Phone sign-in is on, with placeholder Twilio details because Supabase needs a provider configured even for test numbers. No real text message is sent yet (the brief asks for SMS to be mocked); a Ghanaian SMS provider will be connected later.
+
+For development, test numbers **020 000 0001 to 020 000 0005** take the code **123456**. Other numbers cannot get a code until the real provider is connected. Remove the `test_otp` list before configuring the live project.
+
+Auth settings are in `supabase/config.jsonc`. It was pulled from the hosted project, so pushing it changes only what you edited. Always check first:
+
+```bash
+SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN=placeholder npx supabase config diff
+SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN=placeholder npx supabase config push
+```
+
 ## Setup
 
 Needs Node.js 20 or later. The Supabase CLI is installed in this folder, pinned.
