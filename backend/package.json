@@ -1,0 +1,11 @@
+{
+  "name": "joteku-backend",
+  "private": true,
+  "description": "Supabase database, rules and server functions for the Joteku app.",
+  "scripts": {
+    "test": "node tests/run.mjs"
+  },
+  "devDependencies": {
+    "supabase": "3.4.0"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  // The SQL in this project is Postgres (Supabase). The SQL Server extension
+  // checks every .sql file as SQL Server's T-SQL and marks valid Postgres red.
+  "mssql.intelliSense.enableErrorChecking": false
+}
