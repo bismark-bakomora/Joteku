@@ -56,6 +56,20 @@ begin
 end;
 $$;
 
+-- Acts as the Joteku admin: signed in, with "role": "admin" in app_metadata.
+create function pg_temp.act_as_admin()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('role', 'none', true);
+  perform set_config('request.jwt.claims', json_build_object(
+    'sub', '00000000-0000-0000-0000-0000000000ad', 'role', 'authenticated',
+    'app_metadata', json_build_object('role', 'admin'))::text, true);
+  perform set_config('role', 'authenticated', true);
+end;
+$$;
+
 -- Back to the database owner, to set up test situations.
 create function pg_temp.act_as_owner()
 returns void
@@ -414,6 +428,145 @@ begin
     'a successful catering payment marks the quote paid');
   perform pg_temp.check((select status from public.bookings where id = b.id) = 'confirmed',
     'paying catering does not change the booking itself');
+
+  -- ---------------------------------------------------------------------------
+  -- The admin
+  -- ---------------------------------------------------------------------------
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check_fails(format('select public.admin_cancel_booking(%L)', b.id),
+    'not_allowed', 'a customer cannot cancel as Joteku');
+  perform pg_temp.check_fails(format('select public.admin_block_time(null, %L, ''10:00'', ''12:00'')', d + 40),
+    'not_allowed', 'a customer cannot block times');
+  perform pg_temp.check_fails(format('select public.admin_quote_catering(%L, 100)', b.id),
+    'not_allowed', 'a customer cannot send catering quotes');
+  perform pg_temp.check((select count(*) from public.blocked_times) = 0, 'a customer cannot see blocked times');
+  perform pg_temp.check((select count(*) from public.profiles) = 1, 'a customer still sees only their own profile');
+  update public.menu_items set price = 1 where id = 'banku-fried-fish';
+  update public.settings set hold_minutes = 1;
+  perform pg_temp.act_as_owner();
+  perform pg_temp.check((select price from public.menu_items where id = 'banku-fried-fish') > 1,
+    'a customer cannot change menu prices');
+  perform pg_temp.check((select hold_minutes from public.settings) = 10, 'a customer cannot change the settings');
+  perform pg_temp.act_as(null);
+  perform pg_temp.check_fails(format('select public.admin_cancel_booking(%L)', b.id),
+    '42501', 'visitors cannot call admin functions');
+
+  perform pg_temp.act_as_owner();
+  v_count := (select count(*) from public.bookings);
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check((select count(*) from public.bookings) = v_count, 'the admin sees every booking');
+  perform pg_temp.check((select count(*) from public.profiles where id in (v_ama, v_kofi)) = 2,
+    'the admin sees the customers');
+  perform pg_temp.check((select count(*) from public.payments where customer_id in (v_ama, v_kofi)) > 0,
+    'the admin sees the payments');
+  perform pg_temp.check_fails('select private.require_customer()', '42501',
+    'the admin cannot reach private helpers');
+
+  -- Catalog and settings.
+  update public.menu_items set available = false where id = 'banku-fried-fish';
+  perform pg_temp.check((select count(*) from public.menu_items where id = 'banku-fried-fish') = 1,
+    'the admin still sees a hidden menu item');
+  update public.spaces set hourly_rate = 200 where id = 'hut-1';
+  update public.settings set hold_minutes = 15;
+  perform pg_temp.check((select hold_minutes from public.settings) = 15, 'the admin can change the settings');
+  perform pg_temp.act_as(null);
+  perform pg_temp.check((select count(*) from public.menu_items) = 15, 'visitors no longer see a hidden item');
+  perform pg_temp.act_as(v_kofi);
+  b := public.create_space_booking('meeting', 'hut-1', d + 40, '12:00', '14:00', 10);
+  perform pg_temp.check(b.amount_due = 400, 'a new hourly rate prices new bookings');
+  perform pg_temp.check(b.hold_expires_at > now() + interval '14 minutes', 'a new hold length applies');
+
+  -- Blocking times.
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check_fails(format('select public.admin_block_time(''hut-1'', %L, ''13:00'', ''15:00'')', d + 40),
+    'slot_unavailable', 'the admin cannot block over a held booking');
+  perform pg_temp.check_fails(format('select public.admin_block_time(''hut-2'', %L, ''15:00'', ''13:00'')', d + 41),
+    'invalid_booking', 'a block must end after it starts');
+  v_json := to_jsonb(public.admin_block_time('hut-2', d + 41, '10:00', '24:00', 'Staff training'));
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check(exists (select 1 from public.get_busy_slots('hut-2', d + 41, d + 41)
+    where start_time = '10:00' and end_time = '24:00'), 'a blocked time shows as busy');
+  perform pg_temp.check_fails(
+    format('select public.create_space_booking(''meeting'', ''hut-2'', %L, ''12:00'', ''14:00'', 10)', d + 41),
+    'slot_unavailable', 'customers cannot book a blocked hut');
+  perform pg_temp.check_fails(
+    format('select public.create_space_booking(''wedding'', ''whole-venue'', %L, ''12:00'', ''17:00'', 150)', d + 41),
+    'slot_unavailable', 'a blocked hut also blocks the whole venue');
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check((select reason from public.blocked_times where id = (v_json ->> 'id')::bigint) = 'Staff training',
+    'the admin sees blocks and their reasons');
+  perform public.admin_unblock_time((v_json ->> 'id')::bigint);
+  perform pg_temp.check_fails(format('select public.admin_unblock_time(%s)', v_json ->> 'id'),
+    'not_found', 'a block cannot be removed twice');
+  perform pg_temp.act_as(v_ama);
+  b2 := public.create_space_booking('meeting', 'hut-2', d + 41, '12:00', '14:00', 10);
+  perform pg_temp.check(b2.status = 'pending_payment', 'an unblocked time can be booked again');
+
+  -- Catering quotes.
+  b := public.create_space_booking('wedding', 'whole-venue', d + 43, '12:00', '18:00', 150,
+    null, null, 'Buffet for 150 guests');
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check_fails(format('select public.admin_quote_catering(%L, 4000)', b.id),
+    'invalid_state', 'an unpaid booking cannot get a quote');
+  perform pg_temp.act_as(v_ama);
+  p := public.start_payment(b.id, 'space_booking', '+233241234567', 'mtn');
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform public.get_payment(p.id);
+  select * into b from public.bookings where id = b.id;
+  perform pg_temp.check(b.status = 'confirmed', 'the wedding is paid and confirmed');
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check_fails(format('select public.admin_quote_catering(%L, 0)', b.id),
+    'invalid_booking', 'a quote must be more than zero');
+  perform pg_temp.check_fails(format('select public.admin_quote_catering(%L, 4000)', b2.id),
+    'not_found', 'a booking without a catering request cannot get a quote');
+  perform public.admin_quote_catering(b.id, 3800);
+  perform public.admin_quote_catering(b.id, 4000);
+  perform pg_temp.check((select status = 'quoted' and quote_amount = 4000 from public.catering_requests where booking_id = b.id),
+    'the admin can send and correct a quote');
+  perform pg_temp.act_as(v_ama);
+  p := public.start_payment(b.id, 'catering_balance', '+233241234567', 'mtn');
+  perform pg_temp.check(p.amount = 4000, 'the customer pays the corrected quote');
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform public.get_payment(p.id);
+  perform pg_temp.act_as_admin();
+  perform pg_temp.check_fails(format('select public.admin_quote_catering(%L, 5000)', b.id),
+    'invalid_state', 'a paid quote cannot change');
+
+  -- Joteku cancels: everything paid comes back.
+  v_json := public.admin_cancel_booking(b.id);
+  perform pg_temp.check((v_json ->> 'refundAmount')::numeric = b.amount_paid + 4000,
+    'Joteku cancelling refunds the booking and the catering in full');
+  perform pg_temp.check((select status = 'cancelled' and cancelled_by = 'joteku' from public.bookings where id = b.id),
+    'the booking shows as cancelled by Joteku');
+  perform pg_temp.check((select count(*) from public.payments where booking_id = b.id and type = 'refund') = 2,
+    'the booking and catering refunds are both recorded');
+  perform pg_temp.check_fails(format('select public.admin_cancel_booking(%L)', b.id),
+    'invalid_state', 'a cancelled booking cannot be cancelled again');
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check(not exists (select 1 from public.get_busy_slots('whole-venue', d + 43, d + 43)),
+    'the cancelled time is free again');
+
+  -- A payment that lands after Joteku cancelled is refunded, not applied.
+  b := public.create_space_booking('birthday', 'hut-3', d + 44, '12:00', '15:00', 20);
+  p := public.start_payment(b.id, 'space_booking', '+233241234567', 'mtn');
+  perform pg_temp.act_as_admin();
+  perform public.admin_cancel_booking(b.id);
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform public.get_payment(p.id);
+  perform pg_temp.check((select status = 'cancelled' and refunded_amount = b.amount_due from public.bookings where id = b.id),
+    'a late payment does not bring back a booking Joteku cancelled');
+  perform pg_temp.check(exists (select 1 from public.payments where refund_of = p.id and amount = b.amount_due),
+    'the late payment is refunded in full');
+
+  perform pg_temp.act_as_owner();
+  perform pg_temp.check((select public and 'image/webp' = any (allowed_mime_types) from storage.buckets where id = 'menu-photos'),
+    'menu photos have a public bucket for images');
 
   perform pg_temp.act_as_owner();
   raise exception 'JOTEKU TESTS PASSED (% checks)', current_setting('joteku.checks');
