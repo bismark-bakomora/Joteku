@@ -54,7 +54,7 @@ export default function NotificationsScreen() {
   const { refresh } = useNotifications();
   const phone = session?.phone ?? null;
   const notifications = useAsync(
-    () => (phone ? services.notifications.list(phone) : Promise.resolve([])),
+    () => (phone ? services.notifications.list() : Promise.resolve([])),
     [phone],
   );
 
@@ -62,7 +62,7 @@ export default function NotificationsScreen() {
   useEffect(() => {
     const unread = (notifications.data ?? []).filter((item) => !item.read).map((item) => item.id);
     if (phone && unread.length > 0) {
-      services.notifications.markRead(phone, unread).then(refresh).catch(() => undefined);
+      services.notifications.markRead(unread).then(refresh).catch(() => undefined);
     }
   }, [notifications.data, phone, refresh]);
 

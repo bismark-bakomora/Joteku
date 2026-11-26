@@ -8,6 +8,7 @@ import {
   Epilogue_600SemiBold,
   Epilogue_700Bold,
 } from '@expo-google-fonts/epilogue';
+import { NotoSans_600SemiBold, NotoSans_700Bold } from '@expo-google-fonts/noto-sans';
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_600SemiBold,
@@ -34,6 +35,8 @@ export default function RootLayout() {
     [fontFamilies.body]: PlusJakartaSans_400Regular,
     [fontFamilies.bodySemiBold]: PlusJakartaSans_600SemiBold,
     [fontFamilies.bodyBold]: PlusJakartaSans_700Bold,
+    [fontFamilies.greeting]: NotoSans_600SemiBold,
+    [fontFamilies.greetingBold]: NotoSans_700Bold,
   });
 
   useEffect(() => {

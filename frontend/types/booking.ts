@@ -50,6 +50,7 @@ export type SpaceBooking = BookingBase & {
   kind: 'space';
   eventType: EventType;
   spaceId: SpaceId;
+  spaceName: string;
   date: string;
   startTime: string;
   endTime: string;

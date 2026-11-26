@@ -12,7 +12,7 @@ import { useSession } from '@/context/SessionContext';
 import { useAsync } from '@/hooks/useAsync';
 import { useToast } from '@/hooks/useToast';
 import { bookingStart } from '@/lib/availability';
-import { AppError, errorMessage } from '@/lib/errors';
+import { errorMessage } from '@/lib/errors';
 import { formatGhs, formatStamp } from '@/lib/format';
 import { spaceBookingReceipt, tableReservationReceipt } from '@/lib/receipt';
 import { services } from '@/services';
@@ -48,11 +48,8 @@ export default function BookingDetailsScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const data = useAsync(async () => {
+    // The server only returns the signed-in customer's own bookings.
     const booking = await services.bookings.getBooking(bookingId);
-    // Bookings are found by phone number, so only the owner may open one.
-    if (!session || booking.phone !== session.phone) {
-      throw new AppError('not_found', 'We could not find that booking.');
-    }
     const [spaces, decorations, settings, quote, payment] = await Promise.all([
       services.venue.getSpaces(),
       services.venue.getDecorations(),

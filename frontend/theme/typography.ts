@@ -6,6 +6,10 @@ export const fontFamilies = {
   body: 'PlusJakartaSans_400Regular',
   bodySemiBold: 'PlusJakartaSans_600SemiBold',
   bodyBold: 'PlusJakartaSans_700Bold',
+  // The Ga greeting ("Oobakɛ") needs letters like ɛ that Epilogue and Plus
+  // Jakarta Sans lack, so titles that show it use Noto Sans.
+  greeting: 'NotoSans_600SemiBold',
+  greetingBold: 'NotoSans_700Bold',
 } as const;
 
 export const typography = {

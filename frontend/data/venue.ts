@@ -7,7 +7,7 @@ type Facility = {
 };
 
 export const venue = {
-  heroTitle: 'Akwaaba to Joteku!',
+  heroTitle: 'Oobakɛ to Joteku!',
   heroSubtitle: 'Over 40 years of good food and cherished moments in Teshie',
   heritageBadge: '40+ Years of Heritage',
   establishedLabel: 'Est. 1984',

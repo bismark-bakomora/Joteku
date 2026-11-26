@@ -21,7 +21,7 @@ import {
 import { formatPhoneLocal } from '@/lib/phone';
 import { eventTypeLabel } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { colors, fontFamilies, radii, spacing, typography } from '@/theme';
 import { Booking } from '@/types/booking';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
@@ -122,13 +122,9 @@ export default function PayScreen() {
     try {
       const payment = await services.payments.startPayment({
         bookingId: current.id,
-        bookingReference: current.reference,
         purpose: current.kind === 'space' ? 'space_booking' : 'table_deposit',
-        amount: current.amountDue,
         phone,
         network,
-        description:
-          current.kind === 'space' ? `${eventTypeLabel(current.eventType)} booking` : 'Table reservation deposit',
       });
       setPhase({ kind: 'waiting', paymentId: payment.id, phone });
     } catch (caught) {
@@ -286,14 +282,18 @@ const styles = StyleSheet.create({
   holdText: {
     flex: 1,
   },
+  // Same face as the reference chip beside them.
   holdLabel: {
-    ...typography.labelSm,
+    ...typography.labelMd,
     color: colors.onSecondarySoft,
     textTransform: 'uppercase',
+    letterSpacing: 0.4,
   },
   holdTime: {
-    ...typography.title,
+    ...typography.titleLg,
+    fontFamily: fontFamilies.bodySemiBold,
     color: colors.onSecondaryTint,
+    fontVariant: ['tabular-nums'],
   },
   reference: {
     ...typography.labelMd,

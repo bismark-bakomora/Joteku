@@ -29,7 +29,7 @@ export default function BookingsScreen() {
   const [tab, setTab] = useState<Tab>('upcoming');
   const phone = session?.phone ?? null;
   const bookings = useAsync(
-    () => (phone ? services.bookings.listForPhone(phone) : Promise.resolve([])),
+    () => (phone ? services.bookings.listMine() : Promise.resolve([])),
     [phone],
   );
   const spaces = useAsync(() => services.venue.getSpaces());

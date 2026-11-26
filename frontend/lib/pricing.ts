@@ -1,4 +1,3 @@
-import { contact } from '@/data/contact';
 import { DecorationPackage } from '@/types/booking';
 import { PreOrderLine } from '@/types/menu';
 import { PriceEstimate, PricingSettings } from '@/types/pricing';
@@ -26,25 +25,6 @@ export function tablePayment(
 ): { deposit: number; balanceAtVenue: number } {
   const deposit = tableDeposit(preOrderAmount, settings);
   return { deposit, balanceAtVenue: roundMoney(Math.max(preOrderAmount - deposit, 0)) };
-}
-
-export function validateSpaceTimes(
-  space: Space,
-  startTime: string,
-  endTime: string,
-): string | null {
-  const start = timeToMinutes(startTime);
-  const end = timeToMinutes(endTime);
-  if (end <= start) {
-    return 'The end time must be after the start time.';
-  }
-  if (start < timeToMinutes(contact.opensAt) || end > timeToMinutes(contact.closesAt)) {
-    return `Choose times between ${contact.openingHours.replace(' to ', ' and ')}.`;
-  }
-  if (end - start < space.minHours * 60) {
-    return `${space.name} has a minimum of ${space.minHours} hours.`;
-  }
-  return null;
 }
 
 // Venue hire is charged for each started hour, and never less than the space's minimum.

@@ -1,4 +1,3 @@
-import { CancelledBy } from '@/lib/refunds';
 import {
   Booking,
   BusySlot,
@@ -9,7 +8,7 @@ import {
 import { OtpPurpose, Session } from '@/types/auth';
 import { Menu, MenuItem } from '@/types/menu';
 import { AppNotification } from '@/types/notification';
-import { Payment, PaymentRequest, RefundRequest, Transaction } from '@/types/payment';
+import { Payment, PaymentRequest, Transaction } from '@/types/payment';
 import { PricingSettings } from '@/types/pricing';
 import { Space, SpaceId } from '@/types/space';
 
@@ -49,17 +48,18 @@ export interface MenuService {
   getPopularItems(): Promise<MenuItem[]>;
 }
 
+// Payments, bookings and notifications always belong to the signed-in customer;
+// the server works out who that is.
 export interface PaymentService {
-  // Set only by the mock: explains which numbers fail or stay pending, for testers.
+  // Set while payments go through the mock provider: explains which numbers fail
+  // or stay pending, for testers.
   readonly testHint: string | null;
   startPayment(request: PaymentRequest): Promise<Payment>;
   getPayment(paymentId: string): Promise<Payment>;
-  refund(request: RefundRequest): Promise<Transaction>;
-  listTransactions(customerPhone: string): Promise<Transaction[]>;
+  listTransactions(): Promise<Transaction[]>;
 }
 
 export type SpaceBookingDraft = {
-  phone: string;
   eventType: EventType;
   spaceId: SpaceId;
   date: string;
@@ -72,7 +72,6 @@ export type SpaceBookingDraft = {
 };
 
 export type TableReservationDraft = {
-  phone: string;
   date: string;
   time: string;
   partySize: number;
@@ -98,17 +97,16 @@ export interface BookingService {
   ): Promise<BusySlot[]>;
   createSpaceBooking(draft: SpaceBookingDraft): Promise<Booking>;
   createTableReservation(draft: TableReservationDraft): Promise<Booking>;
-  markPaid(bookingId: string, paymentId: string): Promise<Booking>;
   releaseHold(bookingId: string): Promise<void>;
   restartHold(bookingId: string): Promise<Booking>;
   getCancellationQuote(bookingId: string): Promise<CancellationQuote>;
-  cancelBooking(bookingId: string, cancelledBy?: CancelledBy): Promise<CancellationResult>;
+  cancelBooking(bookingId: string): Promise<CancellationResult>;
   changeSpaceDate(bookingId: string, date: string, startTime: string): Promise<Booking>;
   getBooking(bookingId: string): Promise<Booking>;
-  listForPhone(customerPhone: string): Promise<Booking[]>;
+  listMine(): Promise<Booking[]>;
 }
 
 export interface NotificationService {
-  list(customerPhone: string): Promise<AppNotification[]>;
-  markRead(customerPhone: string, ids: string[]): Promise<void>;
+  list(): Promise<AppNotification[]>;
+  markRead(ids: string[]): Promise<void>;
 }

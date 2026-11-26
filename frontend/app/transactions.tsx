@@ -88,7 +88,7 @@ export default function TransactionsScreen() {
   const [period, setPeriod] = useState<PeriodKey>('all');
   const phone = session?.phone ?? null;
   const transactions = useAsync(
-    () => (phone ? services.payments.listTransactions(phone) : Promise.resolve([])),
+    () => (phone ? services.payments.listTransactions() : Promise.resolve([])),
     [phone],
   );
   const { reload } = transactions;

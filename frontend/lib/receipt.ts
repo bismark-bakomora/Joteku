@@ -1,7 +1,6 @@
 import { contact } from '@/data/contact';
 import { eventTypes } from '@/data/eventTypes';
 import { mobileMoneyNetworks } from '@/data/networks';
-import { spaces } from '@/data/spaces';
 import { colors } from '@/theme/colors';
 import { Booking, DecorationPackage, SpaceBooking, TableReservation } from '@/types/booking';
 import { Payment } from '@/types/payment';
@@ -263,6 +262,5 @@ export function bookingTitle(booking: Booking): string {
   if (booking.kind === 'table') {
     return `Table for ${booking.partySize}`;
   }
-  const space = spaces.find((candidate) => candidate.id === booking.spaceId);
-  return `${eventTypeLabel(booking.eventType)} at ${space?.name ?? contact.venueName}`;
+  return `${eventTypeLabel(booking.eventType)} at ${booking.spaceName}`;
 }

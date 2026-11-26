@@ -3,7 +3,8 @@
   "private": true,
   "description": "Supabase database, rules and server functions for the Joteku app.",
   "scripts": {
-    "test": "node tests/run.mjs"
+    "test": "node tests/run.mjs",
+    "sample-data": "supabase db query --remote --yes -f scripts/sample_data.sql"
   },
   "devDependencies": {
     "supabase": "3.4.0"

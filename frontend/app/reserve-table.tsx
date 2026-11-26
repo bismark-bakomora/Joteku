@@ -102,7 +102,6 @@ export default function ReserveTableScreen() {
     setSubmitting(true);
     try {
       const reservation = await services.bookings.createTableReservation({
-        phone: session.phone,
         date,
         time,
         partySize,

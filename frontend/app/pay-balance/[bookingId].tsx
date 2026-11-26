@@ -95,12 +95,9 @@ export default function PayBalanceScreen() {
               try {
                 const payment = await services.payments.startPayment({
                   bookingId: booking.id,
-                  bookingReference: booking.reference,
                   purpose: 'catering_balance',
-                  amount,
                   phone,
                   network,
-                  description: 'Catering balance',
                 });
                 setPhase({ kind: 'waiting', paymentId: payment.id, phone });
               } catch (caught) {

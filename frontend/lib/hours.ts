@@ -10,7 +10,3 @@ export function isOpenNow(now: Date, hours: OpeningHours): boolean {
   return minutes >= timeToMinutes(hours.opensAt) && minutes < timeToMinutes(hours.closesAt);
 }
 
-export function isWithinOpeningHours(time: string, hours: OpeningHours): boolean {
-  const minutes = timeToMinutes(time);
-  return minutes >= timeToMinutes(hours.opensAt) && minutes < timeToMinutes(hours.closesAt);
-}

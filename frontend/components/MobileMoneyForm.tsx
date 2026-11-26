@@ -3,7 +3,7 @@ import { mobileMoneyNetworks } from '@/data/networks';
 import { formatGhs } from '@/lib/format';
 import { formatPhoneLocal, normalizeGhanaPhone, suggestNetwork } from '@/lib/phone';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { colors, spacing, typography } from '@/theme';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,6 +11,7 @@ import { Button } from './Button';
 import { ChoiceCard } from './ChoiceCard';
 import { InfoBanner } from './InfoBanner';
 import { Input } from './Input';
+import { NetworkLogo } from './NetworkLogo';
 import { SectionHeader } from './SectionHeader';
 
 type MobileMoneyFormProps = {
@@ -63,11 +64,7 @@ export function MobileMoneyForm({ amount, busy, error, onPay }: MobileMoneyFormP
           {mobileMoneyNetworks.map((option) => (
             <ChoiceCard
               key={option.id}
-              leading={
-                <View style={styles.badge}>
-                  <Text style={styles.badgeLetter}>{option.name.charAt(0)}</Text>
-                </View>
-              }
+              leading={<NetworkLogo network={option.id} />}
               onPress={() => {
                 setNetwork(option.id);
                 setNetworkChosen(true);
@@ -108,18 +105,6 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: spacing.sm,
-  },
-  badge: {
-    width: 40,
-    height: 40,
-    borderRadius: radii.md,
-    backgroundColor: colors.surfaceHigh,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  badgeLetter: {
-    ...typography.title,
-    color: colors.primary,
   },
   error: {
     ...typography.bodyMd,

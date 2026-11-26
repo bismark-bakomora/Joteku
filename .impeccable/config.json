@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "createdAt": "2026-11-25T04:46:11.851Z",
+        "reason": "Claude triage: PDF receipt HTML in lib/receipt.ts is rendered by expo-print without the app's custom fonts, so a system print stack is intended; predates this session (commit 37366f9)"
+      }
+    ]
+  }
+}

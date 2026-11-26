@@ -17,7 +17,7 @@ import { useAsync } from '@/hooks/useAsync';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { services } from '@/services';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { colors, fontFamilies, radii, shadows, spacing, typography } from '@/theme';
 import { MenuItem } from '@/types/menu';
 import { Space } from '@/types/space';
 import { Ionicons } from '@expo/vector-icons';
@@ -242,6 +242,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     ...typography.headline,
+    fontFamily: fontFamilies.greeting,
     color: colors.onPrimary,
   },
   heroSubtitle: {

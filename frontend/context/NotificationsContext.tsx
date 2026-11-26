@@ -24,7 +24,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       return;
     }
     services.notifications
-      .list(phone)
+      .list()
       .then((items) => setUnreadCount(items.filter((item) => !item.read).length))
       .catch(() => undefined);
   }, [phone]);

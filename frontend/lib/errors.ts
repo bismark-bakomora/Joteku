@@ -9,7 +9,8 @@ export type AppErrorCode =
   | 'invalid_state'
   | 'invalid_details'
   | 'account_exists'
-  | 'account_missing';
+  | 'account_missing'
+  | 'not_signed_in';
 
 export class AppError extends Error {
   readonly code: AppErrorCode;

@@ -1,5 +1,5 @@
-import { Booking, BusySlot, SpaceBooking } from '@/types/booking';
-import { Space, SpaceId } from '@/types/space';
+import { Booking, BusySlot } from '@/types/booking';
+import { Space } from '@/types/space';
 import { addMinutes, minutesToTime, timeToMinutes, toDateTime } from './dates';
 
 // A table visit is assumed to last three hours when deciding it has finished.
@@ -17,24 +17,6 @@ export function bookingEnd(booking: Booking): Date {
     : addMinutes(toDateTime(booking.date, booking.time), TABLE_VISIT_MINUTES);
 }
 
-export function isHoldActive(booking: Booking, now: Date): boolean {
-  return (
-    booking.status === 'pending_payment' &&
-    booking.holdExpiresAt !== undefined &&
-    new Date(booking.holdExpiresAt) > now
-  );
-}
-
-// A space booking blocks its slot once confirmed, or while its 10 minute payment hold lasts.
-export function occupiesSpace(booking: Booking, now: Date): booking is SpaceBooking {
-  return booking.kind === 'space' && (booking.status === 'confirmed' || isHoldActive(booking, now));
-}
-
-// The whole venue includes every hut, so it conflicts with all spaces.
-export function spacesConflict(a: SpaceId, b: SpaceId): boolean {
-  return a === b || a === 'whole-venue' || b === 'whole-venue';
-}
-
 export function intervalsOverlap(
   startA: string,
   endA: string,
@@ -42,49 +24,6 @@ export function intervalsOverlap(
   endB: string,
 ): boolean {
   return timeToMinutes(startA) < timeToMinutes(endB) && timeToMinutes(startB) < timeToMinutes(endA);
-}
-
-export function findBusySlots(
-  bookings: Booking[],
-  spaceId: SpaceId,
-  fromDate: string,
-  toDate: string,
-  now: Date,
-  ignoreBookingId?: string,
-): BusySlot[] {
-  return bookings
-    .filter(
-      (booking): booking is SpaceBooking =>
-        booking.id !== ignoreBookingId &&
-        occupiesSpace(booking, now) &&
-        spacesConflict(booking.spaceId, spaceId) &&
-        booking.date >= fromDate &&
-        booking.date <= toDate,
-    )
-    .map((booking) => ({
-      date: booking.date,
-      startTime: booking.startTime,
-      endTime: booking.endTime,
-    }));
-}
-
-export function hasConflict(
-  bookings: Booking[],
-  spaceId: SpaceId,
-  date: string,
-  startTime: string,
-  endTime: string,
-  now: Date,
-  ignoreBookingId?: string,
-): boolean {
-  return bookings.some(
-    (booking) =>
-      booking.id !== ignoreBookingId &&
-      occupiesSpace(booking, now) &&
-      spacesConflict(booking.spaceId, spaceId) &&
-      booking.date === date &&
-      intervalsOverlap(startTime, endTime, booking.startTime, booking.endTime),
-  );
 }
 
 export type TimeOption = {

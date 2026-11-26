@@ -59,7 +59,6 @@ export default function BookingSummaryScreen() {
     setSubmitting(true);
     try {
       const booking = await services.bookings.createSpaceBooking({
-        phone: session.phone,
         eventType,
         spaceId,
         date,

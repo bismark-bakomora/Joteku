@@ -77,6 +77,7 @@ declare
   v_count integer;
   v_json jsonb;
   v_payment uuid;
+  p public.payments;
 begin
   perform set_config('joteku.checks', '0', true);
 
@@ -307,6 +308,112 @@ begin
     'slot_unavailable', 'a time the admin blocked cannot be booked');
   perform pg_temp.check((select count(*) from public.get_busy_slots('hut-2', d + 20, d + 20)) = 1,
     'blocked times show as busy');
+
+  -- ----------------------------------------------------------------- payments
+  -- The mock provider approves 3 seconds after a payment starts, so each check
+  -- moves the payment's start back instead of waiting.
+  perform pg_temp.act_as(v_ama);
+  b := public.create_space_booking('birthday', 'hut-3', d + 30, '12:00', '15:00', 20, null, 'basic');
+  p := public.start_payment(b.id, 'space_booking', '+233241234567', 'mtn');
+  perform pg_temp.check(p.status = 'pending' and p.amount = b.amount_due and p.description = 'Hut 3 booking',
+    'a payment starts pending, for the amount the server worked out');
+  perform pg_temp.check((public.get_payment(p.id)).status = 'pending',
+    'a payment is not approved straight away');
+  perform pg_temp.act_as(v_kofi);
+  perform pg_temp.check_fails(format('select public.get_payment(%L)', p.id), 'not_found',
+    'customers cannot see each other''s payments');
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''space_booking'', ''+233241234567'', ''mtn'')', b.id),
+    'not_found', 'customers cannot pay for each other''s bookings');
+  perform pg_temp.act_as(null);
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''space_booking'', ''+233241234567'', ''mtn'')', b.id),
+    '42501', 'visitors cannot start payments');
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check((public.get_payment(p.id)).status = 'success', 'the mock approves an ordinary number');
+  select * into b from public.bookings where id = b.id;
+  perform pg_temp.check(b.status = 'confirmed' and b.amount_paid = b.amount_due and b.payment_id = p.id
+      and b.hold_expires_at is null,
+    'a successful payment confirms the booking on the server');
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''space_booking'', ''+233241234567'', ''mtn'')', b.id),
+    'invalid_state', 'a confirmed booking cannot be paid again');
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''table_deposit'', ''+233241234567'', ''mtn'')', b.id),
+    'invalid_payment', 'the purpose must match the booking');
+
+  -- A declined payment leaves the booking waiting; a pending one stays pending.
+  b := public.create_space_booking('birthday', 'hut-3', d + 31, '12:00', '15:00', 20);
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''space_booking'', ''0241234567'', ''mtn'')', b.id),
+    'invalid_phone', 'the mobile money number must be in +233 form');
+  p := public.start_payment(b.id, 'space_booking', '+233249999999', 'mtn');
+  v_payment := (public.start_payment(b.id, 'space_booking', '+233248888888', 'telecel')).id;
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id in (p.id, v_payment);
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check((public.get_payment(p.id)).status = 'failed', 'a number ending 9999 is declined');
+  perform pg_temp.check((public.get_payment(v_payment)).status = 'pending', 'a number ending 8888 stays pending');
+  perform pg_temp.check((select status from public.bookings where id = b.id) = 'pending_payment',
+    'a declined payment does not confirm the booking');
+
+  -- The time is taken while the payment is pending: the money goes back.
+  b := public.create_space_booking('birthday', 'hut-4', d + 32, '12:00', '15:00', 20);
+  p := public.start_payment(b.id, 'space_booking', '+233241234567', 'mtn');
+  perform public.release_hold(b.id);
+  perform pg_temp.act_as(v_kofi);
+  b2 := public.create_space_booking('birthday', 'hut-4', d + 32, '13:00', '16:00', 20);
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform private.settle_pending_payments();
+  select * into b from public.bookings where id = b.id;
+  perform pg_temp.check(b.status = 'cancelled' and b.refunded_amount = p.amount,
+    'a payment for a time that was taken meanwhile does not confirm it');
+  perform pg_temp.check(exists (
+      select 1 from public.payments
+      where refund_of = p.id and type = 'refund' and amount = p.amount and phone = p.phone),
+    'and the whole payment is refunded to the number that paid');
+  perform pg_temp.act_as(v_ama);
+  perform pg_temp.check_fails(format('select public.restart_hold(%L)', b.id), 'invalid_state',
+    'a refunded booking cannot be held again');
+
+  -- Released before paying, then paid while the time is still free: it comes back.
+  b := public.create_space_booking('meeting', 'hut-1', d + 33, '12:00', '14:00', 10);
+  p := public.start_payment(b.id, 'space_booking', '+233241234567', 'mtn');
+  perform public.release_hold(b.id);
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform public.get_payment(p.id);
+  perform pg_temp.check((select status from public.bookings where id = b.id) = 'confirmed',
+    'a payment for a released hold whose time is still free confirms it');
+
+  -- Table deposit, then the catering balance on an event booking.
+  b := public.create_table_reservation(d + 33, '19:00', 4);
+  p := public.start_payment(b.id, 'table_deposit', '+233241234567', 'airteltigo');
+  perform pg_temp.check(p.amount = 50 and p.description = 'Table reservation deposit',
+    'a table deposit is paid through the same function');
+  b := public.create_space_booking('wedding', 'whole-venue', d + 34, '12:00', '18:00', 150,
+    null, null, 'Buffet for 150 guests');
+  perform pg_temp.check_fails(
+    format('select public.start_payment(%L, ''catering_balance'', ''+233241234567'', ''mtn'')', b.id),
+    'invalid_state', 'catering cannot be paid before it is quoted');
+  perform pg_temp.act_as_owner();
+  update public.bookings set status = 'confirmed', amount_paid = amount_due, hold_expires_at = null where id = b.id;
+  update public.catering_requests set status = 'quoted', quote_amount = 6500, quoted_at = now() where booking_id = b.id;
+  perform pg_temp.act_as(v_ama);
+  p := public.start_payment(b.id, 'catering_balance', '+233241234567', 'mtn');
+  perform pg_temp.check(p.amount = 6500, 'the catering balance is the quoted amount');
+  perform pg_temp.act_as_owner();
+  update public.payments set created_at = now() - interval '1 minute' where id = p.id;
+  perform pg_temp.act_as(v_ama);
+  perform public.get_payment(p.id);
+  perform pg_temp.check((select status = 'paid' and payment_id = p.id from public.catering_requests where booking_id = b.id),
+    'a successful catering payment marks the quote paid');
+  perform pg_temp.check((select status from public.bookings where id = b.id) = 'confirmed',
+    'paying catering does not change the booking itself');
 
   perform pg_temp.act_as_owner();
   raise exception 'JOTEKU TESTS PASSED (% checks)', current_setting('joteku.checks');

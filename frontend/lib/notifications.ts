@@ -1,5 +1,4 @@
 import { contact } from '@/data/contact';
-import { spaces } from '@/data/spaces';
 import { Booking } from '@/types/booking';
 import { AppNotification } from '@/types/notification';
 import { Transaction } from '@/types/payment';
@@ -17,8 +16,7 @@ function describe(booking: Booking): string {
   if (booking.kind === 'table') {
     return `Your table for ${booking.partySize}`;
   }
-  const space = spaces.find((candidate) => candidate.id === booking.spaceId);
-  return `Your ${eventTypeLabel(booking.eventType).toLowerCase()} at ${space?.name ?? 'Joteku'}`;
+  return `Your ${eventTypeLabel(booking.eventType).toLowerCase()} at ${booking.spaceName}`;
 }
 
 // `original` describes the date the booking had before any date change, so older
