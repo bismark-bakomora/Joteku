@@ -1,0 +1,991 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-27T02:45:23.107Z",
+  "title": "Design System: Joteku",
+  "extensions": {
+    "colorMeta": {
+      "green": {
+        "role": "primary",
+        "displayName": "Hut Green",
+        "canonical": "#185232",
+        "oklch": "oklch(39.2% 0.081 155.3)",
+        "tonalRamp": [
+          "#070d09",
+          "#182b1f",
+          "#294e37",
+          "#3c7452",
+          "#639776",
+          "#95b8a0",
+          "#c3d7c9",
+          "#e8f1eb"
+        ],
+        "sharedWith": "frontend/theme/colors.ts lightColors.primary and brand; app.json; admin themeColor",
+        "mobileDark": "#8FD0A3"
+      },
+      "green-hover": {
+        "role": "primary",
+        "displayName": "Canopy Green",
+        "canonical": "#1f6340",
+        "oklch": "oklch(44.7% 0.089 157.0)",
+        "tonalRamp": [
+          "#070d09",
+          "#162c1f",
+          "#244f37",
+          "#337551",
+          "#5d9875",
+          "#91b9a0",
+          "#c1d8c9",
+          "#e8f1eb"
+        ]
+      },
+      "green-press": {
+        "role": "primary",
+        "displayName": "Forest Floor",
+        "canonical": "#0f3d24",
+        "oklch": "oklch(32.1% 0.067 155.5)",
+        "tonalRamp": [
+          "#080c09",
+          "#1b2b20",
+          "#2f4d3a",
+          "#457256",
+          "#6b9579",
+          "#9ab6a3",
+          "#c6d6cb",
+          "#e9f1ec"
+        ]
+      },
+      "on-green": {
+        "role": "primary",
+        "displayName": "On Green",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d1d1d1",
+          "#eeeeee"
+        ]
+      },
+      "on-green-muted": {
+        "role": "primary",
+        "displayName": "On Green Muted",
+        "canonical": "#b9dcc4",
+        "oklch": "oklch(86.2% 0.050 155.3)",
+        "tonalRamp": [
+          "#090c0a",
+          "#1e2a22",
+          "#364b3d",
+          "#4f6f5a",
+          "#74927d",
+          "#9fb4a6",
+          "#c9d5cc",
+          "#ebf0ec"
+        ]
+      },
+      "rail-text": {
+        "role": "primary",
+        "displayName": "Rail Text",
+        "canonical": "#e1ede4",
+        "oklch": "oklch(93.5% 0.017 153.6)",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#242825",
+          "#404742",
+          "#5f6961",
+          "#828c85",
+          "#a9b0ab",
+          "#ced2cf",
+          "#edefee"
+        ]
+      },
+      "mint": {
+        "role": "primary",
+        "displayName": "Mint",
+        "canonical": "#b4f0c5",
+        "oklch": "oklch(90.3% 0.085 153.3)",
+        "tonalRamp": [
+          "#070d09",
+          "#182c1e",
+          "#294f35",
+          "#3c744f",
+          "#639773",
+          "#95b89f",
+          "#c3d7c8",
+          "#e8f1ea"
+        ]
+      },
+      "on-mint": {
+        "role": "primary",
+        "displayName": "On Mint",
+        "canonical": "#165131",
+        "oklch": "oklch(38.8% 0.081 155.5)",
+        "tonalRamp": [
+          "#070d09",
+          "#182c1f",
+          "#294e37",
+          "#3c7452",
+          "#639776",
+          "#95b8a0",
+          "#c3d7c9",
+          "#e8f1eb"
+        ]
+      },
+      "mint-soft": {
+        "role": "primary",
+        "displayName": "Soft Mint",
+        "canonical": "#e1ede4",
+        "oklch": "oklch(93.5% 0.017 153.6)",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#242825",
+          "#404742",
+          "#5f6961",
+          "#828c85",
+          "#a9b0ab",
+          "#ced2cf",
+          "#edefee"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Cream Paper",
+        "canonical": "#fff8f3",
+        "oklch": "oklch(98.3% 0.010 58.2)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282624",
+          "#484441",
+          "#6b6561",
+          "#8e8884",
+          "#b1adaa",
+          "#d3d0cf",
+          "#efeeed"
+        ],
+        "mobileDark": "#15130F"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d1d1d1",
+          "#eeeeee"
+        ],
+        "mobileDark": "#221F1A"
+      },
+      "surface-muted": {
+        "role": "neutral",
+        "displayName": "Warm Parchment",
+        "canonical": "#faf2eb",
+        "oklch": "oklch(96.5% 0.013 63.9)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282624",
+          "#494440",
+          "#6b655f",
+          "#8e8882",
+          "#b2ada9",
+          "#d3d0ce",
+          "#efeeed"
+        ]
+      },
+      "surface-container": {
+        "role": "neutral",
+        "displayName": "Sand",
+        "canonical": "#f4ede6",
+        "oklch": "oklch(95.0% 0.012 67.7)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282624",
+          "#484440",
+          "#6b655f",
+          "#8e8882",
+          "#b1ada9",
+          "#d3d0ce",
+          "#efeeed"
+        ]
+      },
+      "surface-high": {
+        "role": "neutral",
+        "displayName": "Dune",
+        "canonical": "#eee7e0",
+        "oklch": "oklch(93.2% 0.012 67.7)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282624",
+          "#484440",
+          "#6b655f",
+          "#8e8882",
+          "#b1ada9",
+          "#d3d0ce",
+          "#efeeed"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Linen Rule",
+        "canonical": "#e8e2d8",
+        "oklch": "oklch(91.5% 0.015 80.7)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282623",
+          "#48443f",
+          "#6b655d",
+          "#8d8880",
+          "#b1ada7",
+          "#d3d1cd",
+          "#efeeed"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Dry Reed",
+        "canonical": "#cfc6ba",
+        "oklch": "oklch(83.1% 0.019 75.3)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#292622",
+          "#49443d",
+          "#6d655a",
+          "#90887d",
+          "#b2ada6",
+          "#d4d0cc",
+          "#f0eeec"
+        ]
+      },
+      "outline": {
+        "role": "neutral",
+        "displayName": "Stone",
+        "canonical": "#717971",
+        "oklch": "oklch(56.7% 0.015 145.4)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242724",
+          "#414741",
+          "#616961",
+          "#848c84",
+          "#aab0aa",
+          "#cfd2cf",
+          "#edefed"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1e1b17",
+        "oklch": "oklch(22.4% 0.009 75.2)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#272624",
+          "#474541",
+          "#696561",
+          "#8c8884",
+          "#b0adaa",
+          "#d2d1cf",
+          "#efeeed"
+        ]
+      },
+      "text-subtle": {
+        "role": "neutral",
+        "displayName": "Moss Ink",
+        "canonical": "#404942",
+        "oklch": "oklch(39.5% 0.016 152.1)",
+        "tonalRamp": [
+          "#0a0b0b",
+          "#242725",
+          "#404742",
+          "#5f6961",
+          "#838c85",
+          "#a9b0ab",
+          "#ced2cf",
+          "#edefee"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "#625f58",
+        "oklch": "oklch(48.6% 0.012 87.5)",
+        "tonalRamp": [
+          "#0b0b0a",
+          "#272624",
+          "#474540",
+          "#69665f",
+          "#8c8982",
+          "#b0aea9",
+          "#d2d1ce",
+          "#efeeed"
+        ],
+        "mobileLight": "#6B6B63"
+      },
+      "gold": {
+        "role": "tertiary",
+        "displayName": "Thatch Gold",
+        "canonical": "#cca730",
+        "oklch": "oklch(74.2% 0.137 90.6)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#312500",
+          "#594100",
+          "#846000",
+          "#a6850b",
+          "#c2ac6e",
+          "#ddd0ae",
+          "#f4eedf"
+        ],
+        "mobileDark": "#E2BE4A"
+      },
+      "gold-hover": {
+        "role": "tertiary",
+        "displayName": "Thatch Gold Hover",
+        "canonical": "#d8b440",
+        "oklch": "oklch(78.1% 0.137 91.3)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#312500",
+          "#594200",
+          "#836100",
+          "#a5850b",
+          "#c2ac6e",
+          "#dcd1ae",
+          "#f3eedf"
+        ]
+      },
+      "on-gold": {
+        "role": "tertiary",
+        "displayName": "Dark Thatch",
+        "canonical": "#3d2f00",
+        "oklch": "oklch(31.2% 0.064 90.8)",
+        "tonalRamp": [
+          "#0d0b07",
+          "#2b2617",
+          "#4e4427",
+          "#74653a",
+          "#978860",
+          "#b7ad92",
+          "#d6d1c1",
+          "#f1eee7"
+        ],
+        "mobileLight": "#4F3D00"
+      },
+      "gold-soft": {
+        "role": "tertiary",
+        "displayName": "Pale Gold",
+        "canonical": "#ffe088",
+        "oklch": "oklch(91.4% 0.113 90.6)",
+        "tonalRamp": [
+          "#0e0b04",
+          "#2f2506",
+          "#564200",
+          "#7f6200",
+          "#a18635",
+          "#bfad7a",
+          "#dbd1b4",
+          "#f3eee2"
+        ]
+      },
+      "on-gold-soft": {
+        "role": "tertiary",
+        "displayName": "On Pale Gold",
+        "canonical": "#241a00",
+        "oklch": "oklch(22.4% 0.046 89.1)",
+        "tonalRamp": [
+          "#0c0b08",
+          "#2a261c",
+          "#4c4430",
+          "#716548",
+          "#93886c",
+          "#b5ad9a",
+          "#d5d1c5",
+          "#f0eee9"
+        ]
+      },
+      "brown": {
+        "role": "secondary",
+        "displayName": "Clay Brown",
+        "canonical": "#805533",
+        "oklch": "oklch(48.9% 0.075 58.1)",
+        "tonalRamp": [
+          "#0f0a07",
+          "#322317",
+          "#5b3e27",
+          "#865b39",
+          "#a97f5f",
+          "#c5a791",
+          "#dfcdc1",
+          "#f5ede7"
+        ],
+        "mobileDark": "#F1BC94"
+      },
+      "brown-tint": {
+        "role": "secondary",
+        "displayName": "Peach Clay",
+        "canonical": "#ffdcc5",
+        "oklch": "oklch(91.8% 0.050 55.3)",
+        "tonalRamp": [
+          "#0e0a08",
+          "#2f241d",
+          "#544032",
+          "#7d5f4b",
+          "#a0826f",
+          "#bea99c",
+          "#dacec6",
+          "#f3edea"
+        ]
+      },
+      "on-brown-tint": {
+        "role": "secondary",
+        "displayName": "On Peach Clay",
+        "canonical": "#653d1e",
+        "oklch": "oklch(40.1% 0.072 56.6)",
+        "tonalRamp": [
+          "#0f0a07",
+          "#322318",
+          "#5a3e29",
+          "#865b3c",
+          "#a97f62",
+          "#c5a793",
+          "#decdc2",
+          "#f4ede8"
+        ]
+      },
+      "success": {
+        "role": "status",
+        "displayName": "Success Green",
+        "canonical": "#167d46",
+        "oklch": "oklch(52.1% 0.124 153.7)",
+        "tonalRamp": [
+          "#060d08",
+          "#0e2e1a",
+          "#10522d",
+          "#107a43",
+          "#499d68",
+          "#87bd97",
+          "#bcdac4",
+          "#e6f2e9"
+        ]
+      },
+      "confirmed-bg": {
+        "role": "status",
+        "displayName": "Confirmed Tint",
+        "canonical": "#d7f0e1",
+        "oklch": "oklch(93.3% 0.033 159.4)",
+        "tonalRamp": [
+          "#090c0a",
+          "#212924",
+          "#3a4940",
+          "#566c5f",
+          "#7a8f83",
+          "#a3b2a9",
+          "#cbd3ce",
+          "#ecefed"
+        ]
+      },
+      "confirmed-text": {
+        "role": "status",
+        "displayName": "Confirmed Text",
+        "canonical": "#12613a",
+        "oklch": "oklch(43.7% 0.098 156.1)",
+        "tonalRamp": [
+          "#060d09",
+          "#142c1e",
+          "#205035",
+          "#2d764e",
+          "#589a72",
+          "#8fba9e",
+          "#c0d8c8",
+          "#e7f2ea"
+        ]
+      },
+      "pending-bg": {
+        "role": "status",
+        "displayName": "Pending Tint",
+        "canonical": "#fff3d6",
+        "oklch": "oklch(96.6% 0.040 88.2)",
+        "tonalRamp": [
+          "#0c0b08",
+          "#2a261d",
+          "#4b4433",
+          "#70654c",
+          "#928870",
+          "#b4ad9c",
+          "#d5d1c7",
+          "#f0eeea"
+        ]
+      },
+      "pending-text": {
+        "role": "status",
+        "displayName": "Pending Ochre",
+        "canonical": "#735c00",
+        "oklch": "oklch(48.4% 0.099 91.8)",
+        "tonalRamp": [
+          "#0d0b05",
+          "#2e260c",
+          "#53430e",
+          "#7b630f",
+          "#9d8743",
+          "#bcad81",
+          "#d9d1b8",
+          "#f2eee4"
+        ]
+      },
+      "cancelled-bg": {
+        "role": "status",
+        "displayName": "Cancelled Rose",
+        "canonical": "#ffdad6",
+        "oklch": "oklch(91.8% 0.042 25.2)",
+        "tonalRamp": [
+          "#0e0a0a",
+          "#2f2322",
+          "#543f3d",
+          "#7d5d5a",
+          "#9f817d",
+          "#bea8a6",
+          "#dacecc",
+          "#f3edec"
+        ]
+      },
+      "error": {
+        "role": "status",
+        "displayName": "Error Red",
+        "canonical": "#ba1a1a",
+        "oklch": "oklch(50.6% 0.193 27.7)",
+        "tonalRamp": [
+          "#160605",
+          "#46110e",
+          "#7f1714",
+          "#bb1c1b",
+          "#e05348",
+          "#f18f83",
+          "#fac1b9",
+          "#ffe8e4"
+        ]
+      },
+      "error-hover": {
+        "role": "status",
+        "displayName": "Error Red Hover",
+        "canonical": "#9c1515",
+        "oklch": "oklch(44.5% 0.169 27.6)",
+        "tonalRamp": [
+          "#140706",
+          "#431512",
+          "#79221d",
+          "#b23029",
+          "#d75d52",
+          "#e99489",
+          "#f6c3bc",
+          "#ffe9e5"
+        ]
+      },
+      "on-error": {
+        "role": "status",
+        "displayName": "On Error",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#262626",
+          "#454545",
+          "#666666",
+          "#898989",
+          "#aeaeae",
+          "#d1d1d1",
+          "#eeeeee"
+        ]
+      },
+      "error-text": {
+        "role": "status",
+        "displayName": "Deep Error",
+        "canonical": "#8c1111",
+        "oklch": "oklch(41.1% 0.156 27.7)",
+        "tonalRamp": [
+          "#140706",
+          "#411713",
+          "#762620",
+          "#ae372f",
+          "#d26256",
+          "#e5968c",
+          "#f3c4bd",
+          "#fee9e6"
+        ]
+      },
+      "error-border": {
+        "role": "status",
+        "displayName": "Rose Edge",
+        "canonical": "#f2b8b2",
+        "oklch": "oklch(83.4% 0.068 25.4)",
+        "tonalRamp": [
+          "#0f0a09",
+          "#33211f",
+          "#5d3b37",
+          "#895652",
+          "#ac7b76",
+          "#c8a4a0",
+          "#e0cbc9",
+          "#f5eceb"
+        ]
+      },
+      "placeholder": {
+        "role": "neutral",
+        "displayName": "Faded Ash",
+        "canonical": "#6f6a62",
+        "oklch": "oklch(52.6% 0.014 79.7)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282623",
+          "#48443f",
+          "#6a655d",
+          "#8d8881",
+          "#b1ada8",
+          "#d3d1cd",
+          "#efeeed"
+        ]
+      },
+      "roof": {
+        "role": "tertiary",
+        "displayName": "Roof Gold",
+        "canonical": "#cca730",
+        "oklch": "oklch(74.2% 0.137 90.6)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#312500",
+          "#594100",
+          "#846000",
+          "#a6850b",
+          "#c2ac6e",
+          "#ddd0ae",
+          "#f4eedf"
+        ]
+      },
+      "roof-line": {
+        "role": "tertiary",
+        "displayName": "Roof Thatch",
+        "canonical": "#4f3d00",
+        "oklch": "oklch(36.9% 0.075 89.9)",
+        "tonalRamp": [
+          "#0d0b06",
+          "#2d2614",
+          "#504420",
+          "#77642f",
+          "#9a8857",
+          "#b9ad8c",
+          "#d8d1be",
+          "#f1eee6"
+        ],
+        "mobileLight": "#4F3D00 (onGold)"
+      },
+      "completed-bg": {
+        "role": "status",
+        "displayName": "Completed Tint",
+        "canonical": "#eee7e0",
+        "oklch": "oklch(93.2% 0.012 67.7)",
+        "tonalRamp": [
+          "#0c0b0a",
+          "#282624",
+          "#484440",
+          "#6b655f",
+          "#8e8882",
+          "#b1ada9",
+          "#d3d0ce",
+          "#efeeed"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles and the detail title (h1 and detail h2), Epilogue 600, balanced wrapping."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "h2 section headings, Epilogue 600."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, month name, empty-state titles; body face at bold, not Epilogue."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All running text and inputs at 17px; fact values step up to 20px/600."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Row dates, money row labels, secondary lines."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field, segment and fact labels."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Status pills, count badges and hints only."
+      },
+      "greeting": {
+        "displayName": "Greeting (customer app only)",
+        "purpose": "Noto Sans 600/700 for the Ga greeting \"Oobakɛ\", whose letters Epilogue and Plus Jakarta Sans lack."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card",
+        "value": "0 2px 8px rgba(36, 33, 29, 0.06)",
+        "purpose": "Cards, list rows and calendar days at rest."
+      },
+      {
+        "name": "raised",
+        "value": "0 8px 24px rgba(36, 33, 29, 0.12)",
+        "purpose": "The selected list row or calendar day, and the phone More panel."
+      },
+      {
+        "name": "bar",
+        "value": "0 -4px 16px rgba(36, 33, 29, 0.14)",
+        "purpose": "The phone bottom bar only."
+      },
+      {
+        "name": "focus-glow",
+        "value": "0 0 0 3px rgba(24, 82, 50, 0.18)",
+        "purpose": "Focused inputs, with a green border."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 3px solid #cca730; outline-offset: 2px",
+        "purpose": "Keyboard focus on every other control."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Every state transition."
+      },
+      {
+        "name": "state",
+        "value": "160ms",
+        "purpose": "Background and border changes on buttons, inputs, rows, segments, rail links."
+      },
+      {
+        "name": "press",
+        "value": "120ms translateY(1px)",
+        "purpose": "Button press."
+      },
+      {
+        "name": "hut-light",
+        "value": "200ms",
+        "purpose": "A hut tile lighting or dimming."
+      },
+      {
+        "name": "arrive",
+        "value": "240ms, opacity 0.4 to 1, translateY(8px) to 0",
+        "purpose": "Opening a booking detail."
+      },
+      {
+        "name": "shimmer",
+        "value": "1.4s ease-in-out infinite",
+        "purpose": "Loading skeletons."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "durations 0.01ms",
+        "purpose": "prefers-reduced-motion turns all motion off."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "picker-stack",
+        "value": "520px",
+        "purpose": "Whole-venue pick takes its own row."
+      },
+      {
+        "name": "phone-detail",
+        "value": "600px",
+        "purpose": "Facts grid to two columns, quote form to one."
+      },
+      {
+        "name": "login-stack",
+        "value": "800px",
+        "purpose": "Login drops the green brand panel."
+      },
+      {
+        "name": "bottom-bar",
+        "value": "900px",
+        "purpose": "Rail becomes a five-item bottom bar (Bookings, Calendar, Catering, Menu, More); list and detail become two screens."
+      },
+      {
+        "name": "narrow-list",
+        "value": "1180px",
+        "purpose": "List column narrows from 420px to 360px."
+      }
+    ],
+    "layout": {
+      "railWidth": "248px",
+      "listWidth": "420px",
+      "detailMaxWidth": "820px",
+      "bottomBar": "68px",
+      "tap": "48px"
+    }
+  },
+  "components": [
+    {
+      "name": "Gold Button",
+      "kind": "button",
+      "refersTo": "button-gold",
+      "description": "The one main action in a pane.",
+      "html": "<button class=\"ds-btn ds-btn-gold\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M22 2 11 13\"/><path d=\"M22 2 15 22l-4-9-9-4 20-7z\"/></svg>Update catering quote</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1.5px solid transparent; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.0625rem; white-space: nowrap; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1), border-color 160ms cubic-bezier(0.16,1,0.3,1), transform 120ms cubic-bezier(0.16,1,0.3,1); } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; } .ds-btn-gold { background: #cca730; color: #3d2f00; } .ds-btn-gold:hover { background: #d8b440; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Green confirming actions (save, block time, sign in).",
+      "html": "<button class=\"ds-btn-primary\">Block this time</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1.5px solid transparent; background: #185232; color: #fff; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.0625rem; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-primary:hover { background: #1f6340; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Brown secondary action beside the gold one.",
+      "html": "<button class=\"ds-btn-outline\">Cancel for Joteku</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1.5px solid #805533; background: transparent; color: #805533; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.0625rem; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-outline:hover { background: #ffdcc5; } .ds-btn-outline:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Minor actions: unblock, remove a rule, month arrows.",
+      "html": "<button class=\"ds-btn-quiet\">Unblock</button>",
+      "css": ".ds-btn-quiet { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1.5px solid transparent; background: #f4ede6; color: #185232; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.0625rem; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-btn-quiet:hover { background: #eee7e0; } .ds-btn-quiet:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled 48px field with optional hint.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Catering quote</span><input class=\"ds-input\" placeholder=\"Reference, name or phone\"><span class=\"ds-hint\">The customer pays it in the app.</span></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 4px; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; } .ds-label { font-weight: 600; font-size: 0.9375rem; color: #404942; } .ds-hint { font-size: 0.8125rem; color: #625f58; } .ds-input { min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1.5px solid #cfc6ba; background: #fff; font: inherit; font-size: 1.0625rem; color: #1e1b17; caret-color: #185232; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-input:hover { border-color: #717971; } .ds-input:focus { outline: none; border-color: #185232; box-shadow: 0 0 0 3px rgba(24,82,50,0.18); }"
+    },
+    {
+      "name": "Status Pills",
+      "kind": "chip",
+      "refersTo": "pill-confirmed",
+      "description": "Booking status and money-state pills.",
+      "html": "<span class=\"ds-pill ds-pill-confirmed\"><i></i>Confirmed</span> <span class=\"ds-pill ds-pill-pending\"><i></i>Pending payment</span> <span class=\"ds-pill ds-pill-cancelled\"><i></i>Cancelled</span> <span class=\"ds-pill ds-pill-gold\">Quoted, not paid</span>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-size: 0.8125rem; font-weight: 700; white-space: nowrap; } .ds-pill i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; } .ds-pill-confirmed { background: #d7f0e1; color: #12613a; } .ds-pill-pending { background: #fff3d6; color: #735c00; } .ds-pill-cancelled { background: #ffdad6; color: #ba1a1a; } .ds-pill-gold { background: #ffe088; color: #241a00; }"
+    },
+    {
+      "name": "Rail Navigation",
+      "kind": "nav",
+      "refersTo": "rail",
+      "description": "Green side rail; cream tab marks the current page, gold counts at right. On phones it becomes a five-item bottom bar whose More tab raises a white panel (16px radius, raised shadow) with Payments, Prices & settings and Sign out as 52px rows.",
+      "html": "<nav class=\"ds-rail\"><a class=\"ds-rail-link\" aria-current=\"page\">Bookings<span class=\"ds-count\">1</span></a><a class=\"ds-rail-link\">Calendar</a><a class=\"ds-rail-link\">Catering quotes<span class=\"ds-count\">2</span></a></nav>",
+      "css": ".ds-rail { display: flex; flex-direction: column; gap: 4px; width: 248px; padding: 24px 16px; background: #185232; color: #e1ede4; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; } .ds-rail-link { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 12px; border-radius: 12px; font-weight: 600; font-size: 1.0625rem; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-rail-link:hover { background: #1f6340; } .ds-rail-link[aria-current='page'] { background: #fff8f3; color: #185232; } .ds-count { margin-left: auto; min-width: 26px; padding: 0 8px; border-radius: 999px; background: #cca730; color: #3d2f00; font-size: 0.9375rem; font-weight: 700; line-height: 24px; text-align: center; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Booking Row",
+      "kind": "card",
+      "refersTo": "list-row",
+      "description": "A list row: title and pill, date and time, phone and the small hut map; green border when selected.",
+      "html": "<button class=\"ds-row\" aria-current=\"true\"><span class=\"ds-row-top\"><b>Birthday · Hut 3</b><span class=\"ds-row-pill\">Confirmed</span></span><span class=\"ds-row-when\">Sat 5 Dec · 14:00 to 19:00</span><span class=\"ds-row-who\">020 000 0005</span></button>",
+      "css": ".ds-row { width: 320px; text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 12px 16px; border-radius: 12px; border: 2px solid transparent; background: #fff; box-shadow: 0 2px 8px rgba(36,33,29,0.06); font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; font-size: 1.0625rem; color: #1e1b17; cursor: pointer; transition: border-color 160ms cubic-bezier(0.16,1,0.3,1), box-shadow 160ms cubic-bezier(0.16,1,0.3,1); } .ds-row:hover { border-color: #cfc6ba; } .ds-row[aria-current='true'] { border-color: #185232; box-shadow: 0 8px 24px rgba(36,33,29,0.12); } .ds-row-top { display: flex; justify-content: space-between; gap: 8px; } .ds-row-pill { padding: 3px 10px; border-radius: 999px; background: #d7f0e1; color: #12613a; font-size: 0.8125rem; font-weight: 700; } .ds-row-when { color: #404942; font-size: 0.9375rem; } .ds-row-who { color: #625f58; font-size: 0.9375rem; font-variant-numeric: tabular-nums; } .ds-row:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; }"
+    },
+    {
+      "name": "Hut Map",
+      "kind": "custom",
+      "refersTo": "hut-tile-lit",
+      "description": "Signature: four hut tiles lit green with gold roofs for the huts a booking takes.",
+      "html": "<span class=\"ds-hutmap\" role=\"img\" aria-label=\"Takes Hut 1 and Hut 3\"><span class=\"ds-hut\" data-lit><svg viewBox=\"0 0 32 18\"><path d=\"M16 1 L31 14 Q16 11.5 1 14 Z\"/></svg><b>1</b></span><span class=\"ds-hut\"><svg viewBox=\"0 0 32 18\"><path d=\"M16 1 L31 14 Q16 11.5 1 14 Z\"/></svg><b>2</b></span><span class=\"ds-hut\" data-lit><svg viewBox=\"0 0 32 18\"><path d=\"M16 1 L31 14 Q16 11.5 1 14 Z\"/></svg><b>3</b></span><span class=\"ds-hut\"><svg viewBox=\"0 0 32 18\"><path d=\"M16 1 L31 14 Q16 11.5 1 14 Z\"/></svg><b>4</b></span></span>",
+      "css": ".ds-hutmap { display: inline-flex; gap: 6px; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; } .ds-hut { width: 48px; height: 44px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #eee7e0; color: #625f58; transition: background-color 200ms cubic-bezier(0.16,1,0.3,1); } .ds-hut[data-lit] { background: #185232; color: #fff; } .ds-hut svg { width: 28px; height: 15px; fill: #cfc6ba; } .ds-hut[data-lit] svg { fill: #cca730; } .ds-hut b { font-size: 13px; font-weight: 700; line-height: 1; margin-top: 2px; }"
+    },
+    {
+      "name": "Segmented Filter",
+      "kind": "chip",
+      "refersTo": "segment-selected",
+      "description": "When and Kind filters above a list; chosen option is green.",
+      "html": "<div class=\"ds-seg\"><button>Today</button><button aria-pressed=\"true\">Coming up</button><button>Past</button></div>",
+      "css": ".ds-seg { display: flex; gap: 4px; padding: 4px; background: #f4ede6; border-radius: 12px; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; } .ds-seg button { flex: 1 0 auto; min-height: 48px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font: inherit; font-weight: 600; font-size: 0.9375rem; color: #404942; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16,1,0.3,1); } .ds-seg button:hover { background: #eee7e0; } .ds-seg button[aria-pressed='true'] { background: #185232; color: #fff; } .ds-seg button:focus-visible { outline: 3px solid #cca730; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Hut Ledger",
+    "overview": "Joteku is one venue with four thatched huts, run by people who know every booking by name. The system reads like the venue's own ledger kept on warm paper: a deep hut-green frame, a cream ground, white cards that carry the facts, and a single gold mark for the thing to do next. It is the customer app's world first (built in React Native from `frontend/theme/`), and the admin web page (`admin/`, CSS variables in `admin/app/globals.css`) inherits it unchanged in hue and role, adding a side rail, a list-and-detail workspace and the hut map.\n\nDensity is generous by design. Body text is 17px on the web, every control the admin taps is at least 48px tall, and each screen offers few choices in plain words, because the people using both apps include older customers and an admin with basic software comfort who works from a phone at the venue as often as from a laptop. Hierarchy comes from size, weight and the green/cream contrast, not from decoration. Numbers that matter (money, times, counts) are set in tabular figures.\n\nThe admin refuses the KPI-tile dashboard and modal-heavy CRUD tables: work happens in one list-and-detail pane, like an inbox. The customer app adds a dark palette (`darkColors` in `frontend/theme/colors.ts`: warm near-black surfaces, lifted greens, browns and gold); the admin is light only (`color-scheme: light`).",
+    "keyCharacteristics": [
+      "Deep green frame (rail, bottom bar, selected states) around a cream ground and white cards.",
+      "Gold is the one action colour; brown is the reference and secondary-action colour.",
+      "Epilogue for headings, Plus Jakarta Sans for everything else, tabular numerals for money and times.",
+      "Soft, low, warm-tinted shadows; no borders on cards.",
+      "The hut map: four tiny thatched-hut tiles lit green for the huts a booking takes.",
+      "48px tap targets and 17px body text as floors, not targets."
+    ],
+    "rules": [
+      {
+        "name": "The One Gold Action Rule",
+        "section": "colors",
+        "body": "A pane carries at most one gold button, and it is the next thing the admin should do. Gold elsewhere is only for counts, the roof mark, the lit roof and focus. Everything else is green, quiet, brown outline or danger."
+      },
+      {
+        "name": "The Brown Reference Rule",
+        "section": "colors",
+        "body": "Booking references and the secondary action beside the gold one are Clay Brown. Brown never fills a large surface."
+      },
+      {
+        "name": "The Shared Palette Rule",
+        "section": "colors",
+        "body": "A colour change is made in both `admin/app/globals.css` and `frontend/theme/colors.ts` (light palette), so the two apps stay one world. Known deliberate differences: on-gold is darker on the web (#3d2f00 vs #4F3D00) and text-muted is darker on the web (#625f58 vs #6B6B63) for contrast at web sizes."
+      },
+      {
+        "name": "The Tabular Money Rule",
+        "section": "typography",
+        "body": "Every amount, time and count is set with tabular numerals (the `.num` class on the web), so columns of cedis and times line up."
+      },
+      {
+        "name": "The 17 Floor Rule",
+        "section": "typography",
+        "body": "Body text on the admin web page is never smaller than 17px; 13px is reserved for pills, badges and hints."
+      },
+      {
+        "name": "The Inbox Rule",
+        "section": "layout",
+        "body": "Admin work happens in a list on the left and a detail on the right; actions happen in the detail without leaving the page. No modal CRUD, no KPI tile grid."
+      },
+      {
+        "name": "The 48 Rule",
+        "section": "layout",
+        "body": "Every interactive control is at least 48px tall (`--tap`). Segmented options, small buttons and the search field included. Rail and More links are 52px, bottom-bar tabs 60px, hut picks 64px."
+      },
+      {
+        "name": "The Soft Ground Rule",
+        "section": "elevation",
+        "body": "Shadows are diffuse and low-opacity. No hard offset shadows, no dark drop shadows, no glassmorphism."
+      }
+    ],
+    "dos": [
+      "Do keep every tappable control at least 48px tall and body text at 17px on the web.",
+      "Do use one gold button per pane for the next action, with brown outline beside it for the secondary one.",
+      "Do set money, times and counts in tabular numerals and write cedis as GH₵.",
+      "Do show which huts a booking or block takes with the hut map wherever a booking appears.",
+      "Do take every colour, size, radius and shadow from the tokens (`admin/app/globals.css`, `frontend/theme/`), and change both apps together.",
+      "Do confirm destructive actions in place with the rose confirm panel, explaining the refund in plain words.",
+      "Do give every list and detail its loading, empty and error state."
+    ],
+    "donts": [
+      "Don't build KPI tile dashboards or modal-heavy CRUD tables for the admin.",
+      "Don't use gold for decoration, large fills, or more than one action per pane.",
+      "Don't use hard offset shadows, pure-black shadows or borders around cards.",
+      "Don't use uppercase tracked labels above headings or as section labels.",
+      "Don't set body text below 17px on the web or controls below 48px.",
+      "Don't hardcode a colour in a screen; add it to the tokens."
+    ]
+  }
+}

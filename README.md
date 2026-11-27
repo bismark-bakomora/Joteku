@@ -28,7 +28,7 @@ Payments are mocked for now, behind a simple interface so a real payment provide
 - [Expo Router](https://docs.expo.dev/router/introduction/) for file-based navigation
 - Epilogue and Plus Jakarta Sans fonts
 
-Planned for later: a Supabase backend and a separate Next.js admin web page.
+The backend is a hosted [Supabase](https://supabase.com) project (`backend/`). The admin web page is a separate Next.js app in `admin/`; see `admin/README.md`.
 
 ## Getting started
 

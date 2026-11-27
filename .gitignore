@@ -49,3 +49,7 @@ CLAUDE.md
 # generated native folders
 /frontend/ios
 /frontend/android
+
+# Next.js (admin)
+.next/
+next-env.d.ts

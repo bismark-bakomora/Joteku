@@ -1,0 +1,162 @@
+.groupTitle {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-md);
+  color: var(--brown);
+  margin-top: var(--space-3);
+}
+
+.groupTitle:first-child {
+  margin-top: 0;
+}
+
+.spaceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowText span {
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+}
+
+.rowIconTile {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  background: var(--mint-soft);
+  color: var(--green);
+}
+
+.rowIcon {
+  color: var(--brown);
+}
+
+.account {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.editor {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.editorHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.editorHead p {
+  color: var(--text-subtle);
+  max-width: 60ch;
+}
+
+.editorCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+}
+
+.saveRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.huts {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.huts p {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  max-width: 40ch;
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.tierHead {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--text-subtle);
+}
+
+.tierInput {
+  min-height: var(--tap);
+  width: 100%;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+}
+
+.tierInput:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(24, 82, 50, 0.18);
+}
+
+.tierRate {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+}
+
+.tierNote {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .twoCols {
+    grid-template-columns: 1fr;
+  }
+
+  .huts {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .saveRow > * {
+    flex: 1;
+  }
+}
