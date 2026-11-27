@@ -1,7 +1,7 @@
 import { formatGhs } from '@/lib/format';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography } from '@/theme';
 import { Space } from '@/types/space';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { Button } from './Button';
 import { Pill } from './Pill';
 import { fillImageStyle, spaceImages } from './spaceImages';
@@ -12,6 +12,7 @@ type SpaceCardProps = {
 };
 
 export function SpaceCard({ space, onBook }: SpaceCardProps) {
+  const styles = useStyles();
   const wholeVenue = space.id === 'whole-venue';
 
   return (
@@ -51,7 +52,7 @@ export function SpaceCard({ space, onBook }: SpaceCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     width: 272,
     backgroundColor: colors.surface,
@@ -106,4 +107,4 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     paddingHorizontal: spacing.md,
   },
-});
+}));

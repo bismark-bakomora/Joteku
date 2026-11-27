@@ -1,6 +1,6 @@
 import { useAnnounce } from '@/hooks/useAnnounce';
-import { colors, radii, spacing, typography } from '@/theme';
-import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
+import { Text, TextInput, TextInputProps, View } from 'react-native';
 
 type InputProps = TextInputProps & {
   label: string;
@@ -8,6 +8,8 @@ type InputProps = TextInputProps & {
 };
 
 export function Input({ label, error, ...props }: InputProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const hasError = Boolean(error);
   useAnnounce(error);
 
@@ -33,7 +35,7 @@ export function Input({ label, error, ...props }: InputProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     gap: spacing.xs,
   },
@@ -58,4 +60,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.error,
   },
-});
+}));

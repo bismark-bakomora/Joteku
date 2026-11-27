@@ -21,7 +21,7 @@ import {
 import { formatPhoneLocal } from '@/lib/phone';
 import { eventTypeLabel } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, fontFamilies, radii, spacing, typography } from '@/theme';
+import { fontFamilies, makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Booking } from '@/types/booking';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,6 +36,8 @@ type Phase =
   | { kind: 'expired' };
 
 export default function PayScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const { clear: clearCart } = useCart();
   const bookingState = useAsync(() => services.bookings.getBooking(bookingId), [bookingId]);
@@ -252,7 +254,7 @@ export default function PayScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -326,4 +328,4 @@ const styles = StyleSheet.create({
     ...typography.amount,
     color: colors.primary,
   },
-});
+}));

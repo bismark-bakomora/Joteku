@@ -1,8 +1,8 @@
 import { useAnnounce } from '@/hooks/useAnnounce';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Card } from './Card';
 
 type PaymentProblemProps = {
@@ -14,6 +14,8 @@ type PaymentProblemProps = {
 };
 
 export function PaymentProblem({ icon, title, message, error, children }: PaymentProblemProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   useAnnounce(`${title}. ${message}`);
 
   return (
@@ -27,7 +29,7 @@ export function PaymentProblem({ icon, title, message, error, children }: Paymen
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     alignItems: 'center',
     gap: spacing.sm,
@@ -53,4 +55,4 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.sm,
   },
-});
+}));

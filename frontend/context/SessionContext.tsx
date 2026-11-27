@@ -9,6 +9,7 @@ type SessionValue = {
   setSession: (session: Session) => void;
   updateProfile: (changes: ProfileChanges) => Promise<Session>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 };
 
 const SessionContext = createContext<SessionValue | undefined>(undefined);
@@ -46,9 +47,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setSessionState(null);
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    await services.auth.deleteAccount();
+    setSessionState(null);
+  }, []);
+
   const value = useMemo<SessionValue>(
-    () => ({ session, ready, setSession, updateProfile, signOut }),
-    [session, ready, setSession, updateProfile, signOut],
+    () => ({ session, ready, setSession, updateProfile, signOut, deleteAccount }),
+    [session, ready, setSession, updateProfile, signOut, deleteAccount],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

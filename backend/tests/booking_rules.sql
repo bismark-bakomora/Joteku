@@ -85,6 +85,7 @@ do $$
 declare
   v_ama uuid := gen_random_uuid();
   v_kofi uuid := gen_random_uuid();
+  v_esi uuid := gen_random_uuid();
   d date := current_date + 30;           -- a date well ahead
   b public.bookings;
   b2 public.bookings;
@@ -567,6 +568,31 @@ begin
   perform pg_temp.act_as_owner();
   perform pg_temp.check((select public and 'image/webp' = any (allowed_mime_types) from storage.buckets where id = 'menu-photos'),
     'menu photos have a public bucket for images');
+
+  -- ---------------------------------------------------------------------------
+  -- Deleting an account
+  -- ---------------------------------------------------------------------------
+  perform pg_temp.act_as_owner();
+  insert into auth.users (id, phone, aud, role) values (v_esi, '233200000903', 'authenticated', 'authenticated');
+  perform pg_temp.act_as(null);
+  perform pg_temp.check_fails('select public.delete_my_account()', '42501', 'visitors cannot delete accounts');
+  perform pg_temp.act_as(v_esi);
+  b := public.create_space_booking('birthday', 'hut-4', d + 50, '12:00', '15:00', 10);
+  perform pg_temp.check_fails('select public.delete_my_account()', 'invalid_state',
+    'an account with a booking still to come cannot be deleted');
+  perform pg_temp.act_as_owner();
+  update public.bookings set status = 'completed', hold_expires_at = null,
+    starts_at = now() - interval '10 days', ends_at = now() - interval '10 days' + interval '3 hours'
+  where id = b.id;
+  perform pg_temp.act_as(v_esi);
+  perform public.delete_my_account();
+  perform pg_temp.act_as_owner();
+  perform pg_temp.check(not exists (select 1 from auth.users where id = v_esi), 'deleting removes the sign-in');
+  perform pg_temp.check(not exists (select 1 from public.profiles where id = v_esi), 'deleting removes the profile');
+  perform pg_temp.check((select customer_id is null and phone = '+233200000903' from public.bookings where id = b.id),
+    'past bookings stay for the venue''s records, unlinked');
+  perform pg_temp.check((select count(*) from public.profiles where id in (v_ama, v_kofi)) = 2,
+    'deleting one account leaves the others');
 
   perform pg_temp.act_as_owner();
   raise exception 'JOTEKU TESTS PASSED (% checks)', current_setting('joteku.checks');

@@ -1,5 +1,5 @@
-import { colors, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 
 type ErrorStateProps = {
@@ -13,6 +13,7 @@ export function ErrorState({
   message,
   onRetry,
 }: ErrorStateProps) {
+  const styles = useStyles();
   return (
     <View style={styles.wrap}>
       <Text style={styles.title}>{title}</Text>
@@ -24,7 +25,7 @@ export function ErrorState({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     alignItems: 'center',
     padding: spacing.lg,
@@ -44,4 +45,4 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     alignSelf: 'stretch',
   },
-});
+}));

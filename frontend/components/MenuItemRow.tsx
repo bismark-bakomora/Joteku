@@ -1,7 +1,7 @@
 import { formatGhs } from '@/lib/format';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography } from '@/theme';
 import { MenuItem } from '@/types/menu';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 import { PhotoPlaceholder } from './PhotoPlaceholder';
 
@@ -11,6 +11,7 @@ type MenuItemRowProps = {
 };
 
 export function MenuItemRow({ item, onAdd }: MenuItemRowProps) {
+  const styles = useStyles();
   const isDrink = item.kind === 'drink';
 
   return (
@@ -41,7 +42,7 @@ export function MenuItemRow({ item, onAdd }: MenuItemRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -93,4 +94,4 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: spacing.md,
   },
-});
+}));

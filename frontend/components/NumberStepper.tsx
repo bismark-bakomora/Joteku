@@ -1,7 +1,7 @@
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 
 type NumberStepperProps = {
   value: number;
@@ -13,6 +13,8 @@ type NumberStepperProps = {
 
 // Buttons for small changes, and the number can be typed for big ones like 150 guests.
 export function NumberStepper({ value, onChange, min, max, label }: NumberStepperProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const clamp = (next: number) => Math.max(min, max === undefined ? next : Math.min(max, next));
   const [text, setText] = useState(String(value));
   const [editing, setEditing] = useState(false);
@@ -73,7 +75,7 @@ export function NumberStepper({ value, onChange, min, max, label }: NumberSteppe
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   stepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -97,4 +99,4 @@ const styles = StyleSheet.create({
     color: colors.primary,
     paddingHorizontal: spacing.xs,
   },
-});
+}));

@@ -7,11 +7,12 @@ import { contact } from '@/data/contact';
 import { useAsync } from '@/hooks/useAsync';
 import { cancellationPolicy, paymentTerms, tableReservationPolicy } from '@/lib/policies';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
-import { StyleSheet, Text } from 'react-native';
+import { Text } from 'react-native';
 
 export default function TermsScreen() {
+  const styles = useStyles();
   const settings = useAsync(() => services.venue.getSettings());
 
   return (
@@ -47,7 +48,7 @@ export default function TermsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
     gap: spacing.md,
@@ -56,4 +57,4 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textSubtle,
   },
-});
+}));

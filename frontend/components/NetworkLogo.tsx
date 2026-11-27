@@ -1,4 +1,4 @@
-import { colors, radii } from '@/theme';
+import { lightColors, makeStyles, radii } from '@/theme';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { Image, StyleSheet, View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
@@ -23,6 +23,7 @@ const TELECEL_XML = `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"
 </svg>`;
 
 export function NetworkLogo({ network }: { network: MobileMoneyNetwork }) {
+  const styles = useStyles();
   return (
     <View style={[styles.tile, network === 'airteltigo' && styles.plainTile]}>
       {network === 'mtn' ? <SvgXml height={SIZE} width={SIZE} xml={MTN_XML} /> : null}
@@ -34,7 +35,7 @@ export function NetworkLogo({ network }: { network: MobileMoneyNetwork }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   tile: {
     width: SIZE,
     height: SIZE,
@@ -43,8 +44,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // AT's mark is drawn on white, so its tile stays white in dark mode too.
   plainTile: {
-    backgroundColor: colors.surface,
+    backgroundColor: lightColors.surface,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
   },
@@ -52,4 +54,4 @@ const styles = StyleSheet.create({
     width: 28,
     height: 26,
   },
-});
+}));

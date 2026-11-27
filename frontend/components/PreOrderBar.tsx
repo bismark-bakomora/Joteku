@@ -4,10 +4,10 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { formatGhs } from '@/lib/format';
 import { tablePayment } from '@/lib/pricing';
 import { services } from '@/services';
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 
 type PreOrderBarProps = {
@@ -17,6 +17,7 @@ type PreOrderBarProps = {
 // Floats above the tab bar while the pre-order has items. It reports its height
 // so the screen can leave room for it as well as for the tab bar.
 export function PreOrderBar({ onHeightChange }: PreOrderBarProps) {
+  const styles = useStyles();
   const { itemCount, total } = useCart();
   const clearance = useTabBarClearance();
   const settings = useAsync(() => services.venue.getSettings());
@@ -58,7 +59,7 @@ export function PreOrderBar({ onHeightChange }: PreOrderBarProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     position: 'absolute',
     left: spacing.md,
@@ -85,4 +86,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.surfaceHigh,
   },
-});
+}));

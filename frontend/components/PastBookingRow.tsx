@@ -1,9 +1,9 @@
 import { formatDateShort, formatGhs } from '@/lib/format';
 import { bookingTitle } from '@/lib/receipt';
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Booking } from '@/types/booking';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { StatusBadge } from './StatusBadge';
 
 type PastBookingRowProps = {
@@ -12,6 +12,8 @@ type PastBookingRowProps = {
 };
 
 export function PastBookingRow({ booking, onPress }: PastBookingRowProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const refunded = booking.refundedAmount > 0;
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.row}>
@@ -40,7 +42,7 @@ export function PastBookingRow({ booking, onPress }: PastBookingRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     minHeight: sizes.tapTarget + 24,
     flexDirection: 'row',
@@ -82,4 +84,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textMuted,
   },
-});
+}));

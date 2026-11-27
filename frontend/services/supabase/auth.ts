@@ -6,6 +6,7 @@ import { isValidEmail } from '@/lib/validation';
 import { OtpPurpose, Session } from '@/types/auth';
 import { AuthError, User } from '@supabase/supabase-js';
 import { AuthService, ProfileChanges, SignUpDetails } from '../types';
+import { callFunction } from './rows';
 
 // The last profile seen, so the app still knows who is signed in on a weak network.
 const CACHED_SESSION_KEY = 'session';
@@ -174,6 +175,13 @@ export class SupabaseAuthService implements AuthService {
 
   async signOut(): Promise<void> {
     await supabase.auth.signOut();
+    await storage.remove(CACHED_SESSION_KEY);
+  }
+
+  async deleteAccount(): Promise<void> {
+    await callFunction<null>('delete_my_account', {});
+    // The account is gone on the server, so only this phone's copy is left to clear.
+    await supabase.auth.signOut({ scope: 'local' });
     await storage.remove(CACHED_SESSION_KEY);
   }
 }

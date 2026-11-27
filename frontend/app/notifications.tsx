@@ -6,12 +6,12 @@ import { useSession } from '@/context/SessionContext';
 import { useAsync } from '@/hooks/useAsync';
 import { formatStamp } from '@/lib/format';
 import { services } from '@/services';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { AppNotification, NotificationKind } from '@/types/notification';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 const ICONS: Record<NotificationKind, keyof typeof Ionicons.glyphMap> = {
   confirmed: 'checkmark-circle-outline',
@@ -24,6 +24,8 @@ const ICONS: Record<NotificationKind, keyof typeof Ionicons.glyphMap> = {
 };
 
 function NotificationRow({ item }: { item: AppNotification }) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <Pressable
       accessibilityLabel={`${item.read ? '' : 'New. '}${item.title}. ${item.body}`}
@@ -50,6 +52,7 @@ function NotificationRow({ item }: { item: AppNotification }) {
 }
 
 export default function NotificationsScreen() {
+  const styles = useStyles();
   const { session } = useSession();
   const { refresh } = useNotifications();
   const phone = session?.phone ?? null;
@@ -99,7 +102,7 @@ export default function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
   },
@@ -155,4 +158,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textMuted,
   },
-});
+}));

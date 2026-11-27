@@ -17,15 +17,17 @@ import { useAsync } from '@/hooks/useAsync';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { services } from '@/services';
-import { colors, fontFamilies, radii, shadows, spacing, typography } from '@/theme';
+import { fontFamilies, makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { MenuItem } from '@/types/menu';
 import { Space } from '@/types/space';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, ScrollView, Text, View } from 'react-native';
 
 export default function HomeScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { toast, show } = useToast();
   const [barHeight, setBarHeight] = useState(0);
   const clearance = useTabBarClearance();
@@ -213,7 +215,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -243,11 +245,11 @@ const styles = StyleSheet.create({
   heroTitle: {
     ...typography.headline,
     fontFamily: fontFamilies.greeting,
-    color: colors.onPrimary,
+    color: colors.onBrand,
   },
   heroSubtitle: {
     ...typography.caption,
-    color: colors.primarySoftDim,
+    color: colors.brandDim,
   },
   contactStrip: {
     backgroundColor: colors.surfaceMuted,
@@ -330,4 +332,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textSubtle,
   },
-});
+}));

@@ -1,6 +1,6 @@
-import { colors, sizes, spacing } from '@/theme';
+import { makeStyles, sizes, spacing } from '@/theme';
 import { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { ScrollView, View, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ScreenContainerProps = {
@@ -16,6 +16,7 @@ export function ScreenContainer({
   style,
   contentStyle,
 }: ScreenContainerProps) {
+  const styles = useStyles();
   if (scroll) {
     return (
       <SafeAreaView style={[styles.safe, style]} edges={['top', 'left', 'right']}>
@@ -38,7 +39,7 @@ export function ScreenContainer({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   safe: {
     flex: 1,
     backgroundColor: colors.background,
@@ -56,4 +57,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.screen,
     paddingBottom: spacing.xl,
   },
-});
+}));

@@ -16,12 +16,12 @@ import { errorMessage } from '@/lib/errors';
 import { formatGhs, formatStamp } from '@/lib/format';
 import { spaceBookingReceipt, tableReservationReceipt } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography } from '@/theme';
 import { Booking } from '@/types/booking';
 import { PricingSettings } from '@/types/pricing';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 function cancellationMessage(booking: Booking, refund: number, settings: PricingSettings): string {
   if (booking.status === 'pending_payment') {
@@ -39,6 +39,7 @@ function cancellationMessage(booking: Booking, refund: number, settings: Pricing
 }
 
 export default function BookingDetailsScreen() {
+  const styles = useStyles();
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const { session } = useSession();
   const { refresh } = useNotifications();
@@ -247,7 +248,7 @@ export default function BookingDetailsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -319,4 +320,4 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.sm,
   },
-});
+}));

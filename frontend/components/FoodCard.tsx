@@ -1,7 +1,7 @@
 import { formatGhs } from '@/lib/format';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography } from '@/theme';
 import { MenuItem } from '@/types/menu';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 import { PhotoPlaceholder } from './PhotoPlaceholder';
 import { Pill } from './Pill';
@@ -15,6 +15,7 @@ type FoodCardProps = {
 };
 
 export function FoodCard({ item, quantity, onAdd, onChangeQuantity }: FoodCardProps) {
+  const styles = useStyles();
   return (
     <View style={styles.card}>
       <PhotoPlaceholder
@@ -47,7 +48,7 @@ export function FoodCard({ item, quantity, onAdd, onChangeQuantity }: FoodCardPr
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -95,4 +96,4 @@ const styles = StyleSheet.create({
   add: {
     paddingHorizontal: spacing.md,
   },
-});
+}));

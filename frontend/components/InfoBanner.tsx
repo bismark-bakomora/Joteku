@@ -1,7 +1,7 @@
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type InfoBannerProps = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -13,6 +13,8 @@ type InfoBannerProps = {
 };
 
 export function InfoBanner({ icon, title, body, actionLabel, onAction, children }: InfoBannerProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.banner}>
       <View style={styles.icon}>
@@ -33,7 +35,7 @@ export function InfoBanner({ icon, title, body, actionLabel, onAction, children 
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   banner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -73,4 +75,4 @@ const styles = StyleSheet.create({
     ...typography.labelMd,
     color: colors.primary,
   },
-});
+}));

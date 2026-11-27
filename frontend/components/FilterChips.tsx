@@ -1,5 +1,5 @@
-import { colors, pillHitSlop, radii, shadows, sizes, spacing, typography } from '@/theme';
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { makeStyles, pillHitSlop, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { Pressable, ScrollView, Text } from 'react-native';
 
 type ChipOption<K extends string> = {
   key: K;
@@ -13,6 +13,7 @@ type FilterChipsProps<K extends string> = {
 };
 
 export function FilterChips<K extends string>({ options, selected, onSelect }: FilterChipsProps<K>) {
+  const styles = useStyles();
   return (
     <ScrollView
       contentContainerStyle={styles.row}
@@ -41,7 +42,7 @@ export function FilterChips<K extends string>({ options, selected, onSelect }: F
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   bleed: {
     marginHorizontal: -spacing.screen,
     flexGrow: 0,
@@ -69,4 +70,4 @@ const styles = StyleSheet.create({
   labelActive: {
     color: colors.onPrimary,
   },
-});
+}));

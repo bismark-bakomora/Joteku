@@ -1,8 +1,8 @@
 import { formatGhs } from '@/lib/format';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { Space } from '@/types/space';
 import { Ionicons } from '@expo/vector-icons';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { Button } from './Button';
 import { Pill } from './Pill';
 import { fillImageStyle, spaceImages } from './spaceImages';
@@ -13,6 +13,8 @@ type SpaceListCardProps = {
 };
 
 export function SpaceListCard({ space, onBook }: SpaceListCardProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const wholeVenue = space.category === 'whole';
 
   return (
@@ -65,7 +67,7 @@ export function SpaceListCard({ space, onBook }: SpaceListCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -150,4 +152,4 @@ const styles = StyleSheet.create({
     ...typography.titleSm,
     color: colors.text,
   },
-});
+}));

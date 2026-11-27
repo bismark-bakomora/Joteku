@@ -1,6 +1,6 @@
-import { colors, radii, sizes, typography } from '@/theme';
+import { makeStyles, radii, sizes, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type QuantityStepperProps = {
   quantity: number;
@@ -9,6 +9,8 @@ type QuantityStepperProps = {
 };
 
 export function QuantityStepper({ quantity, itemName, onChange }: QuantityStepperProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.stepper}>
       <Pressable
@@ -34,7 +36,7 @@ export function QuantityStepper({ quantity, itemName, onChange }: QuantitySteppe
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   stepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -53,4 +55,4 @@ const styles = StyleSheet.create({
     minWidth: 24,
     textAlign: 'center',
   },
-});
+}));

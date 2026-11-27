@@ -1,9 +1,9 @@
 import { useTabBarClearance, useTabBarOffset } from '@/hooks/useTabBarClearance';
-import { colors, fontFamilies, radii, shadows, sizes, spacing } from '@/theme';
+import { fontFamilies, makeStyles, radii, shadows, sizes, spacing, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { useEffect, useState } from 'react';
-import { Keyboard, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, Platform, Pressable, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { SlidingPill } from './SlidingPill';
 
@@ -22,6 +22,8 @@ const TAB_ICONS: Record<string, TabIcon> = {
 // A rounded bar that floats over the tab screens. Screens scroll behind it and
 // use useTabBarClearance to keep their last content above it.
 export function FloatingTabBar({ state, descriptors, emitter, navigateToTab }: BottomTabBarProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const offset = useTabBarOffset();
   const clearance = useTabBarClearance();
   const keyboardOpen = useKeyboardOpen();
@@ -105,7 +107,7 @@ function useKeyboardOpen(): boolean {
   return open;
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     position: 'absolute',
     right: 0,
@@ -151,4 +153,4 @@ const styles = StyleSheet.create({
   labelActive: {
     fontFamily: fontFamilies.bodyBold,
   },
-});
+}));

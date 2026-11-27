@@ -1,7 +1,7 @@
 import { TimeOption } from '@/lib/availability';
 import { formatTime12 } from '@/lib/format';
-import { colors, radii, sizes, spacing, typography } from '@/theme';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { makeStyles, radii, sizes, spacing, typography } from '@/theme';
+import { Pressable, Text, View } from 'react-native';
 
 type TimeGridProps = {
   options: TimeOption[];
@@ -11,6 +11,7 @@ type TimeGridProps = {
 
 // Taken times stay visible but greyed out and struck through, as the brief asks.
 export function TimeGrid({ options, selected, onSelect }: TimeGridProps) {
+  const styles = useStyles();
   return (
     <View style={styles.grid}>
       {options.map((option) => {
@@ -45,7 +46,7 @@ export function TimeGrid({ options, selected, onSelect }: TimeGridProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -80,4 +81,4 @@ const styles = StyleSheet.create({
     color: colors.disabledText,
     textDecorationLine: 'line-through',
   },
-});
+}));

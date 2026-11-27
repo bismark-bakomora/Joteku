@@ -12,11 +12,11 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { bookingStart } from '@/lib/availability';
 import { formatPhoneLocal } from '@/lib/phone';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography, useTheme } from '@/theme';
 import { Booking } from '@/types/booking';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 type Tab = 'upcoming' | 'past';
 
@@ -25,6 +25,8 @@ function isUpcoming(booking: Booking): boolean {
 }
 
 export default function BookingsScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { session, ready } = useSession();
   const [tab, setTab] = useState<Tab>('upcoming');
   const phone = session?.phone ?? null;
@@ -155,7 +157,7 @@ export default function BookingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   loading: {
     flex: 1,
     alignItems: 'center',
@@ -175,4 +177,4 @@ const styles = StyleSheet.create({
   list: {
     gap: spacing.md,
   },
-});
+}));

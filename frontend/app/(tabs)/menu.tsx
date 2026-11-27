@@ -13,11 +13,11 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { filterMenu } from '@/lib/menu';
 import { services } from '@/services';
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { MenuItem, MenuKind } from '@/types/menu';
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 const KIND_SEGMENTS: { key: MenuKind; label: string }[] = [
   { key: 'food', label: 'Food' },
@@ -25,6 +25,8 @@ const KIND_SEGMENTS: { key: MenuKind; label: string }[] = [
 ];
 
 export default function MenuScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const menu = useAsync(() => services.menu.getMenu());
   const cart = useCart();
   const { toast, show } = useToast();
@@ -180,7 +182,7 @@ const column = {
   alignSelf: 'center',
 } as const;
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -269,4 +271,4 @@ const styles = StyleSheet.create({
     ...typography.title,
     color: colors.primary,
   },
-});
+}));

@@ -1,10 +1,10 @@
 import { formatDateShort, formatGhs, formatTime12, formatTimeRange } from '@/lib/format';
 import { bookingTitle } from '@/lib/receipt';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { Booking } from '@/types/booking';
 import { Space } from '@/types/space';
 import { Ionicons } from '@expo/vector-icons';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { Button } from './Button';
 import { Pill } from './Pill';
 import { fillImageStyle, spaceImages } from './spaceImages';
@@ -19,6 +19,8 @@ type BookingCardProps = {
 };
 
 function InfoLine({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: string }) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.infoLine}>
       <Ionicons color={colors.secondary} name={icon} size={18} />
@@ -29,6 +31,7 @@ function InfoLine({ icon, text }: { icon: keyof typeof Ionicons.glyphMap; text: 
 
 // An upcoming booking or reservation, following the Stitch "My Bookings" card.
 export function BookingCard({ booking, space, onOpen, onPay, onPayBalance }: BookingCardProps) {
+  const styles = useStyles();
   const catering = booking.kind === 'space' ? booking.catering : undefined;
 
   return (
@@ -110,7 +113,7 @@ export function BookingCard({ booking, space, onOpen, onPay, onPayBalance }: Boo
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -175,4 +178,4 @@ const styles = StyleSheet.create({
     ...typography.amount,
     color: colors.primary,
   },
-});
+}));

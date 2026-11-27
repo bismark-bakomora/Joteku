@@ -1,4 +1,4 @@
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { StyleSheet, Text, View } from 'react-native';
 
 type PriceRowProps = {
@@ -9,6 +9,7 @@ type PriceRowProps = {
 };
 
 export function PriceRow({ label, detail, amount, last = false }: PriceRowProps) {
+  const styles = useStyles();
   return (
     <View style={[styles.row, last ? undefined : styles.divider]}>
       <View style={styles.text}>
@@ -20,7 +21,7 @@ export function PriceRow({ label, detail, amount, last = false }: PriceRowProps)
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -48,4 +49,4 @@ const styles = StyleSheet.create({
     ...typography.titleSm,
     color: colors.secondary,
   },
-});
+}));

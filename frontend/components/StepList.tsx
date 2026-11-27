@@ -1,12 +1,13 @@
 import { GuideStep } from '@/data/howToBook';
-import { colors, radii, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, radii, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 
 type StepListProps = {
   steps: GuideStep[];
 };
 
 export function StepList({ steps }: StepListProps) {
+  const styles = useStyles();
   return (
     <View style={styles.list}>
       {steps.map((step, index) => (
@@ -24,7 +25,7 @@ export function StepList({ steps }: StepListProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   list: {
     gap: spacing.md,
   },
@@ -57,4 +58,4 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.textSubtle,
   },
-});
+}));

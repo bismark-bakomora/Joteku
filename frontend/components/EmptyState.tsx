@@ -1,5 +1,5 @@
-import { colors, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 
 type EmptyStateProps = {
@@ -10,6 +10,7 @@ type EmptyStateProps = {
 };
 
 export function EmptyState({ title, message, actionLabel, onAction }: EmptyStateProps) {
+  const styles = useStyles();
   return (
     <View style={styles.wrap}>
       <Text style={styles.title}>{title}</Text>
@@ -21,7 +22,7 @@ export function EmptyState({ title, message, actionLabel, onAction }: EmptyState
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     alignItems: 'center',
     padding: spacing.lg,
@@ -41,4 +42,4 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     alignSelf: 'stretch',
   },
-});
+}));

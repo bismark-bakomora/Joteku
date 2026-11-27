@@ -1,8 +1,8 @@
 import { formatGhs } from '@/lib/format';
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { MenuItem } from '@/types/menu';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { PhotoPlaceholder } from './PhotoPlaceholder';
 import { QuantityStepper } from './QuantityStepper';
 
@@ -14,6 +14,8 @@ type DrinkRowProps = {
 };
 
 export function DrinkRow({ item, quantity, onAdd, onChangeQuantity }: DrinkRowProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.row}>
       <View style={styles.main}>
@@ -49,7 +51,7 @@ export function DrinkRow({ item, quantity, onAdd, onChangeQuantity }: DrinkRowPr
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -95,4 +97,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}));

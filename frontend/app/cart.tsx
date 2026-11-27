@@ -11,12 +11,13 @@ import { useAsync } from '@/hooks/useAsync';
 import { formatGhs } from '@/lib/format';
 import { tablePayment } from '@/lib/pricing';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function CartScreen() {
+  const styles = useStyles();
   const cart = useCart();
   const settings = useAsync(() => services.venue.getSettings());
   const [confirmingClear, setConfirmingClear] = useState(false);
@@ -116,7 +117,7 @@ export default function CartScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   emptyWrap: {
     justifyContent: 'center',
   },
@@ -151,4 +152,4 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.sm,
   },
-});
+}));

@@ -17,7 +17,7 @@ import {
   TransactionTypeFilter,
 } from '@/lib/transactions';
 import { services } from '@/services';
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Transaction } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
@@ -43,6 +43,8 @@ function toPeriod(key: PeriodKey): TransactionPeriod {
 }
 
 function TransactionRow({ transaction }: { transaction: Transaction }) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const refund = transaction.type === 'refund';
   const failed = transaction.status === 'failed';
   return (
@@ -82,6 +84,7 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
 }
 
 export default function TransactionsScreen() {
+  const styles = useStyles();
   const { session } = useSession();
   const now = useNow();
   const [type, setType] = useState<TransactionTypeFilter>('all');
@@ -159,7 +162,7 @@ export default function TransactionsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
     gap: spacing.sm,
@@ -248,4 +251,4 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-});
+}));

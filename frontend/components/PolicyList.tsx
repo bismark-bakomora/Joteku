@@ -1,12 +1,13 @@
 import { PolicySection } from '@/lib/policies';
-import { colors, radii, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, radii, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 
 type PolicyListProps = {
   section: PolicySection;
 };
 
 export function PolicyList({ section }: PolicyListProps) {
+  const styles = useStyles();
   return (
     <View style={styles.wrap}>
       <Text accessibilityRole="header" style={styles.title}>
@@ -22,7 +23,7 @@ export function PolicyList({ section }: PolicyListProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     gap: spacing.sm,
   },
@@ -47,4 +48,4 @@ const styles = StyleSheet.create({
     color: colors.textSubtle,
     flex: 1,
   },
-});
+}));

@@ -21,12 +21,13 @@ import { errorMessage } from '@/lib/errors';
 import { formatDateLong, formatDateShort, formatHours, formatTime12, formatTimeRange } from '@/lib/format';
 import { bookingTitle } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function ChangeDateScreen() {
+  const styles = useStyles();
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const { session } = useSession();
   const { refresh } = useNotifications();
@@ -193,7 +194,7 @@ export default function ChangeDateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
   },
@@ -212,4 +213,4 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.error,
   },
-});
+}));

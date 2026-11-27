@@ -1,6 +1,6 @@
-import { colors, radii, shadows, spacing } from '@/theme';
+import { makeStyles, radii, shadows, spacing } from '@/theme';
 import { ReactNode } from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
 type CardProps = {
   children: ReactNode;
@@ -8,10 +8,11 @@ type CardProps = {
 };
 
 export function Card({ children, style }: CardProps) {
+  const styles = useStyles();
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radii.xl,
@@ -20,4 +21,4 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     ...shadows.card,
   },
-});
+}));

@@ -22,6 +22,7 @@ The database and server rules for the Joteku app, on [Supabase](https://supabase
 7. **payments**: starting a mobile money payment and checking on it, through a mock provider for now (see below).
 8. **admin**: what the admin web page can read and change, the admin functions, and the menu photo bucket (see below).
 9. **merge_read_policies**: joins each customer read policy with its admin one, so Postgres checks one policy per row.
+10. **delete_account**: `delete_my_account()`, which app stores require. It removes the sign-in and profile, and is refused while the customer has a booking waiting for payment or still to come. Bookings and payments are the venue's records, so they stay with `customer_id` set to null and keep only the phone number they were made or paid with.
 
 ### How double booking is prevented
 

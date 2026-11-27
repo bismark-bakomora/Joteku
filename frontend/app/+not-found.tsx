@@ -1,10 +1,11 @@
 import { ErrorState } from '@/components/ErrorState';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/theme';
+import { makeStyles } from '@/theme';
 import { Link, Stack } from 'expo-router';
 import { StyleSheet } from 'react-native';
 
 export default function NotFoundScreen() {
+  const styles = useStyles();
   return (
     <>
       <Stack.Screen options={{ title: 'Not found' }} />
@@ -17,8 +18,8 @@ export default function NotFoundScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   link: {
     backgroundColor: colors.background,
   },
-});
+}));

@@ -1,5 +1,5 @@
-import { colors, fontFamilies, pillHitSlop, radii, sizes, spacing, typography } from '@/theme';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { fontFamilies, makeStyles, pillHitSlop, radii, sizes, spacing, typography, useTheme } from '@/theme';
+import { Pressable, Text, View } from 'react-native';
 import { SlidingPill } from './SlidingPill';
 
 type Segment<K extends string> = {
@@ -18,6 +18,8 @@ export function SegmentedControl<K extends string>({
   selected,
   onSelect,
 }: SegmentedControlProps<K>) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.track}>
       <View accessibilityRole="tablist" style={styles.row}>
@@ -48,7 +50,7 @@ export function SegmentedControl<K extends string>({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   track: {
     backgroundColor: colors.surfaceHighest,
     borderRadius: radii.full,
@@ -74,4 +76,4 @@ const styles = StyleSheet.create({
     fontFamily: fontFamilies.bodyBold,
     color: colors.onPrimary,
   },
-});
+}));

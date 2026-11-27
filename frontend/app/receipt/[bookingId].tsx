@@ -17,13 +17,13 @@ import {
   tableReservationReceipt,
 } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import * as Calendar from 'expo-calendar/legacy';
 import * as Print from 'expo-print';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { Linking, Platform, Share, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, Share, Text, View } from 'react-native';
 
 async function downloadReceipt(html: string): Promise<void> {
   if (Platform.OS === 'web') {
@@ -63,6 +63,8 @@ async function addToCalendar(entry: CalendarEntry): Promise<void> {
 }
 
 export default function ReceiptScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const { toast, show } = useToast();
   const data = useAsync(async () => {
@@ -111,7 +113,7 @@ export default function ReceiptScreen() {
             <View style={styles.sections}>
               <View style={styles.banner}>
                 <View style={styles.bannerIcon}>
-                  <Ionicons color={colors.onPrimarySoft} name="checkmark-circle" size={32} />
+                  <Ionicons color={colors.onBrandTile} name="checkmark-circle" size={32} />
                 </View>
                 <View style={styles.bannerText}>
                   <Text style={styles.bannerLabel}>
@@ -180,7 +182,7 @@ export default function ReceiptScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.brand,
     borderRadius: radii.lg,
     padding: spacing.md,
   },
@@ -203,7 +205,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: radii.full,
-    backgroundColor: colors.primarySoft,
+    backgroundColor: colors.brandTile,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -212,16 +214,16 @@ const styles = StyleSheet.create({
   },
   bannerLabel: {
     ...typography.labelSm,
-    color: colors.primarySoftDim,
+    color: colors.brandDim,
     textTransform: 'uppercase',
   },
   bannerReference: {
     ...typography.headline,
-    color: colors.onPrimary,
+    color: colors.onBrand,
   },
   bannerNote: {
     ...typography.caption,
-    color: colors.onPrimaryMuted,
+    color: colors.onBrandMuted,
   },
   actions: {
     gap: spacing.sm,
@@ -234,5 +236,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.sm,
   },
-});
+}));
 

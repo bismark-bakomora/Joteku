@@ -1,5 +1,5 @@
-import { colors, sizes, spacing, typography } from '@/theme';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { makeStyles, sizes, spacing, typography } from '@/theme';
+import { Pressable, Text, View } from 'react-native';
 
 type SectionHeaderProps = {
   title: string;
@@ -9,6 +9,7 @@ type SectionHeaderProps = {
 };
 
 export function SectionHeader({ title, subtitle, actionLabel, onAction }: SectionHeaderProps) {
+  const styles = useStyles();
   return (
     <View style={styles.wrap}>
       <View style={styles.text}>
@@ -24,7 +25,7 @@ export function SectionHeader({ title, subtitle, actionLabel, onAction }: Sectio
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
     ...typography.labelMd,
     color: colors.primary,
   },
-});
+}));

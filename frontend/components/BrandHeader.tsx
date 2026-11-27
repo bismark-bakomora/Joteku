@@ -1,14 +1,16 @@
 import { useNotifications } from '@/context/NotificationsContext';
 import { useSession } from '@/context/SessionContext';
 import { contact } from '@/data/contact';
-import { colors, fontFamilies, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { fontFamilies, makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Pill } from './Pill';
 
 export function BrandHeader() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { session } = useSession();
   const { unreadCount } = useNotifications();
@@ -58,7 +60,7 @@ export function BrandHeader() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     backgroundColor: colors.background,
     ...shadows.card,
@@ -109,4 +111,4 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: colors.onSecondary,
   },
-});
+}));

@@ -2,6 +2,7 @@ import { BrandHeader } from '@/components/BrandHeader';
 import { FloatingTabBar } from '@/components/FloatingTabBar';
 import { useSession } from '@/context/SessionContext';
 import { hasSeenWelcome } from '@/lib/welcome';
+import { useTheme } from '@/theme';
 import { router, Tabs } from 'expo-router';
 import { useEffect, useRef } from 'react';
 
@@ -28,10 +29,11 @@ function useWelcomeOnFirstLaunch() {
 
 export default function TabLayout() {
   useWelcomeOnFirstLaunch();
+  const { colors } = useTheme();
 
   return (
     <Tabs
-      screenOptions={{ header: () => <BrandHeader /> }}
+      screenOptions={{ header: () => <BrandHeader />, sceneStyle: { backgroundColor: colors.background } }}
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />

@@ -1,9 +1,9 @@
 import { formatGhs, formatHours } from '@/lib/format';
 import { estimateSpaceBooking } from '@/lib/pricing';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography } from '@/theme';
 import { DecorationPackage } from '@/types/booking';
 import { Space } from '@/types/space';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Card } from './Card';
 import { PriceRow } from './PriceRow';
 
@@ -22,6 +22,7 @@ export function EstimateCard({
   decoration,
   cateringRequested,
 }: EstimateCardProps) {
+  const styles = useStyles();
   const estimate = estimateSpaceBooking(space, startTime, endTime, decoration);
   const minimumNote = estimate.minimumApplied ? `, minimum ${formatHours(space.minHours)}` : '';
 
@@ -49,7 +50,7 @@ export function EstimateCard({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     gap: spacing.xs,
   },
@@ -74,4 +75,4 @@ const styles = StyleSheet.create({
     ...typography.amount,
     color: colors.primary,
   },
-});
+}));

@@ -11,11 +11,12 @@ import { useAsync } from '@/hooks/useAsync';
 import { formatGhs } from '@/lib/format';
 import { paymentTerms, tableReservationPolicy } from '@/lib/policies';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function HowToBookScreen() {
+  const styles = useStyles();
   const details = useAsync(() =>
     Promise.all([
       services.venue.getSpaces(),
@@ -103,7 +104,7 @@ export default function HowToBookScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
     gap: spacing.lg,
@@ -121,4 +122,4 @@ const styles = StyleSheet.create({
   actions: {
     gap: spacing.sm,
   },
-});
+}));

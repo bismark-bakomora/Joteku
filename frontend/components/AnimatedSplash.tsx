@@ -1,7 +1,10 @@
-import { colors, fontFamilies, spacing, typography } from '@/theme';
+import { fontFamilies, lightColors, spacing, typography } from '@/theme';
 import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Animated, Easing, Platform, StyleSheet, Text, View } from 'react-native';
 import { RoofMark } from './RoofMark';
+
+// The splash continues the green launch image, so it looks the same in light and dark mode.
+const colors = lightColors;
 
 // Must match `imageWidth` for expo-splash-screen in app.json, so the roof here
 // starts exactly where the phone's launch image left it.

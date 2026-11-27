@@ -1,5 +1,5 @@
 import { Receipt } from '@/lib/receipt';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography } from '@/theme';
 import { BookingStatus } from '@/types/booking';
 import { StyleSheet, Text, View } from 'react-native';
 import { Card } from './Card';
@@ -13,6 +13,7 @@ type ReceiptCardProps = {
 };
 
 export function ReceiptCard({ receipt, status }: ReceiptCardProps) {
+  const styles = useStyles();
   return (
     <Card style={styles.card}>
       <View style={styles.header}>
@@ -42,7 +43,7 @@ export function ReceiptCard({ receipt, status }: ReceiptCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     gap: spacing.xs,
   },
@@ -85,4 +86,4 @@ const styles = StyleSheet.create({
     color: colors.textSubtle,
     marginTop: spacing.xs,
   },
-});
+}));

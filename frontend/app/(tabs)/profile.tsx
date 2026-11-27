@@ -13,12 +13,12 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { useToast } from '@/hooks/useToast';
 import { errorMessage } from '@/lib/errors';
 import { formatPhoneLocal } from '@/lib/phone';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { OtpPurpose, Session } from '@/types/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -29,6 +29,8 @@ function initials(name: string): string {
 }
 
 export default function ProfileScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { session, ready, updateProfile, signOut } = useSession();
   const { itemCount } = useCart();
   const { toast, show } = useToast();
@@ -130,6 +132,16 @@ export default function ProfileScreen() {
         </View>
 
         <View>
+          <SectionHeader title="Settings" />
+          <ActionRow
+            icon="settings-outline"
+            onPress={() => router.push('/settings')}
+            subtitle={session ? 'Light or dark mode, your account, app version' : 'Light or dark mode, app version'}
+            title="Settings"
+          />
+        </View>
+
+        <View>
           <SectionHeader title="Help and information" />
           <View style={styles.rows}>
             <ActionRow
@@ -198,6 +210,8 @@ export default function ProfileScreen() {
 }
 
 function ProfileCard({ session, onEdit }: { session: Session; onEdit: () => void }) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <Card style={styles.profile}>
       <View style={styles.profileRow}>
@@ -237,6 +251,7 @@ type EditDetailsProps = {
 };
 
 function EditDetails({ session, onSave, onCancel }: EditDetailsProps) {
+  const styles = useStyles();
   const [name, setName] = useState(session.name ?? '');
   const [email, setEmail] = useState(session.email ?? '');
   const [error, setError] = useState<string | null>(null);
@@ -284,7 +299,7 @@ function EditDetails({ session, onSave, onCancel }: EditDetailsProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -400,4 +415,4 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.sm,
   },
-});
+}));

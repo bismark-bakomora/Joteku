@@ -1,8 +1,11 @@
-export const colors = {
+// The app's two palettes. Screens never import these directly: they get the
+// active one from useTheme() or makeStyles(), so light and dark mode switch
+// together. Every name means the same role in both palettes ("on" colours are
+// for text and icons drawn on the colour they are named after).
+
+export const lightColors = {
   primary: '#185232',
-  primaryDark: '#003A1F',
   onPrimary: '#FFFFFF',
-  onPrimaryMuted: '#89C49B',
   primarySoft: '#B4F0C5',
   primarySoftDim: '#99D4AA',
   onPrimarySoft: '#165131',
@@ -24,6 +27,14 @@ export const colors = {
   surfaceHighest: '#E9E1DB',
   inverseSurface: '#33302C',
   onInverseSurface: '#F7EFE9',
+  // Large deep-green blocks (the Home hero, feature cards, receipt and
+  // reservation headers). They keep the brand green in both modes.
+  brand: '#185232',
+  onBrand: '#FFFFFF',
+  onBrandMuted: '#89C49B',
+  brandDim: '#99D4AA',
+  brandTile: '#B4F0C5',
+  onBrandTile: '#165131',
   text: '#1E1B17',
   textMuted: '#6B6B63',
   textSubtle: '#404942',
@@ -32,7 +43,6 @@ export const colors = {
   error: '#BA1A1A',
   onError: '#FFFFFF',
   success: '#167D46',
-  warning: '#D9822B',
   pendingBackground: '#FFF3D6',
   pendingText: '#735C00',
   confirmedBackground: '#D7F0E1',
@@ -41,6 +51,57 @@ export const colors = {
   disabledText: '#7D756C',
   tabBar: '#FFFFFF',
   tabBarActive: '#E1EDE4',
-} as const;
+};
 
-export type ColorName = keyof typeof colors;
+export type Palette = typeof lightColors;
+export type ColorName = keyof Palette;
+
+// Warm near-black surfaces (not pure black, which smears on OLED screens when
+// scrolling), with the greens, browns and gold lifted so they stay readable.
+export const darkColors: Palette = {
+  primary: '#8FD0A3',
+  onPrimary: '#00391F',
+  primarySoft: '#1D4A31',
+  primarySoftDim: '#2E6A48',
+  onPrimarySoft: '#B4F0C5',
+  secondary: '#F1BC94',
+  onSecondary: '#4A2809',
+  secondarySoft: '#5E3B20',
+  onSecondarySoft: '#FFDCC5',
+  secondaryTint: '#4A2E18',
+  onSecondaryTint: '#FDC39A',
+  gold: '#E2BE4A',
+  onGold: '#3C2F00',
+  goldSoft: '#4F3E00',
+  onGoldSoft: '#FFE088',
+  background: '#15130F',
+  surface: '#221F1A',
+  surfaceMuted: '#1C1A16',
+  surfaceContainer: '#2A2621',
+  surfaceHigh: '#332F29',
+  surfaceHighest: '#3D3832',
+  inverseSurface: '#ECE5DE',
+  onInverseSurface: '#33302C',
+  brand: '#185232',
+  onBrand: '#FFFFFF',
+  onBrandMuted: '#89C49B',
+  brandDim: '#99D4AA',
+  brandTile: '#B4F0C5',
+  onBrandTile: '#165131',
+  text: '#EEE7DF',
+  textMuted: '#A0998F',
+  textSubtle: '#CBC5BC',
+  border: '#3A3630',
+  outline: '#8E978D',
+  error: '#FFB4AB',
+  onError: '#690005',
+  success: '#86D7A2',
+  pendingBackground: '#433500',
+  pendingText: '#F2D36B',
+  confirmedBackground: '#1D4A31',
+  cancelledBackground: '#5C1D18',
+  disabled: '#2F2B26',
+  disabledText: '#8C857C',
+  tabBar: '#2A2621',
+  tabBarActive: '#1D4A31',
+};

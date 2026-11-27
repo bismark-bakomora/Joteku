@@ -1,7 +1,7 @@
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type ChoiceCardProps = {
   title: string;
@@ -27,6 +27,8 @@ export function ChoiceCard({
   disabledReason,
   leading,
 }: ChoiceCardProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <Pressable
       accessibilityHint={disabled ? disabledReason : undefined}
@@ -55,7 +57,7 @@ export function ChoiceCard({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     minHeight: sizes.tapTarget + 16,
     flexDirection: 'row',
@@ -117,4 +119,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
-});
+}));

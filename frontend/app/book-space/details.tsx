@@ -26,7 +26,7 @@ import { formatDateLong, formatGhs, formatHours } from '@/lib/format';
 import { joinWithAnd } from '@/lib/policies';
 import { estimateSpaceBooking } from '@/lib/pricing';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Space, SpaceId } from '@/types/space';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -34,6 +34,8 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
 
 export default function BookingDetailsScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { session, ready } = useSession();
   const params = useLocalSearchParams<{ spaceId?: string }>();
   const { draft, update } = useBookingDraft();
@@ -321,6 +323,7 @@ export default function BookingDetailsScreen() {
 }
 
 function SpaceHero({ space }: { space: Space }) {
+  const styles = useStyles();
   return (
     <View style={styles.hero}>
       <Image
@@ -337,7 +340,7 @@ function SpaceHero({ space }: { space: Space }) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   loading: {
     flex: 1,
     alignItems: 'center',
@@ -413,4 +416,4 @@ const styles = StyleSheet.create({
     ...typography.titleLg,
     color: colors.primary,
   },
-});
+}));

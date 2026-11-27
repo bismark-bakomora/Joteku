@@ -1,7 +1,8 @@
 import { contact } from '@/data/contact';
 import { eventTypes } from '@/data/eventTypes';
 import { mobileMoneyNetworks } from '@/data/networks';
-import { colors } from '@/theme/colors';
+// Printed receipts are always on white paper, so they use the light palette.
+import { lightColors as colors } from '@/theme/colors';
 import { Booking, DecorationPackage, SpaceBooking, TableReservation } from '@/types/booking';
 import { Payment } from '@/types/payment';
 import { Space } from '@/types/space';

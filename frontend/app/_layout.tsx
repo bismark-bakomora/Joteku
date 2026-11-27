@@ -3,7 +3,8 @@ import { stackScreenOptions } from '@/components/stackScreenOptions';
 import { CartProvider } from '@/context/CartContext';
 import { NotificationsProvider } from '@/context/NotificationsContext';
 import { SessionProvider } from '@/context/SessionContext';
-import { fontFamilies } from '@/theme';
+import { ThemeProvider } from '@/context/ThemeContext';
+import { fontFamilies, useTheme } from '@/theme';
 import {
   Epilogue_600SemiBold,
   Epilogue_700Bold,
@@ -15,10 +16,10 @@ import {
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider as NavigationThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -45,49 +46,89 @@ export default function RootLayout() {
     }
   }, [error]);
 
-  // The animated splash takes over from the launch image once it is on screen.
-  const [showSplash, setShowSplash] = useState(true);
-
   if (!loaded) {
     return null;
   }
 
   return (
-    <SessionProvider>
-      <NotificationsProvider>
-        <CartProvider>
-          <StatusBar style="dark" />
-          <Stack screenOptions={stackScreenOptions}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="reserve-table" options={{ title: 'Reserve a Table' }} />
-            <Stack.Screen name="spaces" options={{ title: 'Venue & Spaces' }} />
-            <Stack.Screen name="about" options={{ title: 'About Joteku' }} />
-            <Stack.Screen name="how-to-book" options={{ title: 'How to Book' }} />
-            <Stack.Screen name="contact" options={{ title: 'Location & Contact' }} />
-            <Stack.Screen name="terms" options={{ title: 'Terms & Policies' }} />
-            <Stack.Screen name="cart" options={{ title: 'Your Pre-order' }} />
-            <Stack.Screen
-              name="welcome"
-              options={{ headerShown: false, presentation: 'fullScreenModal', gestureEnabled: false }}
-            />
-            <Stack.Screen name="sign-in" options={{ title: 'Log in' }} />
-            <Stack.Screen name="book-space" options={{ headerShown: false }} />
-            <Stack.Screen name="pay/[bookingId]" options={{ title: 'Payment' }} />
-            <Stack.Screen name="receipt/[bookingId]" options={{ title: 'Receipt' }} />
-            <Stack.Screen name="booking/[bookingId]" options={{ title: 'Booking' }} />
-            <Stack.Screen name="change-date/[bookingId]" options={{ title: 'Change Date' }} />
-            <Stack.Screen name="pay-balance/[bookingId]" options={{ title: 'Pay Balance' }} />
-            <Stack.Screen name="transactions" options={{ title: 'Transactions' }} />
-            <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
-          </Stack>
-          {showSplash ? (
-            <AnimatedSplash
-              onFinish={() => setShowSplash(false)}
-              onReady={() => SplashScreen.hideAsync()}
-            />
-          ) : null}
-        </CartProvider>
-      </NotificationsProvider>
-    </SessionProvider>
+    <ThemeProvider>
+      <ThemedApp>
+        <SessionProvider>
+          <NotificationsProvider>
+            <CartProvider>
+              <Screens />
+            </CartProvider>
+          </NotificationsProvider>
+        </SessionProvider>
+      </ThemedApp>
+    </ThemeProvider>
+  );
+}
+
+// Waits for the saved light or dark choice, so the first screen is drawn in the right mode.
+function ThemedApp({ children }: { children: ReactNode }) {
+  const { ready, scheme } = useTheme();
+  // The animated splash takes over from the launch image once it is on screen.
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (!ready) {
+    return null;
+  }
+
+  return (
+    <>
+      <StatusBar style={showSplash || scheme === 'dark' ? 'light' : 'dark'} />
+      {children}
+      {showSplash ? (
+        <AnimatedSplash onFinish={() => setShowSplash(false)} onReady={() => SplashScreen.hideAsync()} />
+      ) : null}
+    </>
+  );
+}
+
+function Screens() {
+  const { colors, scheme } = useTheme();
+  // Navigation draws header borders and screen edges from its own theme, so it gets ours.
+  const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+  const navigationTheme = {
+    ...base,
+    colors: {
+      ...base.colors,
+      primary: colors.primary,
+      background: colors.background,
+      card: colors.background,
+      text: colors.text,
+      border: colors.border,
+      notification: colors.error,
+    },
+  };
+
+  return (
+    <NavigationThemeProvider value={navigationTheme}>
+      <Stack screenOptions={stackScreenOptions(colors)}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="reserve-table" options={{ title: 'Reserve a Table' }} />
+        <Stack.Screen name="spaces" options={{ title: 'Venue & Spaces' }} />
+        <Stack.Screen name="about" options={{ title: 'About Joteku' }} />
+        <Stack.Screen name="how-to-book" options={{ title: 'How to Book' }} />
+        <Stack.Screen name="contact" options={{ title: 'Location & Contact' }} />
+        <Stack.Screen name="terms" options={{ title: 'Terms & Policies' }} />
+        <Stack.Screen name="cart" options={{ title: 'Your Pre-order' }} />
+        <Stack.Screen
+          name="welcome"
+          options={{ headerShown: false, presentation: 'fullScreenModal', gestureEnabled: false }}
+        />
+        <Stack.Screen name="sign-in" options={{ title: 'Log in' }} />
+        <Stack.Screen name="book-space" options={{ headerShown: false }} />
+        <Stack.Screen name="pay/[bookingId]" options={{ title: 'Payment' }} />
+        <Stack.Screen name="receipt/[bookingId]" options={{ title: 'Receipt' }} />
+        <Stack.Screen name="booking/[bookingId]" options={{ title: 'Booking' }} />
+        <Stack.Screen name="change-date/[bookingId]" options={{ title: 'Change Date' }} />
+        <Stack.Screen name="pay-balance/[bookingId]" options={{ title: 'Pay Balance' }} />
+        <Stack.Screen name="transactions" options={{ title: 'Transactions' }} />
+        <Stack.Screen name="notifications" options={{ title: 'Notifications' }} />
+        <Stack.Screen name="settings" options={{ title: 'Settings' }} />
+      </Stack>
+    </NavigationThemeProvider>
   );
 }

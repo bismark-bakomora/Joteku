@@ -1,5 +1,5 @@
-import { colors, radii, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, radii, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 
 type StepProgressProps = {
   steps: string[];
@@ -7,6 +7,7 @@ type StepProgressProps = {
 };
 
 export function StepProgress({ steps, current }: StepProgressProps) {
+  const styles = useStyles();
   return (
     <View
       accessibilityLabel={`Step ${current + 1} of ${steps.length}: ${steps[current]}`}
@@ -40,7 +41,7 @@ export function StepProgress({ steps, current }: StepProgressProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     backgroundColor: colors.surfaceMuted,
     borderRadius: radii.lg,
@@ -82,4 +83,4 @@ const styles = StyleSheet.create({
   labelActive: {
     color: colors.primary,
   },
-});
+}));

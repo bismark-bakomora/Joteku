@@ -1,5 +1,5 @@
-import { colors, sizes, typography } from '@/theme';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { makeStyles, sizes, typography } from '@/theme';
+import { Pressable, Text } from 'react-native';
 
 type TextLinkProps = {
   label: string;
@@ -8,6 +8,7 @@ type TextLinkProps = {
 };
 
 export function TextLink({ label, onPress, disabled = false }: TextLinkProps) {
+  const styles = useStyles();
   return (
     <Pressable
       accessibilityRole="link"
@@ -21,7 +22,7 @@ export function TextLink({ label, onPress, disabled = false }: TextLinkProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   link: {
     minHeight: sizes.tapTarget,
     justifyContent: 'center',
@@ -35,4 +36,4 @@ const styles = StyleSheet.create({
   disabled: {
     color: colors.disabledText,
   },
-});
+}));

@@ -4,14 +4,15 @@ import { TextLink } from '@/components/TextLink';
 import { venuePhotos } from '@/components/venuePhotos';
 import { venue } from '@/data/venue';
 import { markWelcomeSeen } from '@/lib/welcome';
-import { colors, fontFamilies, radii, sizes, spacing, typography } from '@/theme';
+import { fontFamilies, makeStyles, radii, sizes, spacing, typography } from '@/theme';
 import { OtpPurpose } from '@/types/auth';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function WelcomeScreen() {
+  const styles = useStyles();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export default function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -104,4 +105,4 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-});
+}));

@@ -26,11 +26,11 @@ import { formatDateLong, formatGhs } from '@/lib/format';
 import { tableReservationPolicy } from '@/lib/policies';
 import { tablePayment } from '@/lib/pricing';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 const QUICK_DAYS = 7;
 const EVENING_FROM = timeToMinutes('17:00');
@@ -38,6 +38,8 @@ const EVENING_FROM = timeToMinutes('17:00');
 const LARGE_GROUP = 20;
 
 export default function ReserveTableScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { session, ready } = useSession();
   const cart = useCart();
   const settings = useAsync(() => services.venue.getSettings());
@@ -119,7 +121,7 @@ export default function ReserveTableScreen() {
     <ScreenContainer contentStyle={styles.content} scroll>
       <View style={styles.intro}>
         <View style={styles.introIcon}>
-          <Ionicons color={colors.onPrimarySoft} name="restaurant" size={22} />
+          <Ionicons color={colors.onBrandTile} name="restaurant" size={22} />
         </View>
         <View style={styles.introText}>
           <Text style={styles.introTitle}>Reserve a table at Joteku</Text>
@@ -283,7 +285,7 @@ export default function ReserveTableScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   loading: {
     flex: 1,
     alignItems: 'center',
@@ -298,7 +300,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm + 4,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.brand,
     borderRadius: radii.lg,
     padding: spacing.md,
   },
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: radii.md,
-    backgroundColor: colors.primarySoft,
+    backgroundColor: colors.brandTile,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -316,11 +318,11 @@ const styles = StyleSheet.create({
   },
   introTitle: {
     ...typography.title,
-    color: colors.onPrimary,
+    color: colors.onBrand,
   },
   introBody: {
     ...typography.caption,
-    color: colors.onPrimaryMuted,
+    color: colors.onBrandMuted,
   },
   section: {
     gap: spacing.sm,
@@ -372,4 +374,4 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-});
+}));

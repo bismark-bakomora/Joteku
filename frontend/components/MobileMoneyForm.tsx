@@ -3,10 +3,10 @@ import { mobileMoneyNetworks } from '@/data/networks';
 import { formatGhs } from '@/lib/format';
 import { formatPhoneLocal, normalizeGhanaPhone, suggestNetwork } from '@/lib/phone';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 import { ChoiceCard } from './ChoiceCard';
 import { InfoBanner } from './InfoBanner';
@@ -24,6 +24,7 @@ type MobileMoneyFormProps = {
 // Network choice and wallet number, shared by every mobile money payment. The
 // network is guessed from the number until the customer picks one themselves.
 export function MobileMoneyForm({ amount, busy, error, onPay }: MobileMoneyFormProps) {
+  const styles = useStyles();
   const { session } = useSession();
   const [phone, setPhone] = useState(session ? formatPhoneLocal(session.phone) : '');
   const [network, setNetwork] = useState<MobileMoneyNetwork | null>(
@@ -99,7 +100,7 @@ export function MobileMoneyForm({ amount, busy, error, onPay }: MobileMoneyFormP
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     gap: spacing.lg,
   },
@@ -110,4 +111,4 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.error,
   },
-});
+}));

@@ -1,8 +1,8 @@
 import { formatGhs } from '@/lib/format';
 import { roundMoney } from '@/lib/pricing';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography } from '@/theme';
 import { PreOrderLine } from '@/types/menu';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { QuantityStepper } from './QuantityStepper';
 
 type CartLineProps = {
@@ -11,6 +11,7 @@ type CartLineProps = {
 };
 
 export function CartLine({ line, onChangeQuantity }: CartLineProps) {
+  const styles = useStyles();
   return (
     <View style={styles.row}>
       <View style={styles.top}>
@@ -25,7 +26,7 @@ export function CartLine({ line, onChangeQuantity }: CartLineProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -58,4 +59,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textMuted,
   },
-});
+}));

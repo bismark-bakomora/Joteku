@@ -1,4 +1,4 @@
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import {
@@ -21,6 +21,8 @@ type PhotoGalleryProps = {
 };
 
 export function PhotoGallery({ photos }: PhotoGalleryProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [viewingIndex, setViewingIndex] = useState(0);
   const [stageHeight, setStageHeight] = useState(0);
@@ -109,7 +111,7 @@ export function PhotoGallery({ photos }: PhotoGalleryProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -160,4 +162,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: spacing.md,
   },
-});
+}));

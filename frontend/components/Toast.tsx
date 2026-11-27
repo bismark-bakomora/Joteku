@@ -1,8 +1,8 @@
 import { useAnnounce } from '@/hooks/useAnnounce';
 import { ToastMessage } from '@/hooks/useToast';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 type ToastProps = {
   toast: ToastMessage | null;
@@ -10,6 +10,8 @@ type ToastProps = {
 };
 
 export function Toast({ toast, bottomOffset = spacing.md }: ToastProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   useAnnounce(toast?.text);
 
   if (!toast) {
@@ -26,7 +28,7 @@ export function Toast({ toast, bottomOffset = spacing.md }: ToastProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     position: 'absolute',
     left: spacing.md,
@@ -48,4 +50,4 @@ const styles = StyleSheet.create({
     color: colors.onInverseSurface,
     flexShrink: 1,
   },
-});
+}));

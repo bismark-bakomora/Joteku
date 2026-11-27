@@ -1,6 +1,6 @@
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type CheckboxProps = {
   checked: boolean;
@@ -9,6 +9,8 @@ type CheckboxProps = {
 };
 
 export function Checkbox({ checked, onChange, label }: CheckboxProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <Pressable
       accessibilityRole="checkbox"
@@ -24,7 +26,7 @@ export function Checkbox({ checked, onChange, label }: CheckboxProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     minHeight: sizes.tapTarget,
     flexDirection: 'row',
@@ -49,4 +51,4 @@ const styles = StyleSheet.create({
     ...typography.bodyMd,
     color: colors.text,
   },
-});
+}));

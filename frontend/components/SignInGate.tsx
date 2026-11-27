@@ -1,7 +1,7 @@
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { Href, router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from './Button';
 import { Card } from './Card';
 
@@ -13,6 +13,8 @@ type SignInGateProps = {
 
 // Asks people to log in or continue as a guest, then brings them back to `redirect`.
 export function SignInGate({ title, message, redirect }: SignInGateProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const signIn = (mode: 'login' | 'guest' | 'signup') => {
     router.push({ pathname: '/sign-in', params: { mode, redirect: String(redirect) } });
   };
@@ -33,7 +35,7 @@ export function SignInGate({ title, message, redirect }: SignInGateProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     alignItems: 'center',
     gap: spacing.sm,
@@ -62,4 +64,4 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginTop: spacing.sm,
   },
-});
+}));

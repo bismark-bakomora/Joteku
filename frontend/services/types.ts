@@ -35,6 +35,9 @@ export interface AuthService {
   getSession(): Promise<Session | null>;
   updateProfile(changes: ProfileChanges): Promise<Session>;
   signOut(): Promise<void>;
+  // Deletes the signed-in customer's account and signs out. Refused while a
+  // booking is still to come. Past bookings stay with the venue, unlinked.
+  deleteAccount(): Promise<void>;
 }
 
 export interface VenueService {

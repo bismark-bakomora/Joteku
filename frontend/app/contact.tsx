@@ -9,12 +9,14 @@ import { contact } from '@/data/contact';
 import { useNow } from '@/hooks/useNow';
 import { useToast } from '@/hooks/useToast';
 import { isOpenNow } from '@/lib/hours';
-import { colors, radii, shadows, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, Linking, StyleSheet, Text, View } from 'react-native';
+import { Image, Linking, Text, View } from 'react-native';
 
 export default function ContactScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const now = useNow();
   const { toast, show } = useToast();
   const open = isOpenNow(now, contact);
@@ -98,7 +100,7 @@ export default function ContactScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -153,4 +155,4 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.sm,
   },
-});
+}));

@@ -8,11 +8,11 @@ import { AppErrorCode, errorCode, errorMessage } from '@/lib/errors';
 import { formatPhoneLocal, normalizeGhanaPhone } from '@/lib/phone';
 import { isValidOtp } from '@/lib/validation';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { OtpPurpose } from '@/types/auth';
 import { Href, router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const RESEND_SECONDS = 30;
 
@@ -32,6 +32,7 @@ const INTROS: Record<OtpPurpose, string> = {
 type Step = 'details' | 'code';
 
 export default function SignInScreen() {
+  const styles = useStyles();
   const params = useLocalSearchParams<{ mode?: string; redirect?: string }>();
   const purpose: OtpPurpose =
     params.mode === 'signup' || params.mode === 'guest' ? params.mode : 'login';
@@ -252,7 +253,7 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -284,4 +285,4 @@ const styles = StyleSheet.create({
     letterSpacing: 8,
     textAlign: 'center',
   },
-});
+}));

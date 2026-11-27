@@ -19,12 +19,13 @@ import { cancellationPolicy } from '@/lib/policies';
 import { estimateSpaceBooking } from '@/lib/pricing';
 import { eventTypeLabel } from '@/lib/receipt';
 import { services } from '@/services';
-import { colors, spacing, typography } from '@/theme';
+import { makeStyles, spacing, typography } from '@/theme';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 export default function BookingSummaryScreen() {
+  const styles = useStyles();
   const { draft } = useBookingDraft();
   const { session } = useSession();
   const details = useAsync(() =>
@@ -172,7 +173,7 @@ export default function BookingSummaryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
     gap: spacing.lg,
@@ -200,4 +201,4 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-});
+}));

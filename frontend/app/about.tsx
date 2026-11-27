@@ -5,12 +5,14 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { SectionHeader } from '@/components/SectionHeader';
 import { galleryPhotos, venuePhotos } from '@/components/venuePhotos';
 import { facilities, venue } from '@/data/venue';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
 export default function AboutScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <ScreenContainer contentStyle={styles.content} scroll>
       <Image
@@ -65,7 +67,7 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   content: {
     paddingTop: spacing.md,
     gap: spacing.lg,
@@ -125,4 +127,4 @@ const styles = StyleSheet.create({
   actions: {
     gap: spacing.sm,
   },
-});
+}));

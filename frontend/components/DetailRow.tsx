@@ -1,5 +1,5 @@
-import { colors, spacing, typography } from '@/theme';
-import { StyleSheet, Text, View } from 'react-native';
+import { makeStyles, spacing, typography } from '@/theme';
+import { Text, View } from 'react-native';
 
 type DetailRowProps = {
   label: string;
@@ -7,6 +7,7 @@ type DetailRowProps = {
 };
 
 export function DetailRow({ label, value }: DetailRowProps) {
+  const styles = useStyles();
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
@@ -15,7 +16,7 @@ export function DetailRow({ label, value }: DetailRowProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -33,4 +34,4 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
   },
-});
+}));

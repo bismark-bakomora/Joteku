@@ -1,5 +1,5 @@
 import { AsyncState } from '@/hooks/useAsync';
-import { colors, spacing } from '@/theme';
+import { spacing, useTheme } from '@/theme';
 import { ReactNode } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { EmptyState } from './EmptyState';
@@ -13,6 +13,7 @@ type AsyncViewProps<T> = {
 };
 
 export function AsyncView<T>({ state, empty, isEmpty, children }: AsyncViewProps<T>) {
+  const { colors } = useTheme();
   const { data, loading, reload } = state;
 
   if (data === null) {

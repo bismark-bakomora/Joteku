@@ -1,4 +1,4 @@
-import { colors } from '@/theme';
+import { lightColors } from '@/theme';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 type RoofMarkProps = {
@@ -7,6 +7,9 @@ type RoofMarkProps = {
 
 // The Joteku mark: a gold thatched hut roof. The same shape is drawn into the
 // launch image by scripts/generate-assets.mjs, so keep the two in step.
+// The logo keeps its colours in light and dark mode.
+const colors = lightColors;
+
 export function RoofMark({ width }: RoofMarkProps) {
   return (
     <Svg height={width / 2} viewBox="0 0 160 80" width={width}>

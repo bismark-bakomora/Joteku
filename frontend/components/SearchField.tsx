@@ -1,6 +1,6 @@
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, TextInput, View } from 'react-native';
 
 type SearchFieldProps = {
   value: string;
@@ -10,6 +10,8 @@ type SearchFieldProps = {
 };
 
 export function SearchField({ value, onChangeText, placeholder, accessibilityLabel }: SearchFieldProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <View style={styles.field}>
       <Ionicons color={colors.secondary} name="search" size={22} />
@@ -38,7 +40,7 @@ export function SearchField({ value, onChangeText, placeholder, accessibilityLab
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   field: {
     minHeight: sizes.field,
     flexDirection: 'row',
@@ -63,4 +65,4 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
     marginRight: spacing.xs,
   },
-});
+}));

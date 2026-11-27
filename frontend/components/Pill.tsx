@@ -1,4 +1,4 @@
-import { colors, radii, spacing, typography } from '@/theme';
+import { Palette, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -12,15 +12,16 @@ type PillProps = {
   uppercase?: boolean;
 };
 
-const tones: Record<PillTone, { background: string; text: string }> = {
+const tones = (colors: Palette): Record<PillTone, { background: string; text: string }> => ({
   gold: { background: colors.goldSoft, text: colors.onGoldSoft },
   light: { background: colors.surface, text: colors.text },
   neutral: { background: colors.surfaceHigh, text: colors.textSubtle },
   secondary: { background: colors.secondaryTint, text: colors.onSecondaryTint },
-};
+});
 
 export function Pill({ label, tone = 'neutral', icon, dotColor, uppercase = false }: PillProps) {
-  const palette = tones[tone];
+  const { colors } = useTheme();
+  const palette = tones(colors)[tone];
 
   return (
     <View style={[styles.pill, { backgroundColor: palette.background }]}>

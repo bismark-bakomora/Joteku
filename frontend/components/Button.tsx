@@ -1,8 +1,8 @@
-import { colors, radii, spacing, typography } from '@/theme';
+import { Palette, radii, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-type ButtonVariant = 'primary' | 'secondary' | 'gold' | 'tonal' | 'neutral';
+type ButtonVariant = 'primary' | 'secondary' | 'gold' | 'tonal' | 'neutral' | 'danger';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -27,8 +27,9 @@ export function Button({
   rightIcon,
   style,
 }: ButtonProps) {
+  const { colors } = useTheme();
   const isDisabled = disabled || loading;
-  const palette = variantStyles[variant];
+  const palette = variantStyles(colors)[variant];
   const textColor = isDisabled ? colors.disabledText : palette.text;
 
   return (
@@ -61,7 +62,7 @@ export function Button({
   );
 }
 
-const variantStyles = {
+const variantStyles = (colors: Palette) => ({
   primary: {
     backgroundColor: colors.primary,
     border: colors.primary,
@@ -92,7 +93,14 @@ const variantStyles = {
     borderWidth: 0,
     text: colors.primary,
   },
-} as const;
+  // Only for actions that cannot be undone, such as deleting an account.
+  danger: {
+    backgroundColor: colors.error,
+    border: colors.error,
+    borderWidth: 0,
+    text: colors.onError,
+  },
+}) as const;
 
 const styles = StyleSheet.create({
   base: {

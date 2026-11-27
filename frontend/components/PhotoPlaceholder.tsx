@@ -1,4 +1,4 @@
-import { colors } from '@/theme';
+import { Palette, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { ReactNode } from 'react';
 import { StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
@@ -16,11 +16,11 @@ type PhotoPlaceholderProps = {
   children?: ReactNode;
 };
 
-const tones: Record<PhotoTone, { background: string; icon: string }> = {
-  green: { background: colors.primary, icon: colors.primarySoftDim },
+const tones = (colors: Palette): Record<PhotoTone, { background: string; icon: string }> => ({
+  green: { background: colors.brand, icon: colors.brandDim },
   brown: { background: colors.secondarySoft, icon: colors.onSecondarySoft },
   cream: { background: colors.surfaceHigh, icon: colors.secondary },
-};
+});
 
 // Stands in for a real photo until Joteku supplies its own pictures.
 export function PhotoPlaceholder({
@@ -32,7 +32,8 @@ export function PhotoPlaceholder({
   accessibilityLabel,
   children,
 }: PhotoPlaceholderProps) {
-  const palette = tones[tone];
+  const { colors } = useTheme();
+  const palette = tones(colors)[tone];
 
   return (
     <View

@@ -1,8 +1,8 @@
 import { addMonths, compareMonths, MonthRef, monthWeeks } from '@/lib/calendar';
 import { formatDateLong, monthName } from '@/lib/format';
-import { colors, radii, sizes, spacing, typography } from '@/theme';
+import { makeStyles, radii, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 export type DayState = 'available' | 'past' | 'full';
 
@@ -29,6 +29,8 @@ export function CalendarMonth({
   dayState,
   loading,
 }: CalendarMonthProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const canGoBack = compareMonths(month, minMonth) > 0;
   const canGoForward = compareMonths(month, maxMonth) < 0;
 
@@ -126,7 +128,7 @@ export function CalendarMonth({
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   wrap: {
     backgroundColor: colors.surface,
     borderRadius: radii.lg,
@@ -216,4 +218,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textSubtle,
   },
-});
+}));

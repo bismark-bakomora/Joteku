@@ -2,8 +2,8 @@ import { contact } from '@/data/contact';
 import { formatGhs } from '@/lib/format';
 import { formatPhoneLocal } from '@/lib/phone';
 import { useAnnounce } from '@/hooks/useAnnounce';
-import { colors, spacing, typography } from '@/theme';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { makeStyles, spacing, typography, useTheme } from '@/theme';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { Card } from './Card';
 import { StepList } from './StepList';
 
@@ -15,6 +15,8 @@ type PaymentWaitingProps = {
 };
 
 export function PaymentWaiting({ phone, amount, outcome, note }: PaymentWaitingProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   useAnnounce(`Approve the payment on your phone. A prompt has been sent to ${formatPhoneLocal(phone)}.`);
 
   return (
@@ -38,7 +40,7 @@ export function PaymentWaiting({ phone, amount, outcome, note }: PaymentWaitingP
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   card: {
     gap: spacing.md,
   },
@@ -56,4 +58,4 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: 'center',
   },
-});
+}));

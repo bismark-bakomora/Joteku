@@ -1,6 +1,6 @@
-import { colors, radii, shadows, sizes, spacing, typography } from '@/theme';
+import { makeStyles, Palette, radii, shadows, sizes, spacing, typography, useTheme } from '@/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 
 type ActionTone = 'neutral' | 'secondary' | 'primary';
 
@@ -12,14 +12,16 @@ type ActionRowProps = {
   tone?: ActionTone;
 };
 
-const tones: Record<ActionTone, { background: string; icon: string }> = {
+const tones = (colors: Palette): Record<ActionTone, { background: string; icon: string }> => ({
   neutral: { background: colors.surfaceHigh, icon: colors.secondary },
   secondary: { background: colors.secondarySoft, icon: colors.onSecondarySoft },
   primary: { background: colors.primarySoft, icon: colors.primary },
-};
+});
 
 export function ActionRow({ icon, title, subtitle, onPress, tone = 'neutral' }: ActionRowProps) {
-  const palette = tones[tone];
+  const styles = useStyles();
+  const { colors } = useTheme();
+  const palette = tones(colors)[tone];
 
   return (
     <Pressable
@@ -43,7 +45,7 @@ export function ActionRow({ icon, title, subtitle, onPress, tone = 'neutral' }: 
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   row: {
     minHeight: 72,
     flexDirection: 'row',
@@ -75,4 +77,4 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textSubtle,
   },
-});
+}));

@@ -14,12 +14,12 @@ import { errorMessage } from '@/lib/errors';
 import { formatDateLong, formatGhs } from '@/lib/format';
 import { formatPhoneLocal } from '@/lib/phone';
 import { services } from '@/services';
-import { colors, radii, spacing, typography } from '@/theme';
+import { makeStyles, radii, spacing, typography, useTheme } from '@/theme';
 import { MobileMoneyNetwork } from '@/types/payment';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 type Phase =
   | { kind: 'form' }
@@ -29,6 +29,8 @@ type Phase =
 
 // Pay Balance: pays the custom catering quote on a booking that is already confirmed.
 export default function PayBalanceScreen() {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const { refresh } = useNotifications();
   const bookingState = useAsync(() => services.bookings.getBooking(bookingId), [bookingId]);
@@ -148,7 +150,7 @@ export default function PayBalanceScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles((colors) => ({
   root: {
     flex: 1,
     backgroundColor: colors.background,
@@ -212,4 +214,4 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     marginTop: spacing.sm,
   },
-});
+}));
